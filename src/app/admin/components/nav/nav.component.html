@@ -1,0 +1,10 @@
+<mat-nav-list>
+  <a
+    *ngFor="let link of links"
+    [routerLink]="link.path"
+    routerLinkActive="admin-nav-selected"
+    mat-list-item
+  >
+    {{ link.data.title }}
+  </a>
+</mat-nav-list>

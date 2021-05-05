@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
 
 @Component({
-  selector: "app-admin",
-  templateUrl: "./admin.component.html",
-  styleUrls: ["./admin.component.scss"],
+  selector: "app-dishes",
+  templateUrl: "./dishes.component.html",
+  styleUrls: ["./dishes.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminComponent implements OnInit {
+export class DishesPageComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}

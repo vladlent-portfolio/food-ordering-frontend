@@ -1,3 +1,13 @@
 <mat-toolbar color="primary">
   <span>Food Ordering Admin</span>
 </mat-toolbar>
+
+<mat-drawer-container>
+  <mat-drawer mode="side" opened>
+    <app-admin-nav></app-admin-nav>
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>
