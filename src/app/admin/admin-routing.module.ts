@@ -6,6 +6,13 @@ import { CategoriesPageComponent } from "./pages/categories/categories.component
 import { DishesPageComponent } from "./pages/dishes/dishes.component"
 import { OrdersPageComponent } from "./pages/orders/orders.component"
 
+export const PAGES_COMPONENTS = [
+  CategoriesPageComponent,
+  DishesPageComponent,
+  CategoriesPageComponent,
+  OrdersPageComponent,
+]
+
 export const pages: (Route & { data: { title: string } })[] = [
   {
     path: "categories",

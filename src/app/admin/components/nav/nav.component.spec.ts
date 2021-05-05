@@ -34,7 +34,10 @@ describe("NavComponent", () => {
       expect(page).toBeDefined(`expected ${a.href} to contain some actual path`)
 
       if (page) {
-        expect(a.textContent).toContain(page.data.title)
+        expect(a.textContent).toContain(
+          page.data.title,
+          "expected link to contain proper page title",
+        )
       }
     })
   })

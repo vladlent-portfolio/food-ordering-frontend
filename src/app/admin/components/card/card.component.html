@@ -1,0 +1,11 @@
+<mat-card>
+  <img *ngIf="imageSrc" [src]="imageSrc" alt="" />
+  <mat-card-content>
+    <p class="title">{{ title }}</p>
+    <p class="subtitle">{{ subtitle }}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button>Edit</button>
+    <button mat-raised-button [disabled]="!removable">Remove</button>
+  </mat-card-actions>
+</mat-card>
