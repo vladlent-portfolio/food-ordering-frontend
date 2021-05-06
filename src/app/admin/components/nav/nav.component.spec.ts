@@ -10,11 +10,11 @@ describe("NavComponent", () => {
   let fixture: ComponentFixture<AdminNavComponent>
   let nativeEl: HTMLElement
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [RouterTestingModule, MatListModule],
       declarations: [AdminNavComponent],
-    }).compileComponents()
+    })
   })
 
   beforeEach(() => {

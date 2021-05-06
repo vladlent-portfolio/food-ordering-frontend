@@ -9,6 +9,7 @@ import { AdminNavComponent } from "./components/nav/nav.component"
 import { AdminComponent } from "./admin.component"
 import { MatCardModule } from "@angular/material/card"
 import { MatButtonModule } from "@angular/material/button"
+import { MatIconModule } from "@angular/material/icon"
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -16,6 +17,7 @@ const MATERIAL_MODULES = [
   MatListModule,
   MatCardModule,
   MatButtonModule,
+  MatIconModule,
 ]
 
 @NgModule({
