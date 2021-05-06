@@ -1,4 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
+import { CategoryService } from "../../../services/category.service"
+import { Observable } from "rxjs"
+import { Category } from "../../../models/models"
 
 @Component({
   selector: "app-categories",
@@ -7,7 +10,13 @@ import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesPageComponent implements OnInit {
-  constructor() {}
+  categories$: Observable<Category[]> | undefined
 
-  ngOnInit(): void {}
+  constructor(private categoryService: CategoryService) {}
+
+  ngOnInit(): void {
+    this.getAll()
+  }
+
+  getAll(): void {}
 }
