@@ -1,1 +1,14 @@
-<p>categories works!</p>
+<ng-container *ngLet="categories$ | async as categories">
+  <div class="spinner-container">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+
+  <div *ngIf="isLoading && categories" class="cards-container">
+    <app-admin-card
+      *ngFor="let c of categories"
+      [title]="c.title"
+      [removable]="c.removable"
+      [imageSrc]="c.image"
+    ></app-admin-card>
+  </div>
+</ng-container>
