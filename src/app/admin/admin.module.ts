@@ -12,6 +12,7 @@ import { MatButtonModule } from "@angular/material/button"
 import { MatIconModule } from "@angular/material/icon"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { SharedModule } from "../shared/shared.module"
+import { AdminStoreModule } from "./admin-store.module"
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -30,7 +31,13 @@ const MATERIAL_MODULES = [
     AdminNavComponent,
     ...PAGES_COMPONENTS,
   ],
-  imports: [CommonModule, SharedModule, ...MATERIAL_MODULES, AdminRoutingModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    AdminRoutingModule,
+    AdminStoreModule,
+    ...MATERIAL_MODULES,
+  ],
   exports: [...MATERIAL_MODULES],
 })
 export class AdminModule {}

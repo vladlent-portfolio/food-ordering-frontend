@@ -3,7 +3,7 @@
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
 
-  <div *ngIf="isLoading && categories" class="cards-container">
+  <div *ngIf="!isLoading && categories" class="cards-container">
     <app-admin-card
       *ngFor="let c of categories"
       [title]="c.title"
