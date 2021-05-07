@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { of, throwError } from "rxjs"
+import { of } from "rxjs"
 import { By } from "@angular/platform-browser"
 import { CategoriesPageComponent } from "./categories.component"
 import { Category } from "../../../models/models"
@@ -47,16 +47,12 @@ describe("CategoriesComponent", () => {
     it("should call getAll from CategoryService and update component's state", () => {
       const categories$ = of(testCategories)
       serviceSpy.getAll.and.returnValue(categories$)
-      component.isLoading = false
       component.getAll()
-      expect(component.isLoading).toBeTrue()
       expect(serviceSpy.getAll).toHaveBeenCalled()
 
       component.categories$?.subscribe(categories => {
         expect(categories).toEqual(testCategories)
       })
-      expect(component.isLoading).toBeFalse()
-
       fixture.detectChanges()
 
       const cards: AdminCardComponent[] = fixture.debugElement
@@ -76,24 +72,6 @@ describe("CategoriesComponent", () => {
           expect(card.imageSrc).toBe(category.image)
         })
       }
-    })
-
-    it("should toggle loading spinner when request is successful", () => {
-      component.isLoading = false
-      serviceSpy.getAll.and.callFake(() => {
-        expect(component.isLoading).toBeTrue()
-        return of([])
-      })
-      expect(component.isLoading).toBeFalse()
-    })
-
-    it("should toggle loading spinner when request isn't successful", () => {
-      component.isLoading = false
-      serviceSpy.getAll.and.callFake(() => {
-        expect(component.isLoading).toBeTrue()
-        return throwError({ status: 403 })
-      })
-      expect(component.isLoading).toBeFalse()
     })
   })
 })

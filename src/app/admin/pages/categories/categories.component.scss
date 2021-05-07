@@ -2,16 +2,6 @@
   display: block;
 }
 
-.spinner-container {
-  display: block;
-  height: 100vh - var(--toolbar-height);
-  width: 100vh;
-}
-
-mat-spinner {
-  margin: auto;
-}
-
 .cards-container {
   display: flex;
 }

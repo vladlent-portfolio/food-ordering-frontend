@@ -1,0 +1,16 @@
+@use "sass:color";
+
+.spinner-container {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: color.scale(#000, $alpha: -85%);
+  z-index: 100;
+
+  mat-progress-spinner {
+    margin: auto;
+  }
+}

@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations"
 import { SharedModule } from "./shared/shared.module"
 import { HttpClientModule } from "@angular/common/http"
 import { AppStoreModule } from "./store/app-store.module"
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,6 +18,7 @@ import { AppStoreModule } from "./store/app-store.module"
     HttpClientModule,
     SharedModule,
     AppStoreModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

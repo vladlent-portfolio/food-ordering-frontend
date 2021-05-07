@@ -10,7 +10,6 @@ import { AdminComponent } from "./admin.component"
 import { MatCardModule } from "@angular/material/card"
 import { MatButtonModule } from "@angular/material/button"
 import { MatIconModule } from "@angular/material/icon"
-import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
 
@@ -21,7 +20,6 @@ const MATERIAL_MODULES = [
   MatCardModule,
   MatButtonModule,
   MatIconModule,
-  MatProgressSpinnerModule,
 ]
 
 @NgModule({

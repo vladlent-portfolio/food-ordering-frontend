@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core"
-import { select, Store } from "@ngrx/store"
+import { Store } from "@ngrx/store"
 import { selectIsLoading } from "./store/selectors"
 import { AppState } from "./store/reducers"
 
@@ -9,11 +9,8 @@ import { AppState } from "./store/reducers"
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
+  isLoading$ = this.store.select(selectIsLoading)
   constructor(private store: Store<AppState>) {}
 
-  ngOnInit() {
-    this.store.pipe(select(selectIsLoading)).subscribe(isLoading => {
-      console.log(isLoading)
-    })
-  }
+  ngOnInit() {}
 }
