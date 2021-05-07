@@ -27,9 +27,11 @@ describe("AppComponent", () => {
 
   it("should toggle loading spinner based on app state", () => {
     expect(querySpinner()).toBeNull()
+
     store.dispatch(loadStart())
     fixture.detectChanges()
     expect(querySpinner()).not.toBeNull()
+
     store.dispatch(loadEnd())
     fixture.detectChanges()
     expect(querySpinner()).toBeNull()
