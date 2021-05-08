@@ -8,6 +8,11 @@ mat-drawer-container {
   display: flex;
   min-height: calc(100vh - var(--toolbar-height));
   background-color: transparent;
+
+  mat-drawer-content {
+    width: 100%;
+    padding: 1rem;
+  }
 }
 
 app-admin-nav {

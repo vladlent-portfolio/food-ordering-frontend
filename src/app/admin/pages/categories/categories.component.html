@@ -1,8 +1,12 @@
-<div *ngIf="categories$ | async as categories" class="cards-container">
+<header>
+  <button class="add-btn" mat-raised-button color="primary">+ New Category</button>
+</header>
+
+<main *ngIf="categories$ | async as categories" class="cards-container">
   <app-admin-card
     *ngFor="let c of categories"
     [title]="c.title"
     [removable]="c.removable"
     [imageSrc]="c.image"
   ></app-admin-card>
-</div>
+</main>
