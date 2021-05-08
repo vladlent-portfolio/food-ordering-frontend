@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core"
 import { Route, RouterModule, Routes } from "@angular/router"
-import { AdminComponent } from "./admin.component"
+import { AdminPageComponent } from "./admin.component"
 import { CustomersPageComponent } from "./pages/customers/customers.component"
 import { CategoriesPageComponent } from "./pages/categories/categories.component"
 import { DishesPageComponent } from "./pages/dishes/dishes.component"
@@ -31,7 +31,7 @@ export const routes: Routes = [
   },
   {
     path: "",
-    component: AdminComponent,
+    component: AdminPageComponent,
     children: [...pages],
   },
 ]

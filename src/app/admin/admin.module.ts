@@ -6,12 +6,14 @@ import { MatSidenavModule } from "@angular/material/sidenav"
 import { MatListModule } from "@angular/material/list"
 import { AdminCardComponent } from "./components/card/card.component"
 import { AdminNavComponent } from "./components/nav/nav.component"
-import { AdminComponent } from "./admin.component"
+import { AdminPageComponent } from "./admin.component"
 import { MatCardModule } from "@angular/material/card"
 import { MatButtonModule } from "@angular/material/button"
 import { MatIconModule } from "@angular/material/icon"
 import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
+import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
+import { MatInputModule } from "@angular/material/input"
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -20,14 +22,16 @@ const MATERIAL_MODULES = [
   MatCardModule,
   MatButtonModule,
   MatIconModule,
+  MatInputModule,
 ]
 
 @NgModule({
   declarations: [
-    AdminComponent,
+    AdminPageComponent,
     AdminCardComponent,
     AdminNavComponent,
     ...PAGES_COMPONENTS,
+    CategoryDialogComponent,
   ],
   imports: [
     CommonModule,
