@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { CategoryDialogComponent, CategoryDialogData } from "./category-dialog.component"
+import { CategoryDialogComponent } from "./category-dialog.component"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
-import { MatInputModule } from "@angular/material/input"
 
 describe("CategoryDialogComponent", () => {
   let component: CategoryDialogComponent

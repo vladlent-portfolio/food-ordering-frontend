@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from "@angular/core"
+import { Component, OnInit, Inject } from "@angular/core"
 import { Category } from "../../../../models/models"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 

@@ -2,6 +2,8 @@
   <button class="add-btn" mat-raised-button color="primary">+ New Category</button>
 </header>
 
+<app-image-upload title="Your picture"></app-image-upload>
+
 <main *ngIf="categories$ | async as categories" class="cards-container">
   <app-admin-card
     *ngFor="let c of categories"

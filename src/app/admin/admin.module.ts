@@ -13,7 +13,8 @@ import { MatIconModule } from "@angular/material/icon"
 import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
 import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
-import { MatInputModule } from "@angular/material/input"
+import { MatInputModule } from "@angular/material/input";
+import { ImageUploadComponent } from './components/image-upload/image-upload.component'
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -32,6 +33,7 @@ const MATERIAL_MODULES = [
     AdminNavComponent,
     ...PAGES_COMPONENTS,
     CategoryDialogComponent,
+    ImageUploadComponent,
   ],
   imports: [
     CommonModule,

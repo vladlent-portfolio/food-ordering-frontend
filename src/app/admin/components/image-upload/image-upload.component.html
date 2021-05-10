@@ -1,0 +1,16 @@
+<p class="title">{{ title }}</p>
+<div [class.has-image]="imageSrc" class="img-container">
+  <mat-icon *ngIf="!imageSrc">image</mat-icon>
+  <img *ngIf="imageSrc" [src]="imageSrc" />
+</div>
+
+<button class="upload-btn" mat-stroked-button (click)="input.click()">
+  Upload new picture
+</button>
+<input
+  #input
+  class="upload-input"
+  type="file"
+  accept="image/png, image/jpeg"
+  (change)="handleUpload(input.files)"
+/>
