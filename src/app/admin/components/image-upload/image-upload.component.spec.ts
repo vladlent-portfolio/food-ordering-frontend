@@ -24,6 +24,10 @@ describe("ImageUploadComponent", () => {
   })
 
   it("should change title", () => {
+    component.title = undefined
+    expect(queryTitle()).toBeNull()
+    component.title = "   "
+    expect(queryTitle()).toBeNull()
     component.title = "Title"
     fixture.detectChanges()
     expect(queryTitle()?.textContent?.trim()).toBe("Title")
@@ -123,7 +127,7 @@ describe("ImageUploadComponent", () => {
   ></app-image-upload>`,
 })
 class TestHostComponent {
-  title = ""
+  title: string | undefined
   imageSrc = ""
   uploadedFile: File | undefined
 }

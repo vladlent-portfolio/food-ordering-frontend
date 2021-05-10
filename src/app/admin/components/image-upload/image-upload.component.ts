@@ -41,10 +41,6 @@ export class ImageUploadComponent {
       }
     })
 
-    reader.addEventListener("error", () => {
-      console.log(reader.error)
-    })
-
     reader.readAsDataURL(file)
   }
 }

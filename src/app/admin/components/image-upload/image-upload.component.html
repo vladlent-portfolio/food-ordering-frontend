@@ -1,4 +1,4 @@
-<p class="title">{{ title }}</p>
+<p *ngIf="title?.trim()" class="title">{{ title }}</p>
 <div [class.has-image]="imageSrc" class="img-container">
   <mat-icon *ngIf="!imageSrc">image</mat-icon>
   <img *ngIf="imageSrc" [src]="imageSrc" />
