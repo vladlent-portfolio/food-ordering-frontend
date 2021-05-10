@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject } from "@angular/core"
+import { Component, Inject, OnInit } from "@angular/core"
 import { Category } from "../../../../models/models"
-import { MAT_DIALOG_DATA } from "@angular/material/dialog"
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
+import { FormGroup } from "@angular/forms"
 
 export type CategoryDialogData = {
   mode: "create" | "edit"
@@ -13,15 +14,22 @@ export type CategoryDialogData = {
   styleUrls: ["./category-dialog.component.scss"],
 })
 export class CategoryDialogComponent implements OnInit {
-  get title() {
-    if (this.data.mode === "create") {
-      return "Create new category"
-    } else {
-      return `Edit category`
-    }
-  }
+  formGroup = new FormGroup({})
+  title = ""
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: CategoryDialogData) {}
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    this.setTitle()
+  }
+
+  setTitle() {
+    if (this.data.mode === "create") {
+      this.title = "Create New Category"
+    } else {
+      this.title = `Edit Category`
+    }
+  }
+
+  onSubmit() {}
 }

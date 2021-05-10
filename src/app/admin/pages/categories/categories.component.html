@@ -1,8 +1,8 @@
 <header>
-  <button class="add-btn" mat-raised-button color="primary">+ New Category</button>
+  <button class="add-btn" mat-raised-button color="primary" (click)="openDialog()">
+    + New Category
+  </button>
 </header>
-
-<app-image-upload title="Your picture"></app-image-upload>
 
 <main *ngIf="categories$ | async as categories" class="cards-container">
   <app-admin-card
