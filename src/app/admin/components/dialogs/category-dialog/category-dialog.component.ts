@@ -1,11 +1,16 @@
-import { Component, Inject, OnInit } from "@angular/core"
+import { Component, EventEmitter, Inject, OnInit, Output } from "@angular/core"
 import { Category } from "../../../../models/models"
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
-import { FormGroup } from "@angular/forms"
+import { MAT_DIALOG_DATA } from "@angular/material/dialog"
+import { FormBuilder, FormControl } from "@angular/forms"
 
 export type CategoryDialogData = {
   mode: "create" | "edit"
   category?: Category
+}
+
+export type CategoryDialogSubmitData = {
+  title: string
+  newImage: File | undefined
 }
 
 @Component({
@@ -14,10 +19,18 @@ export type CategoryDialogData = {
   styleUrls: ["./category-dialog.component.scss"],
 })
 export class CategoryDialogComponent implements OnInit {
-  formGroup = new FormGroup({})
   title = ""
+  newImage: File | undefined
+  formGroup = this.fb.group({
+    title: this.data.category?.title,
+  })
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: CategoryDialogData) {}
+  @Output() submit = new EventEmitter<CategoryDialogSubmitData>()
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: CategoryDialogData,
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit() {
     this.setTitle()
@@ -31,5 +44,10 @@ export class CategoryDialogComponent implements OnInit {
     }
   }
 
-  onSubmit() {}
+  onSubmit() {
+    this.submit.emit({
+      title: this.formGroup.value.title,
+      newImage: this.newImage,
+    })
+  }
 }

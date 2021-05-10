@@ -6,10 +6,13 @@
   <form class="form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
     <mat-form-field>
       <mat-label>Title</mat-label>
-      <input matInput placeholder="Pizza" />
+      <input formControlName="title" matInput placeholder="Pizza" />
     </mat-form-field>
 
-    <app-image-upload></app-image-upload>
+    <app-image-upload
+      [imageSrc]="data.category?.image"
+      (upload)="newImage = $event"
+    ></app-image-upload>
 
     <div class="form__actions">
       <button class="close-btn" type="button" mat-raised-button mat-dialog-close>

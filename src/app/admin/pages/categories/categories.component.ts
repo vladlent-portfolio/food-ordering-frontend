@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
 import { CategoryService } from "../../../services/category.service"
 import { Observable } from "rxjs"
 import { Category } from "../../../models/models"

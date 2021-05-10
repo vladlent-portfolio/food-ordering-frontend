@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-
 import { CategoryDialogComponent } from "./category-dialog.component"
 import {
   MAT_DIALOG_DATA,
@@ -11,6 +10,9 @@ import {
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { ImageUploadComponent } from "../../image-upload/image-upload.component"
 import { Component } from "@angular/core"
+import { ReactiveFormsModule } from "@angular/forms"
+import { MatInputModule } from "@angular/material/input"
+import { By } from "@angular/platform-browser"
 
 describe("CategoryDialogComponent", () => {
   let component: CategoryDialogComponent
@@ -23,7 +25,12 @@ describe("CategoryDialogComponent", () => {
 
     TestBed.configureTestingModule({
       declarations: [CategoryDialogComponent, ImageUploadComponent, TestHostComponent],
-      imports: [MatDialogModule, NoopAnimationsModule],
+      imports: [
+        MatDialogModule,
+        MatInputModule,
+        NoopAnimationsModule,
+        ReactiveFormsModule,
+      ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: dialogRef },
@@ -50,6 +57,34 @@ describe("CategoryDialogComponent", () => {
     expect(dialogRef.close).toHaveBeenCalled()
   })
 
+  it("should emit form data on submit", (done: DoneFn) => {
+    const title = "Burgers"
+    const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
+
+    component.submit.subscribe(data => {
+      expect(data).toEqual({ title, newImage: image })
+      done()
+    })
+
+    component.formGroup.setValue({ title })
+    component.newImage = image
+    fixture.detectChanges()
+    querySubmitBtn().click()
+  })
+
+  it("should listen for upload events on image-upload component", () => {
+    const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
+    const uploadComponent: ImageUploadComponent = fixture.debugElement.query(
+      By.directive(ImageUploadComponent),
+    ).componentInstance
+
+    expect(component.newImage).toBeUndefined()
+
+    uploadComponent.upload.emit(image)
+    fixture.detectChanges()
+    expect(component.newImage).toEqual(image)
+  })
+
   describe("setTitle()", () => {
     it("should change title based on mode", () => {
       component.data.mode = "create"
@@ -70,6 +105,10 @@ describe("CategoryDialogComponent", () => {
 
   function queryCloseBtn() {
     return nativeEl.querySelector(".close-btn") as HTMLButtonElement
+  }
+
+  function querySubmitBtn() {
+    return nativeEl.querySelector(".submit-btn") as HTMLButtonElement
   }
 })
 
