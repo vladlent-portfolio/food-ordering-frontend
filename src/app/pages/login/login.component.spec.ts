@@ -6,8 +6,15 @@ import { MatButtonModule } from "@angular/material/button"
 import { MatInputModule } from "@angular/material/input"
 import { FormControl, ReactiveFormsModule } from "@angular/forms"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
+import { UserService } from "../../services/user.service"
+import SpyObj = jasmine.SpyObj
+import { of } from "rxjs"
 
 describe("LoginComponent", () => {
+  const serviceSpy: SpyObj<UserService> = jasmine.createSpyObj("UserService", [
+    "signIn",
+    "signOut",
+  ])
   let component: LoginPageComponent
   let fixture: ComponentFixture<LoginPageComponent>
   let nativeEl: HTMLElement
@@ -24,6 +31,7 @@ describe("LoginComponent", () => {
         ReactiveFormsModule,
       ],
       declarations: [LoginPageComponent],
+      providers: [{ provide: UserService, useValue: serviceSpy }],
     })
   })
 
@@ -47,6 +55,14 @@ describe("LoginComponent", () => {
 
     expect(email.value).toBeNull()
     expect(password.value).toBeNull()
+
+    email.setValue("example@mail.com")
+    password.setValue("password2354")
+    fixture.detectChanges()
+
+    queryTabs()[0].click()
+    fixture.detectChanges()
+    await fixture.whenStable()
   })
 
   it("should show error msg if email is incorrect", () => {
@@ -71,6 +87,42 @@ describe("LoginComponent", () => {
     expect(queryPasswordFormField().querySelector("mat-error")?.textContent).toContain(
       "Password should be at least 8 characters long",
     )
+  })
+
+  it("should disabled 'Sign In' and 'Sign Out' buttons if form is invalid", async () => {
+    email.setValue("123")
+    password.setValue("pass")
+    fixture.detectChanges()
+
+    expect(querySignInBtn().disabled).toBeTrue()
+
+    queryTabs()[1].click()
+    fixture.detectChanges()
+    await fixture.whenStable()
+    expect(querySignUpBtn().disabled).toBeTrue()
+  })
+
+  describe("sign in", () => {
+    it("should call signIn with email and password", () => {
+      serviceSpy.signIn.and.returnValue(of())
+      const testEmail = "example@mail.com"
+      const testPassword = "secretPass312"
+      email.setValue(testEmail)
+      password.setValue(testPassword)
+      fixture.detectChanges()
+
+      querySignInBtn().click()
+
+      expect(serviceSpy.signIn).toHaveBeenCalledWith(testEmail, testPassword)
+    })
+
+    it("should not call signIn if form is invalid", () => {
+      email.setValue("123")
+      password.setValue("pass")
+      fixture.detectChanges()
+      component.signIn()
+      expect(serviceSpy.signIn).not.toHaveBeenCalled()
+    })
   })
 
   describe("email FormControl", () => {
@@ -122,6 +174,14 @@ describe("LoginComponent", () => {
 
   function queryPassword(): HTMLInputElement {
     return nativeEl.querySelector("#password") as HTMLInputElement
+  }
+
+  function querySignInBtn(): HTMLButtonElement {
+    return nativeEl.querySelector(".sign-in-btn") as HTMLButtonElement
+  }
+
+  function querySignUpBtn(): HTMLButtonElement {
+    return nativeEl.querySelector(".sign-up-btn") as HTMLButtonElement
   }
 })
 

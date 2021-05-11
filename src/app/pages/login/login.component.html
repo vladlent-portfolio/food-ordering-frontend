@@ -12,7 +12,15 @@
           <button type="button" mat-flat-button color="accent">Sign In as User</button>
           <button type="button" mat-flat-button color="warn">Sign In as Admin</button>
         </div>
-        <button mat-raised-button color="primary">Sign In</button>
+        <button
+          class="sign-in-btn"
+          mat-raised-button
+          color="primary"
+          [disabled]="formGroup.invalid"
+          (click)="signIn()"
+        >
+          Sign In
+        </button>
       </form>
     </mat-tab>
 
@@ -20,7 +28,14 @@
       <form class="form" (submit)="$event.preventDefault()">
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
 
-        <button mat-raised-button color="primary">Sign Up</button>
+        <button
+          class="sign-up-btn"
+          mat-raised-button
+          color="primary"
+          [disabled]="formGroup.invalid"
+        >
+          Sign Up
+        </button>
       </form>
     </mat-tab>
   </mat-tab-group>

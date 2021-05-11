@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core"
 import { FormBuilder, Validators } from "@angular/forms"
+import { UserService } from "../../services/user.service"
 
 @Component({
   selector: "app-login",
@@ -12,11 +13,16 @@ export class LoginPageComponent implements OnInit {
     password: ["", [Validators.required, Validators.minLength(8)]],
   })
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private userService: UserService, private fb: FormBuilder) {}
 
   ngOnInit(): void {}
 
-  signIn() {}
+  signIn() {
+    if (this.formGroup.invalid) return
+
+    const { email, password } = this.formGroup.value
+    this.userService.signIn(email, password).subscribe()
+  }
 
   signUp() {}
 }
