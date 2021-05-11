@@ -54,8 +54,10 @@ describe("CategoryService", () => {
       service.create(title).subscribe(data => expect(data).toEqual(response))
 
       const req = httpController.expectOne(getURL())
-      expect(req.request.method).toBe("POST")
-      expect(req.request.body).toEqual(
+      const { request } = req
+      expect(request.method).toBe("POST")
+      expect(request.headers.get("Content-Type")).toContain("application/json")
+      expect(request.body).toEqual(
         { title, removable: true },
         "expected new category to be removable",
       )
@@ -71,11 +73,12 @@ describe("CategoryService", () => {
       service.updateImage(id, image).subscribe(url => expect(url).toBe(response))
 
       const req = httpController.expectOne(getURL(id))
-      expect(req.request.method).toBe("PATCH")
-      expect(req.request.headers.get("Content-Type")).toBe("application/form-data")
+      const { request } = req
+      expect(request.method).toBe("PATCH")
+      expect(request.headers.get("Content-Type")).toBe("application/form-data")
 
-      expect(req.request.body instanceof FormData).toBeTrue()
-      expect(req.request.body.get("image")).toEqual(image)
+      expect(request.body instanceof FormData).toBeTrue()
+      expect(request.body.get("image")).toEqual(image)
 
       req.flush(response)
     })
