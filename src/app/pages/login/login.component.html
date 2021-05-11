@@ -1,0 +1,38 @@
+<main class="form-container">
+  <mat-tab-group dynamicHeight (selectedTabChange)="formGroup.reset()">
+    <mat-tab label="Sign In">
+      <form class="form" (submit)="$event.preventDefault(); signIn()">
+        <ng-container *ngTemplateOutlet="formFields"></ng-container>
+
+        <div class="form__suggest">
+          <button type="button" mat-flat-button color="accent">Sign In as User</button>
+          <button type="button" mat-flat-button color="warn">Sign In as Admin</button>
+        </div>
+        <button mat-raised-button color="primary">Sign In</button>
+      </form>
+    </mat-tab>
+
+    <mat-tab label="Sign Up">
+      <form class="form" (submit)="$event.preventDefault()">
+        <ng-container *ngTemplateOutlet="formFields"></ng-container>
+
+        <button mat-raised-button color="primary">Sign Up</button>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+</main>
+
+<ng-template [formGroup]="formGroup" #formFields>
+  <mat-form-field>
+    <mat-label>E-mail</mat-label>
+    <input formControlName="email" type="text" matInput />
+    <mat-error *ngIf="formGroup.get('email')?.invalid">Invalid e-mail</mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input formControlName="password" type="password" matInput />
+    <mat-error *ngIf="formGroup.get('password')?.invalid">
+      Password should be at least 8 characters long
+    </mat-error>
+  </mat-form-field>
+</ng-template>

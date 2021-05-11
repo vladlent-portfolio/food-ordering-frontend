@@ -14,3 +14,10 @@ export type Dish = {
   category_id: number
   category: Category
 }
+
+export type User = {
+  id: number
+  created_at: string
+  email: string
+  is_admin: boolean
+}

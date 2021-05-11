@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  height: 100vh;
+}
+
+.form-container {
+  margin: auto;
+  width: 20rem;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+  mat-form-field {
+    padding: 0.25rem 0;
+  }
+
+  &__suggest {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+  }
+}

@@ -8,12 +8,10 @@ import { AdminCardComponent } from "./components/card/card.component"
 import { AdminNavComponent } from "./components/nav/nav.component"
 import { AdminPageComponent } from "./admin.component"
 import { MatCardModule } from "@angular/material/card"
-import { MatButtonModule } from "@angular/material/button"
 import { MatIconModule } from "@angular/material/icon"
 import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
 import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
-import { MatInputModule } from "@angular/material/input"
 import { ImageUploadComponent } from "./components/image-upload/image-upload.component"
 import { MatDialogModule } from "@angular/material/dialog"
 
@@ -22,9 +20,7 @@ const MATERIAL_MODULES = [
   MatSidenavModule,
   MatListModule,
   MatCardModule,
-  MatButtonModule,
   MatIconModule,
-  MatInputModule,
   MatDialogModule,
 ]
 
