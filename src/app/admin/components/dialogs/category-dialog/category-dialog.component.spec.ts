@@ -18,10 +18,10 @@ describe("CategoryDialogComponent", () => {
   let component: CategoryDialogComponent
   let fixture: ComponentFixture<CategoryDialogComponent>
   let nativeEl: HTMLElement
-  let dialogRef: jasmine.SpyObj<MatDialogRef<CategoryDialogComponent>>
+  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<CategoryDialogComponent>>
 
   beforeEach(() => {
-    dialogRef = jasmine.createSpyObj("MatDialogRef", ["close"])
+    dialogRefSpy = jasmine.createSpyObj("MatDialogRef", ["close"])
 
     TestBed.configureTestingModule({
       declarations: [CategoryDialogComponent, ImageUploadComponent, TestHostComponent],
@@ -33,7 +33,7 @@ describe("CategoryDialogComponent", () => {
       ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
-        { provide: MatDialogRef, useValue: dialogRef },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
       ],
     })
   })
@@ -54,22 +54,7 @@ describe("CategoryDialogComponent", () => {
     const btn = queryCloseBtn()
     expect(btn).not.toBeNull()
     btn.click()
-    expect(dialogRef.close).toHaveBeenCalled()
-  })
-
-  it("should emit form data on submit", (done: DoneFn) => {
-    const title = "Burgers"
-    const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
-
-    component.submit.subscribe(data => {
-      expect(data).toEqual({ title, newImage: image })
-      done()
-    })
-
-    component.formGroup.setValue({ title })
-    component.newImage = image
-    fixture.detectChanges()
-    querySubmitBtn().click()
+    expect(dialogRefSpy.close).toHaveBeenCalled()
   })
 
   it("should listen for upload events on image-upload component", () => {
@@ -97,6 +82,13 @@ describe("CategoryDialogComponent", () => {
       fixture.detectChanges()
       expect(queryTitle()?.textContent).toContain("Edit Category")
     })
+  })
+
+  describe("submit()", () => {
+    const title = "Burgers"
+    const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
+
+    it("should create new category and add image to it if mode is 'create'", () => {})
   })
 
   function queryTitle() {

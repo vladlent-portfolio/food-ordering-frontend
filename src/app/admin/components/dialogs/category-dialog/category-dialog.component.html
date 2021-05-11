@@ -3,7 +3,7 @@
 </header>
 
 <main>
-  <form class="form" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <form class="form" [formGroup]="formGroup" (ngSubmit)="submit()">
     <mat-form-field>
       <mat-label>Title</mat-label>
       <input formControlName="title" matInput placeholder="Pizza" />

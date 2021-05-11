@@ -1,16 +1,11 @@
 import { Component, EventEmitter, Inject, OnInit, Output } from "@angular/core"
 import { Category } from "../../../../models/models"
 import { MAT_DIALOG_DATA } from "@angular/material/dialog"
-import { FormBuilder, FormControl } from "@angular/forms"
+import { FormBuilder } from "@angular/forms"
 
 export type CategoryDialogData = {
   mode: "create" | "edit"
   category?: Category
-}
-
-export type CategoryDialogSubmitData = {
-  title: string
-  newImage: File | undefined
 }
 
 @Component({
@@ -25,8 +20,6 @@ export class CategoryDialogComponent implements OnInit {
     title: this.data.category?.title,
   })
 
-  @Output() submit = new EventEmitter<CategoryDialogSubmitData>()
-
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: CategoryDialogData,
     private fb: FormBuilder,
@@ -40,14 +33,9 @@ export class CategoryDialogComponent implements OnInit {
     if (this.data.mode === "create") {
       this.title = "Create New Category"
     } else {
-      this.title = `Edit Category`
+      this.title = "Edit Category"
     }
   }
 
-  onSubmit() {
-    this.submit.emit({
-      title: this.formGroup.value.title,
-      newImage: this.newImage,
-    })
-  }
+  submit() {}
 }

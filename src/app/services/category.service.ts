@@ -8,9 +8,27 @@ import { environment } from "../../environments/environment"
   providedIn: "root",
 })
 export class CategoryService {
+  readonly baseURL = `${environment.apiURL}/categories`
+
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${environment.apiURL}/categories`)
+    return this.http.get<Category[]>(this.baseURL)
+  }
+
+  create(title: string): Observable<Category> {
+    return this.http.post<Category>(this.baseURL, {
+      title,
+      removable: true,
+    })
+  }
+
+  updateImage(id: number, img: File): Observable<string> {
+    const formData = new FormData()
+    formData.set("image", img)
+
+    return this.http.patch<string>(`${this.baseURL}/${id}`, formData, {
+      headers: { "Content-Type": "application/form-data" },
+    })
   }
 }
