@@ -1,26 +1,36 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing"
+import {
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+  tick,
+  waitForAsync,
+} from "@angular/core/testing"
 
 import { LoginDialogComponent } from "./login.component"
 import { UserService } from "../../../services/user.service"
 import { FormControl, ReactiveFormsModule } from "@angular/forms"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { MatTabsModule } from "@angular/material/tabs"
+import { MatTab, MatTabsModule } from "@angular/material/tabs"
 import { MatButtonModule } from "@angular/material/button"
 import { MatInputModule } from "@angular/material/input"
-import { of } from "rxjs"
+import { of, throwError } from "rxjs"
+import { MatDialogRef } from "@angular/material/dialog"
+import { User } from "../../../models/models"
 
 describe("LoginDialogComponent", () => {
-  const serviceSpy: jasmine.SpyObj<UserService> = jasmine.createSpyObj("UserService", [
-    "signIn",
-    "signOut",
-  ])
   let component: LoginDialogComponent
   let fixture: ComponentFixture<LoginDialogComponent>
   let nativeEl: HTMLElement
+  let serviceSpy: jasmine.SpyObj<UserService>
+  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<LoginDialogComponent>>
   let email: FormControl
   let password: FormControl
 
   beforeEach(() => {
+    serviceSpy = jasmine.createSpyObj("UserService", ["signIn", "signOut"])
+    dialogRefSpy = jasmine.createSpyObj("MatDialogRef", ["close"])
+
     TestBed.configureTestingModule({
       imports: [
         NoopAnimationsModule,
@@ -30,7 +40,10 @@ describe("LoginDialogComponent", () => {
         ReactiveFormsModule,
       ],
       declarations: [LoginDialogComponent],
-      providers: [{ provide: UserService, useValue: serviceSpy }],
+      providers: [
+        { provide: UserService, useValue: serviceSpy },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+      ],
     })
   })
 
@@ -67,30 +80,6 @@ describe("LoginDialogComponent", () => {
     expect(password.value).toBeNull()
   })
 
-  it("should show error msg if email is incorrect", () => {
-    email.setValue("123")
-    email.markAsTouched()
-    fixture.detectChanges()
-
-    expect(email.invalid).toBeTrue()
-    expect(queryEmail().value).toBe("123")
-    expect(queryEmailFormField().querySelector("mat-error")?.textContent).toContain(
-      "Invalid e-mail",
-    )
-  })
-
-  it("should show error msg if password is incorrect", () => {
-    password.setValue("123")
-    password.markAsTouched()
-    fixture.detectChanges()
-
-    expect(password.invalid).toBeTrue()
-    expect(queryPassword().value).toBe("123")
-    expect(queryPasswordFormField().querySelector("mat-error")?.textContent).toContain(
-      "Password should be at least 8 characters long",
-    )
-  })
-
   it("should disabled 'Sign In' and 'Sign Out' buttons if form is invalid", async () => {
     email.setValue("123")
     password.setValue("pass")
@@ -106,7 +95,7 @@ describe("LoginDialogComponent", () => {
 
   describe("sign in", () => {
     it("should call signIn with email and password", () => {
-      serviceSpy.signIn.and.returnValue(of())
+      serviceSpy.signIn.and.returnValue(of({} as User))
       const testEmail = "example@mail.com"
       const testPassword = "secretPass312"
       email.setValue(testEmail)
@@ -119,12 +108,67 @@ describe("LoginDialogComponent", () => {
     })
 
     it("should not call signIn if form is invalid", () => {
-      email.setValue("123")
-      password.setValue("pass")
-      component.formGroup.markAsTouched()
       fixture.detectChanges()
       component.signIn()
       expect(serviceSpy.signIn).not.toHaveBeenCalled()
+    })
+
+    it("should close dialog on successful sign in", () => {
+      serviceSpy.signIn.and.returnValue(of({} as User))
+      populateForm()
+      component.signIn()
+      expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+    })
+
+    it("should disable all buttons and tabs when request is initiated", () => {
+      serviceSpy.signIn.and.returnValue(of({} as User))
+      checkButtonsState(3, true)
+    })
+
+    it("should enable all buttons if request returns an error", () => {
+      serviceSpy.signIn.and.returnValue(
+        throwError({ status: 404, statusText: "Not Found" }),
+      )
+      checkButtonsState(3, false)
+    })
+
+    it("should hide error element if error is falsy", () => {
+      component.signInError = undefined
+      fixture.detectChanges()
+      expect(queryError()).toBeNull()
+
+      component.signInError = ""
+      fixture.detectChanges()
+      expect(queryError()).toBeNull()
+    })
+
+    it("should show error element if error is truthy", () => {
+      component.signInError = "error msg"
+      fixture.detectChanges()
+      expect(queryError()).not.toBeNull()
+    })
+
+    it("should show error message on 404", () => {
+      serviceSpy.signIn.and.returnValue(
+        throwError({ status: 404, statusText: "Not Found" }),
+      )
+      populateForm()
+      component.signIn()
+      fixture.detectChanges()
+
+      const err = queryError()
+      expect(err).not.toBeNull()
+      expect(err.textContent?.trim().length).toBeGreaterThan(0)
+    })
+
+    it("should clear error message before sending a request", () => {
+      serviceSpy.signIn.and.returnValue(of({} as User))
+      populateForm()
+      component.signInError = "error msg"
+      fixture.detectChanges()
+      component.signIn()
+      fixture.detectChanges()
+      expect(queryError()).toBeNull()
     })
   })
 
@@ -141,10 +185,23 @@ describe("LoginDialogComponent", () => {
       email.setValue("hello@123.com")
       expect(email.hasError("email")).toBeFalse()
     })
+
+    it("should show error msg if email is incorrect", () => {
+      email.setValue("123")
+      email.markAsTouched()
+      fixture.detectChanges()
+
+      expect(email.invalid).toBeTrue()
+      expect(queryEmail().value).toBe("123")
+      expect(queryEmailFormField().querySelector("mat-error")?.textContent).toContain(
+        "Invalid e-mail",
+      )
+    })
   })
 
   describe("password FormControl", () => {
     it("should be required", () => runRequiredTest(password))
+
     it("should be at least 8 chars long", () => {
       for (let i = 1; i < 7; i++) {
         const str = new Array(i).fill("a").join("")
@@ -156,6 +213,18 @@ describe("LoginDialogComponent", () => {
       expect(password.hasError("minlength")).toBeFalse()
       password.setValue("longpass1")
       expect(password.hasError("minlength")).toBeFalse()
+    })
+
+    it("should show error msg if password is incorrect", () => {
+      password.setValue("123")
+      password.markAsTouched()
+      fixture.detectChanges()
+
+      expect(password.invalid).toBeTrue()
+      expect(queryPassword().value).toBe("123")
+      expect(queryPasswordFormField().querySelector("mat-error")?.textContent).toContain(
+        "Password should be at least 8 characters long",
+      )
     })
   })
 
@@ -185,6 +254,29 @@ describe("LoginDialogComponent", () => {
 
   function querySignUpBtn(): HTMLButtonElement {
     return nativeEl.querySelector(".sign-up-btn") as HTMLButtonElement
+  }
+
+  function queryError(): HTMLElement {
+    return nativeEl.querySelector(".error") as HTMLElement
+  }
+
+  function populateForm() {
+    email.setValue("mail@example.com")
+    password.setValue("superpass123")
+    component.formGroup.markAsTouched()
+  }
+  function checkButtonsState(amount: number, disabled: boolean) {
+    populateForm()
+    component.signIn()
+    fixture.detectChanges()
+
+    const btns = Array.from(nativeEl.querySelectorAll("button"))
+    expect(btns.length).toBe(amount)
+    btns.forEach(btn => expect(btn.disabled).toBe(disabled))
+
+    queryTabs().forEach(tab => {
+      expect(tab.classList.contains("mat-tab-disabled")).toBe(disabled)
+    })
   }
 })
 

@@ -4,19 +4,27 @@
     animationDuration="400"
     (selectedTabChange)="formGroup.reset()"
   >
-    <mat-tab label="Sign In">
+    <mat-tab label="Sign In" [disabled]="isLoading">
       <form class="form" (submit)="$event.preventDefault(); signIn()">
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
 
+        <p *ngIf="signInError" class="error">
+          {{ signInError }}
+        </p>
+
         <div class="form__suggest">
-          <button type="button" mat-flat-button color="accent">Sign In as User</button>
-          <button type="button" mat-flat-button color="warn">Sign In as Admin</button>
+          <button type="button" mat-flat-button color="accent" [disabled]="isLoading">
+            Sign In as User
+          </button>
+          <button type="button" mat-flat-button color="warn" [disabled]="isLoading">
+            Sign In as Admin
+          </button>
         </div>
         <button
           class="sign-in-btn"
           mat-raised-button
           color="primary"
-          [disabled]="formGroup.invalid"
+          [disabled]="formGroup.invalid || isLoading"
           (click)="signIn()"
         >
           Sign In
@@ -24,7 +32,7 @@
       </form>
     </mat-tab>
 
-    <mat-tab label="Sign Up">
+    <mat-tab label="Sign Up" [disabled]="isLoading">
       <form class="form" (submit)="$event.preventDefault()">
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
 
@@ -32,7 +40,7 @@
           class="sign-up-btn"
           mat-raised-button
           color="primary"
-          [disabled]="formGroup.invalid"
+          [disabled]="formGroup.invalid || isLoading"
         >
           Sign Up
         </button>
