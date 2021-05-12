@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core"
 import { CommonModule } from "@angular/common"
-import { MatToolbarModule } from "@angular/material/toolbar"
 import { AdminRoutingModule, PAGES_COMPONENTS } from "./admin-routing.module"
 import { MatSidenavModule } from "@angular/material/sidenav"
 import { MatListModule } from "@angular/material/list"
@@ -16,7 +15,6 @@ import { ImageUploadComponent } from "./components/image-upload/image-upload.com
 import { MatDialogModule } from "@angular/material/dialog"
 
 const MATERIAL_MODULES = [
-  MatToolbarModule,
   MatSidenavModule,
   MatListModule,
   MatCardModule,
