@@ -1,22 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { LoginPageComponent } from "./login.component"
-import { MatTab, MatTabsModule } from "@angular/material/tabs"
-import { MatButtonModule } from "@angular/material/button"
-import { MatInputModule } from "@angular/material/input"
+import { LoginDialogComponent } from "./login.component"
+import { UserService } from "../../../services/user.service"
 import { FormControl, ReactiveFormsModule } from "@angular/forms"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { UserService } from "../../services/user.service"
-import SpyObj = jasmine.SpyObj
+import { MatTabsModule } from "@angular/material/tabs"
+import { MatButtonModule } from "@angular/material/button"
+import { MatInputModule } from "@angular/material/input"
 import { of } from "rxjs"
 
-describe("LoginComponent", () => {
-  const serviceSpy: SpyObj<UserService> = jasmine.createSpyObj("UserService", [
+describe("LoginDialogComponent", () => {
+  const serviceSpy: jasmine.SpyObj<UserService> = jasmine.createSpyObj("UserService", [
     "signIn",
     "signOut",
   ])
-  let component: LoginPageComponent
-  let fixture: ComponentFixture<LoginPageComponent>
+  let component: LoginDialogComponent
+  let fixture: ComponentFixture<LoginDialogComponent>
   let nativeEl: HTMLElement
   let email: FormControl
   let password: FormControl
@@ -30,13 +29,13 @@ describe("LoginComponent", () => {
         MatInputModule,
         ReactiveFormsModule,
       ],
-      declarations: [LoginPageComponent],
+      declarations: [LoginDialogComponent],
       providers: [{ provide: UserService, useValue: serviceSpy }],
     })
   })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginPageComponent)
+    fixture = TestBed.createComponent(LoginDialogComponent)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
 
@@ -63,6 +62,9 @@ describe("LoginComponent", () => {
     queryTabs()[0].click()
     fixture.detectChanges()
     await fixture.whenStable()
+
+    expect(email.value).toBeNull()
+    expect(password.value).toBeNull()
   })
 
   it("should show error msg if email is incorrect", () => {
@@ -119,6 +121,7 @@ describe("LoginComponent", () => {
     it("should not call signIn if form is invalid", () => {
       email.setValue("123")
       password.setValue("pass")
+      component.formGroup.markAsTouched()
       fixture.detectChanges()
       component.signIn()
       expect(serviceSpy.signIn).not.toHaveBeenCalled()

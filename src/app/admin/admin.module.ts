@@ -12,15 +12,8 @@ import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
 import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
 import { ImageUploadComponent } from "./components/image-upload/image-upload.component"
-import { MatDialogModule } from "@angular/material/dialog"
 
-const MATERIAL_MODULES = [
-  MatSidenavModule,
-  MatListModule,
-  MatCardModule,
-  MatIconModule,
-  MatDialogModule,
-]
+const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule, MatIconModule]
 
 @NgModule({
   declarations: [

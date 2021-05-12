@@ -1,13 +1,13 @@
 import { Component, OnInit } from "@angular/core"
 import { FormBuilder, Validators } from "@angular/forms"
-import { UserService } from "../../services/user.service"
+import { UserService } from "../../../services/user.service"
 
 @Component({
-  selector: "app-login",
+  selector: "app-login-dialog",
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
 })
-export class LoginPageComponent implements OnInit {
+export class LoginDialogComponent implements OnInit {
   formGroup = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
     password: ["", [Validators.required, Validators.minLength(8)]],
