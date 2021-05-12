@@ -1,17 +1,9 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed,
-  tick,
-  waitForAsync,
-} from "@angular/core/testing"
-
+import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { LoginDialogComponent } from "./login.component"
 import { UserService } from "../../../services/user.service"
 import { FormControl, ReactiveFormsModule } from "@angular/forms"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { MatTab, MatTabsModule } from "@angular/material/tabs"
+import { MatTabsModule } from "@angular/material/tabs"
 import { MatButtonModule } from "@angular/material/button"
 import { MatInputModule } from "@angular/material/input"
 import { of, throwError } from "rxjs"
@@ -105,6 +97,26 @@ describe("LoginDialogComponent", () => {
       querySignInBtn().click()
 
       expect(serviceSpy.signIn).toHaveBeenCalledWith(testEmail, testPassword)
+    })
+
+    it("should sign in as admin", () => {
+      serviceSpy.signIn.and.returnValue(of({} as User))
+      fixture.detectChanges()
+      const { email, password } = component.admin
+      const spy = spyOn(component, "signIn").and.callThrough()
+      querySignInAdmin().click()
+      expect(serviceSpy.signIn).toHaveBeenCalledWith(email, password)
+      expect(spy).toHaveBeenCalled()
+    })
+
+    it("should sign in as user", () => {
+      serviceSpy.signIn.and.returnValue(of({} as User))
+      fixture.detectChanges()
+      const { email, password } = component.user
+      const spy = spyOn(component, "signIn").and.callThrough()
+      querySignInUser().click()
+      expect(serviceSpy.signIn).toHaveBeenCalledWith(email, password)
+      expect(spy).toHaveBeenCalled()
     })
 
     it("should not call signIn if form is invalid", () => {
@@ -249,11 +261,23 @@ describe("LoginDialogComponent", () => {
   }
 
   function querySignInBtn(): HTMLButtonElement {
-    return nativeEl.querySelector(".sign-in-btn") as HTMLButtonElement
+    return nativeEl.querySelector("[data-test='sign-in-btn']") as HTMLButtonElement
   }
 
   function querySignUpBtn(): HTMLButtonElement {
-    return nativeEl.querySelector(".sign-up-btn") as HTMLButtonElement
+    return nativeEl.querySelector("[data-test='sign-up-btn']") as HTMLButtonElement
+  }
+
+  function querySignInAdmin(): HTMLButtonElement {
+    return nativeEl.querySelector(
+      "[data-test='sign-in-as-admin-btn']",
+    ) as HTMLButtonElement
+  }
+
+  function querySignInUser(): HTMLButtonElement {
+    return nativeEl.querySelector(
+      "[data-test='sign-in-as-user-btn']",
+    ) as HTMLButtonElement
   }
 
   function queryError(): HTMLElement {

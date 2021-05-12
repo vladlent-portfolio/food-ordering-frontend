@@ -13,17 +13,31 @@
         </p>
 
         <div class="form__suggest">
-          <button type="button" mat-flat-button color="accent" [disabled]="isLoading">
+          <button
+            type="button"
+            mat-flat-button
+            color="accent"
+            data-test="sign-in-as-user-btn"
+            [disabled]="isLoading"
+            (click)="signInAs(user.email, user.password)"
+          >
             Sign In as User
           </button>
-          <button type="button" mat-flat-button color="warn" [disabled]="isLoading">
+          <button
+            type="button"
+            mat-flat-button
+            color="warn"
+            [disabled]="isLoading"
+            (click)="signInAs(admin.email, admin.password)"
+            data-test="sign-in-as-admin-btn"
+          >
             Sign In as Admin
           </button>
         </div>
         <button
-          class="sign-in-btn"
           mat-raised-button
           color="primary"
+          data-test="sign-in-btn"
           [disabled]="formGroup.invalid || isLoading"
           (click)="signIn()"
         >
@@ -37,9 +51,9 @@
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
 
         <button
-          class="sign-up-btn"
           mat-raised-button
           color="primary"
+          data-test="sign-up-btn"
           [disabled]="formGroup.invalid || isLoading"
         >
           Sign Up

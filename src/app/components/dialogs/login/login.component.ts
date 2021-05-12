@@ -10,12 +10,22 @@ import { HttpErrorResponse } from "@angular/common/http"
   styleUrls: ["./login.component.scss"],
 })
 export class LoginDialogComponent implements OnInit {
+  signInError: string | undefined
   formGroup = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
     password: ["", [Validators.required, Validators.minLength(8)]],
   })
   isLoading = false
-  signInError: string | undefined
+
+  admin = {
+    email: "Marcelle.Marks@gmail.com",
+    password: "eZKeEKF6avGhxur",
+  }
+
+  user = {
+    email: "Genevieve56@hotmail.com",
+    password: "jTOdJPRL8_npqKV",
+  }
 
   constructor(
     private userService: UserService,
@@ -41,6 +51,11 @@ export class LoginDialogComponent implements OnInit {
         this.handleSignInError(err)
       },
     )
+  }
+
+  signInAs(email: string, password: string) {
+    this.formGroup.setValue({ email, password })
+    this.signIn()
   }
 
   signUp() {}
