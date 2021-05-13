@@ -7,6 +7,9 @@ import {
 } from "@angular/common/http/testing"
 import { User } from "../models/models"
 import { environment } from "../../environments/environment"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { AppState } from "../store/reducers"
+import { setUserInfo } from "../store/actions"
 
 const baseURL = `${environment.apiURL}/users`
 const user: User = {
@@ -19,11 +22,16 @@ const user: User = {
 describe("UserService", () => {
   let service: UserService
   let controller: HttpTestingController
+  let store: MockStore<AppState>
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] })
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [provideMockStore()],
+    })
     service = TestBed.inject(UserService)
     controller = TestBed.inject(HttpTestingController)
+    store = TestBed.inject(MockStore)
   })
 
   afterEach(() => {
@@ -44,6 +52,28 @@ describe("UserService", () => {
       expect(request.body).toEqual({ email: user.email, password })
 
       req.flush(user)
+    })
+
+    it("should update store with returned user on successful request", () => {
+      const spy = spyOn(store, "dispatch")
+      service.signIn(user.email, "123").subscribe(() => {
+        expect(spy).toHaveBeenCalledWith(setUserInfo({ user }))
+      })
+
+      const req = controller.expectOne(`${baseURL}/signin`)
+      req.flush(user)
+    })
+
+    it("should not update store on error", () => {
+      const spy = spyOn(store, "dispatch")
+      service.signIn(user.email, "123").subscribe({
+        error: () => {
+          expect(spy).not.toHaveBeenCalled()
+        },
+      })
+
+      const req = controller.expectOne(`${baseURL}/signin`)
+      req.flush("404 Error", { status: 404, statusText: "Not Found" })
     })
   })
 
@@ -72,6 +102,27 @@ describe("UserService", () => {
       expect(req.request.method).toBe("GET")
 
       req.flush(user)
+    })
+    it("should update store with returned user on successful request", () => {
+      const spy = spyOn(store, "dispatch")
+      service.me().subscribe(() => {
+        expect(spy).toHaveBeenCalledWith(setUserInfo({ user }))
+      })
+
+      const req = controller.expectOne(`${baseURL}/me`)
+      req.flush(user)
+    })
+
+    it("should not update store on error", () => {
+      const spy = spyOn(store, "dispatch")
+      service.me().subscribe({
+        error: () => {
+          expect(spy).not.toHaveBeenCalled()
+        },
+      })
+
+      const req = controller.expectOne(`${baseURL}/me`)
+      req.flush("404 Error", { status: 404, statusText: "Not Found" })
     })
   })
 
