@@ -3,11 +3,10 @@ import { environment } from "../../environments/environment"
 import { Observable } from "rxjs"
 import { User } from "../models/models"
 import { HttpClient } from "@angular/common/http"
-import { Router } from "@angular/router"
-import { tap } from "rxjs/operators"
+import { finalize, tap } from "rxjs/operators"
 import { AppState } from "../store/reducers"
 import { Store } from "@ngrx/store"
-import { setUserInfo } from "../store/actions"
+import { deleteUserInfo, setUserInfo } from "../store/actions"
 
 @Injectable({
   providedIn: "root",
@@ -40,6 +39,10 @@ export class UserService {
   }
 
   signOut(): Observable<void> {
-    return this.http.get<void>(`${this.baseURL}/logout`)
+    return this.http.get<void>(`${this.baseURL}/logout`).pipe(
+      finalize(() => {
+        this.store.dispatch(deleteUserInfo())
+      }),
+    )
   }
 }

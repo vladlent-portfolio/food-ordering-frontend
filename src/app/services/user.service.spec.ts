@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing"
+import { fakeAsync, TestBed } from "@angular/core/testing"
 
 import { UserService } from "./user.service"
 import {
@@ -9,7 +9,7 @@ import { User } from "../models/models"
 import { environment } from "../../environments/environment"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { AppState } from "../store/reducers"
-import { setUserInfo } from "../store/actions"
+import { deleteUserInfo, setUserInfo } from "../store/actions"
 
 const baseURL = `${environment.apiURL}/users`
 const user: User = {
@@ -105,24 +105,20 @@ describe("UserService", () => {
     })
     it("should update store with returned user on successful request", () => {
       const spy = spyOn(store, "dispatch")
-      service.me().subscribe(() => {
-        expect(spy).toHaveBeenCalledWith(setUserInfo({ user }))
-      })
+      service.me().subscribe()
 
       const req = controller.expectOne(`${baseURL}/me`)
       req.flush(user)
+      expect(spy).toHaveBeenCalledWith(setUserInfo({ user }))
     })
 
     it("should not update store on error", () => {
       const spy = spyOn(store, "dispatch")
-      service.me().subscribe({
-        error: () => {
-          expect(spy).not.toHaveBeenCalled()
-        },
-      })
+      service.me().subscribe({ error: () => {} })
 
       const req = controller.expectOne(`${baseURL}/me`)
       req.flush("404 Error", { status: 404, statusText: "Not Found" })
+      expect(spy).not.toHaveBeenCalled()
     })
   })
 
@@ -134,6 +130,24 @@ describe("UserService", () => {
       expect(req.request.method).toBe("GET")
 
       req.flush({})
+    })
+
+    it("should remove user info from store on success", () => {
+      const spy = spyOn(store, "dispatch")
+      service.signOut().subscribe()
+
+      const req = controller.expectOne(`${baseURL}/logout`)
+      req.flush({})
+      expect(spy).toHaveBeenCalledWith(deleteUserInfo())
+    })
+
+    it("should remove user info from store on error", () => {
+      const spy = spyOn(store, "dispatch")
+      service.signOut().subscribe({ error: () => {} })
+
+      const req = controller.expectOne(`${baseURL}/logout`)
+      req.flush("500", { status: 500, statusText: "Internal Server Error" })
+      expect(spy).toHaveBeenCalledWith(deleteUserInfo())
     })
   })
 })
