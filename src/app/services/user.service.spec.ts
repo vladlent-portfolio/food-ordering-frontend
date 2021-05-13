@@ -47,6 +47,23 @@ describe("UserService", () => {
     })
   })
 
+  describe("signUp()", () => {
+    it("should send email and password and return User", () => {
+      const password = "superpass123"
+
+      service.signUp(user.email, password).subscribe(resp => expect(resp).toEqual(user))
+
+      const req = controller.expectOne(`${baseURL}/signup`)
+      const { request } = req
+
+      expect(request.method).toBe("POST")
+      // expect(request.headers.get("Content-Type")).toContain("application/json")
+      expect(request.body).toEqual({ email: user.email, password })
+
+      req.flush(user)
+    })
+  })
+
   describe("me()", () => {
     it("should return user info", () => {
       service.me().subscribe(resp => expect(resp).toEqual(user))

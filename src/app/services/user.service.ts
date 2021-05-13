@@ -11,7 +11,7 @@ import { Router } from "@angular/router"
 export class UserService {
   readonly baseURL = `${environment.apiURL}/users`
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
   me(): Observable<User> {
     return this.http.get<User>(`${this.baseURL}/me`)
@@ -19,6 +19,10 @@ export class UserService {
 
   signIn(email: string, password: string): Observable<User> {
     return this.http.post<User>(`${this.baseURL}/signin`, { email, password })
+  }
+
+  signUp(email: string, password: string): Observable<User> {
+    return this.http.post<User>(`${this.baseURL}/signup`, { email, password })
   }
 
   signOut(): Observable<void> {

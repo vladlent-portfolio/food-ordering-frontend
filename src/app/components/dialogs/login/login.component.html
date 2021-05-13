@@ -2,15 +2,11 @@
   <mat-tab-group
     dynamicHeight
     animationDuration="400"
-    (selectedTabChange)="formGroup.reset()"
+    (selectedTabChange)="onTabChange()"
   >
     <mat-tab label="Sign In" [disabled]="isLoading">
       <form class="form" (submit)="$event.preventDefault(); signIn()">
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
-
-        <p *ngIf="signInError" class="error">
-          {{ signInError }}
-        </p>
 
         <div class="form__suggest">
           <button
@@ -47,7 +43,7 @@
     </mat-tab>
 
     <mat-tab label="Sign Up" [disabled]="isLoading">
-      <form class="form" (submit)="$event.preventDefault()">
+      <form class="form" (submit)="$event.preventDefault(); signUp()">
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
 
         <button
@@ -69,6 +65,7 @@
     <input id="email" formControlName="email" type="text" matInput />
     <mat-error *ngIf="formGroup.get('email')?.invalid">Invalid e-mail</mat-error>
   </mat-form-field>
+
   <mat-form-field data-test="password-form-field">
     <mat-label>Password</mat-label>
     <input id="password" formControlName="password" type="password" matInput />
@@ -76,4 +73,5 @@
       Password should be at least 8 characters long
     </mat-error>
   </mat-form-field>
+  <p *ngIf="errorMsg" class="error">{{ errorMsg }}</p>
 </ng-template>

@@ -16,11 +16,11 @@ describe("LoginDialogComponent", () => {
   let nativeEl: HTMLElement
   let serviceSpy: jasmine.SpyObj<UserService>
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<LoginDialogComponent>>
-  let email: FormControl
-  let password: FormControl
+  let emailControl: FormControl
+  let passwordControl: FormControl
 
   beforeEach(() => {
-    serviceSpy = jasmine.createSpyObj("UserService", ["signIn", "signOut"])
+    serviceSpy = jasmine.createSpyObj("UserService", ["signIn", "signUp"])
     dialogRefSpy = jasmine.createSpyObj("MatDialogRef", ["close"])
 
     TestBed.configureTestingModule({
@@ -44,37 +44,34 @@ describe("LoginDialogComponent", () => {
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
 
-    email = component.formGroup.get("email") as FormControl
-    password = component.formGroup.get("password") as FormControl
+    emailControl = component.formGroup.get("email") as FormControl
+    passwordControl = component.formGroup.get("password") as FormControl
   })
 
   it("should reset form group on tab change", async () => {
-    email.setValue("example@mail.com")
-    password.setValue("password2354")
+    populateForm()
     fixture.detectChanges()
 
     queryTabs()[1].click()
     fixture.detectChanges()
     await fixture.whenStable()
 
-    expect(email.value).toBeNull()
-    expect(password.value).toBeNull()
+    expect(emailControl.value).toBeNull()
+    expect(passwordControl.value).toBeNull()
 
-    email.setValue("example@mail.com")
-    password.setValue("password2354")
+    populateForm()
     fixture.detectChanges()
 
     queryTabs()[0].click()
     fixture.detectChanges()
     await fixture.whenStable()
 
-    expect(email.value).toBeNull()
-    expect(password.value).toBeNull()
+    expect(emailControl.value).toBeNull()
+    expect(passwordControl.value).toBeNull()
   })
 
-  it("should disabled 'Sign In' and 'Sign Out' buttons if form is invalid", async () => {
-    email.setValue("123")
-    password.setValue("pass")
+  it("should disable 'Sign In' and 'Sign Out' buttons if form is invalid", async () => {
+    populateForm("123", "pass")
     fixture.detectChanges()
 
     expect(querySignInBtn().disabled).toBeTrue()
@@ -85,18 +82,44 @@ describe("LoginDialogComponent", () => {
     expect(querySignUpBtn().disabled).toBeTrue()
   })
 
+  it("should hide error element if error is falsy", () => {
+    component.errorMsg = undefined
+    fixture.detectChanges()
+    expect(queryError()).toBeNull()
+
+    component.errorMsg = ""
+    fixture.detectChanges()
+    expect(queryError()).toBeNull()
+  })
+
+  it("should show error element if error is truthy", () => {
+    component.errorMsg = "error msg"
+    fixture.detectChanges()
+    expect(queryError()).not.toBeNull()
+  })
+
+  it("should clear error on tab change", async () => {
+    fixture.detectChanges()
+    queryTabs()[1].click()
+
+    for await (const tab of queryTabs()) {
+      component.errorMsg = "error msg"
+      fixture.detectChanges()
+      tab.click()
+      await fixture.whenStable()
+      fixture.detectChanges()
+      expect(component.errorMsg).toBeFalsy()
+      expect(queryError()).toBeNull()
+    }
+  })
+
   describe("sign in", () => {
     it("should call signIn with email and password", () => {
       serviceSpy.signIn.and.returnValue(of({} as User))
-      const testEmail = "example@mail.com"
-      const testPassword = "secretPass312"
-      email.setValue(testEmail)
-      password.setValue(testPassword)
+      const { email, password } = populateForm()
       fixture.detectChanges()
-
       querySignInBtn().click()
-
-      expect(serviceSpy.signIn).toHaveBeenCalledWith(testEmail, testPassword)
+      expect(serviceSpy.signIn).toHaveBeenCalledWith(email, password)
     })
 
     it("should sign in as admin", () => {
@@ -134,6 +157,8 @@ describe("LoginDialogComponent", () => {
 
     it("should disable all buttons and tabs when request is initiated", () => {
       serviceSpy.signIn.and.returnValue(of({} as User))
+      populateForm()
+      component.signIn()
       checkButtonsState(3, true)
     })
 
@@ -141,23 +166,9 @@ describe("LoginDialogComponent", () => {
       serviceSpy.signIn.and.returnValue(
         throwError({ status: 404, statusText: "Not Found" }),
       )
+      populateForm()
+      component.signIn()
       checkButtonsState(3, false)
-    })
-
-    it("should hide error element if error is falsy", () => {
-      component.signInError = undefined
-      fixture.detectChanges()
-      expect(queryError()).toBeNull()
-
-      component.signInError = ""
-      fixture.detectChanges()
-      expect(queryError()).toBeNull()
-    })
-
-    it("should show error element if error is truthy", () => {
-      component.signInError = "error msg"
-      fixture.detectChanges()
-      expect(queryError()).not.toBeNull()
     })
 
     it("should show error message on 404", () => {
@@ -176,34 +187,124 @@ describe("LoginDialogComponent", () => {
     it("should clear error message before sending a request", () => {
       serviceSpy.signIn.and.returnValue(of({} as User))
       populateForm()
-      component.signInError = "error msg"
+      component.errorMsg = "error msg"
       fixture.detectChanges()
       component.signIn()
       fixture.detectChanges()
       expect(queryError()).toBeNull()
     })
+
+    it("should error handler on error", () => {
+      serviceSpy.signIn.and.returnValue(
+        throwError({ status: 404, statusText: "Not Found" }),
+      )
+      const spy = spyOn(component, "handleSignInError")
+      populateForm()
+      component.signIn()
+      expect(spy).toHaveBeenCalled()
+    })
+  })
+
+  describe("sign up", () => {
+    beforeEach(async () => {
+      fixture.detectChanges()
+      queryTabs()[1].click()
+      fixture.detectChanges()
+      await fixture.whenRenderingDone()
+    })
+
+    it("should call signUp with email and password", () => {
+      serviceSpy.signUp.and.returnValue(of({} as User))
+      const { email, password } = populateForm()
+      fixture.detectChanges()
+      querySignUpBtn().click()
+      expect(serviceSpy.signUp).toHaveBeenCalledWith(email, password)
+    })
+
+    it("should not call signUp if form is invalid", () => {
+      populateForm("123", "654")
+      fixture.detectChanges()
+      querySignUpBtn().click()
+      expect(serviceSpy.signUp).not.toHaveBeenCalled()
+    })
+
+    it("should close dialog on successful sign up", () => {
+      serviceSpy.signUp.and.returnValue(of({} as User))
+      populateForm()
+      component.signUp()
+      expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+    })
+
+    it("should disable all buttons and tabs when request is initiated", () => {
+      serviceSpy.signUp.and.returnValue(of({} as User))
+      populateForm()
+      component.signUp()
+      checkButtonsState(1, true)
+    })
+
+    it("should enable all buttons if request returns an error", () => {
+      serviceSpy.signUp.and.returnValue(
+        throwError({ status: 404, statusText: "Not Found" }),
+      )
+      populateForm()
+      component.signUp()
+      checkButtonsState(1, false)
+    })
+
+    it("should clear error message before sending a request", () => {
+      serviceSpy.signUp.and.returnValue(of({} as User))
+      populateForm()
+      component.errorMsg = "error msg"
+      fixture.detectChanges()
+      component.signUp()
+      fixture.detectChanges()
+      expect(queryError()).toBeNull()
+    })
+
+    it("should error handler on error", () => {
+      serviceSpy.signUp.and.returnValue(
+        throwError({ status: 409, statusText: "Conflict" }),
+      )
+      const spy = spyOn(component, "handleSignUpError")
+      populateForm()
+      component.signUp()
+      expect(spy).toHaveBeenCalled()
+    })
+
+    it("should error message on 409", () => {
+      serviceSpy.signUp.and.returnValue(
+        throwError({ status: 409, statusText: "Conflict" }),
+      )
+      populateForm()
+      component.signUp()
+      fixture.detectChanges()
+
+      const err = queryError()
+      expect(err).not.toBeNull()
+      expect(err.textContent?.trim().length).toBeGreaterThan(0)
+    })
   })
 
   describe("email FormControl", () => {
-    it("should be required", () => runRequiredTest(email))
+    it("should be required", () => runRequiredTest(emailControl))
 
     it("should have email validation", () => {
-      email.setValue("   ")
-      expect(email.hasError("email")).toBeTrue()
-      email.setValue("hello")
-      expect(email.hasError("email")).toBeTrue()
-      email.setValue("hello@123.")
-      expect(email.hasError("email")).toBeTrue()
-      email.setValue("hello@123.com")
-      expect(email.hasError("email")).toBeFalse()
+      emailControl.setValue("   ")
+      expect(emailControl.hasError("email")).toBeTrue()
+      emailControl.setValue("hello")
+      expect(emailControl.hasError("email")).toBeTrue()
+      emailControl.setValue("hello@123.")
+      expect(emailControl.hasError("email")).toBeTrue()
+      emailControl.setValue("hello@123.com")
+      expect(emailControl.hasError("email")).toBeFalse()
     })
 
     it("should show error msg if email is incorrect", () => {
-      email.setValue("123")
-      email.markAsTouched()
+      emailControl.setValue("123")
+      emailControl.markAsTouched()
       fixture.detectChanges()
 
-      expect(email.invalid).toBeTrue()
+      expect(emailControl.invalid).toBeTrue()
       expect(queryEmail().value).toBe("123")
       expect(queryEmailFormField().querySelector("mat-error")?.textContent).toContain(
         "Invalid e-mail",
@@ -212,27 +313,27 @@ describe("LoginDialogComponent", () => {
   })
 
   describe("password FormControl", () => {
-    it("should be required", () => runRequiredTest(password))
+    it("should be required", () => runRequiredTest(passwordControl))
 
     it("should be at least 8 chars long", () => {
       for (let i = 1; i < 7; i++) {
         const str = new Array(i).fill("a").join("")
-        password.setValue(str)
-        expect(password.hasError("minlength")).toBeTrue()
+        passwordControl.setValue(str)
+        expect(passwordControl.hasError("minlength")).toBeTrue()
       }
 
-      password.setValue("longpass")
-      expect(password.hasError("minlength")).toBeFalse()
-      password.setValue("longpass1")
-      expect(password.hasError("minlength")).toBeFalse()
+      passwordControl.setValue("longpass")
+      expect(passwordControl.hasError("minlength")).toBeFalse()
+      passwordControl.setValue("longpass1")
+      expect(passwordControl.hasError("minlength")).toBeFalse()
     })
 
     it("should show error msg if password is incorrect", () => {
-      password.setValue("123")
-      password.markAsTouched()
+      passwordControl.setValue("123")
+      passwordControl.markAsTouched()
       fixture.detectChanges()
 
-      expect(password.invalid).toBeTrue()
+      expect(passwordControl.invalid).toBeTrue()
       expect(queryPassword().value).toBe("123")
       expect(queryPasswordFormField().querySelector("mat-error")?.textContent).toContain(
         "Password should be at least 8 characters long",
@@ -284,14 +385,13 @@ describe("LoginDialogComponent", () => {
     return nativeEl.querySelector(".error") as HTMLElement
   }
 
-  function populateForm() {
-    email.setValue("mail@example.com")
-    password.setValue("superpass123")
+  function populateForm(email = "mail@example.com", password = "superpass123") {
+    emailControl.setValue(email)
+    passwordControl.setValue(password)
     component.formGroup.markAsTouched()
+    return { email, password }
   }
   function checkButtonsState(amount: number, disabled: boolean) {
-    populateForm()
-    component.signIn()
     fixture.detectChanges()
 
     const btns = Array.from(nativeEl.querySelectorAll("button"))
