@@ -7,13 +7,12 @@ import { AdminCardComponent } from "./components/card/card.component"
 import { AdminNavComponent } from "./components/nav/nav.component"
 import { AdminPageComponent } from "./admin.component"
 import { MatCardModule } from "@angular/material/card"
-import { MatIconModule } from "@angular/material/icon"
 import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
 import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
 import { ImageUploadComponent } from "./components/image-upload/image-upload.component"
 
-const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule, MatIconModule]
+const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule]
 
 @NgModule({
   declarations: [

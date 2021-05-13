@@ -59,13 +59,14 @@ export class LoginDialogComponent {
     let action: (email: string, password: string) => Observable<User>
     let errorHandler: (err: HttpErrorResponse) => void
 
+    // TODO: Refactor this binding
     switch (type) {
       case "SignIn":
-        action = this.userService.signIn
+        action = this.userService.signIn.bind(this.userService)
         errorHandler = err => this.handleSignInError(err)
         break
       case "SignUp":
-        action = this.userService.signUp
+        action = this.userService.signUp.bind(this.userService)
         errorHandler = err => this.handleSignUpError(err)
         break
     }

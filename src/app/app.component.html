@@ -1,7 +1,23 @@
-<mat-toolbar color="primary">
+<mat-toolbar *ngLet="isLoggedIn$ | async as loggedIn" color="primary">
   <h1>Food Ordering App</h1>
-  <button class="login-btn" mat-raised-button color="accent" (click)="openDialog()">
+  <button
+    *ngIf="!loggedIn"
+    mat-raised-button
+    color="accent"
+    data-test="login-btn"
+    (click)="openDialog()"
+  >
     Sign In / Sign Up
+  </button>
+  <button
+    *ngIf="loggedIn"
+    mat-raised-button
+    color="accent"
+    data-test="logout-btn"
+    (click)="signOut()"
+  >
+    Sign Out
+    <mat-icon>logout</mat-icon>
   </button>
 </mat-toolbar>
 

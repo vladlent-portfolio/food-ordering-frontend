@@ -48,8 +48,8 @@ describe("UserService", () => {
       const { request } = req
 
       expect(request.method).toBe("POST")
-      // expect(request.headers.get("Content-Type")).toContain("application/json")
       expect(request.body).toEqual({ email: user.email, password })
+      expect(request.withCredentials).toBeTrue()
 
       req.flush(user)
     })
@@ -87,7 +87,7 @@ describe("UserService", () => {
       const { request } = req
 
       expect(request.method).toBe("POST")
-      // expect(request.headers.get("Content-Type")).toContain("application/json")
+      expect(request.withCredentials).toBeTrue()
       expect(request.body).toEqual({ email: user.email, password })
 
       req.flush(user)
@@ -100,6 +100,7 @@ describe("UserService", () => {
 
       const req = controller.expectOne(`${baseURL}/me`)
       expect(req.request.method).toBe("GET")
+      expect(req.request.withCredentials).toBeTrue()
 
       req.flush(user)
     })
