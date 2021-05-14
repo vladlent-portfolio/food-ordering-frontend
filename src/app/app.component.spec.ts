@@ -21,6 +21,9 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { UserService } from "./services/user.service"
 import { NgLetModule } from "@ngrx-utils/store"
 import { MatIconModule } from "@angular/material/icon"
+import { Router } from "@angular/router"
+import { Component } from "@angular/core"
+import { of } from "rxjs"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
@@ -29,6 +32,7 @@ describe("AppComponent", () => {
   let nativeEl: HTMLElement
   let userServiceSpy: jasmine.SpyObj<UserService>
   let user: User
+  let router: Router
   let store: MockStore<AppState>
 
   beforeEach(() => {
@@ -37,7 +41,9 @@ describe("AppComponent", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes([
+          { path: "admin", component: TestAdminComponent },
+        ]),
         MatProgressSpinnerModule,
         MatToolbarModule,
         MatDialogModule,
@@ -45,7 +51,7 @@ describe("AppComponent", () => {
         NoopAnimationsModule,
         MatIconModule,
       ],
-      declarations: [AppComponent, LoginDialogComponent],
+      declarations: [AppComponent, LoginDialogComponent, TestAdminComponent],
       providers: [
         provideMockStore(),
         { provide: MatDialog, useValue: dialogSpy },
@@ -55,6 +61,7 @@ describe("AppComponent", () => {
 
     fixture = TestBed.createComponent(AppComponent)
     store = TestBed.inject(MockStore)
+    router = TestBed.inject(Router)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
 
@@ -99,13 +106,13 @@ describe("AppComponent", () => {
     expect(queryLogOutBtn()).toBeNull()
   })
 
-  it("should show logout btn if user is logged in", async () => {
-    await loginUser()
+  it("should show logout btn if user is logged in", () => {
+    loginAsUser()
     expect(queryLogOutBtn()).not.toBeNull()
   })
 
   it("should hide login btn if user is logged in", () => {
-    loginUser()
+    loginAsUser()
     expect(queryLogInBtn()).toBeNull()
   })
 
@@ -115,21 +122,94 @@ describe("AppComponent", () => {
     expect(dialogSpy.open).toHaveBeenCalled()
   })
 
-  it("should call signOut when clicked on logout btn", async () => {
-    await loginUser()
+  it("should call signOut when clicked on logout btn", () => {
+    userServiceSpy.signOut.and.returnValue(of({} as any))
+    loginAsUser()
     queryLogOutBtn().click()
     expect(userServiceSpy.signOut).toHaveBeenCalledTimes(1)
   })
 
-  async function loginUser() {
+  describe("title", () => {
+    it("should be set", () => {
+      fixture.detectChanges()
+      expect(queryTitle().textContent?.trim()).toBe(component.title)
+    })
+
+    it("should be changed to admin title if route includes '/admin'", async () => {
+      fixture.detectChanges()
+      expect(queryTitle().textContent?.trim()).toBe(component.title)
+      await navigateToAdmin()
+      expect(queryTitle().textContent?.trim()).toBe(component.adminTitle)
+      await router.navigateByUrl("/")
+      fixture.detectChanges()
+      expect(queryTitle().textContent?.trim()).toBe(component.title)
+    })
+  })
+
+  describe("Go to dashboard button", () => {
+    it("should not be visible if user isn't logged in or is not admin", () => {
+      fixture.detectChanges()
+      expect(queryAdminBtn()).toBeNull()
+      loginAsUser()
+      expect(queryAdminBtn()).toBeNull()
+    })
+
+    it("should be visible if user is admin", () => {
+      loginAsAdmin()
+      const btn = queryAdminBtn()
+      expect(btn).not.toBeNull()
+      expect(btn.href).toContain("/admin")
+    })
+
+    it("should not be visible if current route includes '/admin'", async () => {
+      loginAsAdmin()
+      await navigateToAdmin()
+      expect(queryAdminBtn()).toBeNull()
+    })
+  })
+
+  describe("Back to App button", () => {
+    it("should be visible if current route includes '/admin'", async () => {
+      loginAsAdmin()
+      await navigateToAdmin()
+      const btn = queryAppBtn()
+      expect(btn).not.toBeNull()
+      expect(btn.href).toBe(location.origin + "/")
+    })
+
+    it("should not be visible if current route doesn't include 'admin'", () => {
+      fixture.detectChanges()
+      expect(queryAppBtn()).toBeNull()
+      loginAsUser()
+      expect(queryAppBtn()).toBeNull()
+      loginAsAdmin()
+      expect(queryAppBtn()).toBeNull()
+    })
+  })
+
+  function loginAsUser() {
+    user.is_admin = false
     store.setState({ user, openRequests: 0 })
     fixture.detectChanges()
-    await fixture.whenStable()
+  }
+
+  function loginAsAdmin() {
+    user.is_admin = true
+    store.setState({ user, openRequests: 0 })
+    fixture.detectChanges()
+  }
+
+  async function navigateToAdmin() {
+    await router.navigateByUrl("/admin")
     fixture.detectChanges()
   }
 
   function querySpinner() {
     return nativeEl.querySelector(".spinner-container")
+  }
+
+  function queryTitle() {
+    return nativeEl.querySelector("[data-test='title']") as HTMLElement
   }
 
   function queryLogInBtn() {
@@ -139,4 +219,17 @@ describe("AppComponent", () => {
   function queryLogOutBtn() {
     return nativeEl.querySelector("[data-test='logout-btn']") as HTMLButtonElement
   }
+
+  function queryAdminBtn() {
+    return nativeEl.querySelector("[data-test='admin-btn']") as HTMLAnchorElement
+  }
+
+  function queryAppBtn() {
+    return nativeEl.querySelector("[data-test='app-btn']") as HTMLAnchorElement
+  }
 })
+
+@Component({
+  template: "",
+})
+class TestAdminComponent {}
