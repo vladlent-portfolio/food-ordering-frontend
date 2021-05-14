@@ -17,10 +17,14 @@ export class CategoryService {
   }
 
   create(title: string): Observable<Category> {
-    return this.http.post<Category>(this.baseURL, {
-      title,
-      removable: true,
-    })
+    return this.http.post<Category>(
+      this.baseURL,
+      {
+        title,
+        removable: true,
+      },
+      { withCredentials: true },
+    )
   }
 
   updateImage(id: number, img: File): Observable<string> {
@@ -29,6 +33,7 @@ export class CategoryService {
 
     return this.http.patch<string>(`${this.baseURL}/${id}`, formData, {
       headers: { "Content-Type": "application/form-data" },
+      withCredentials: true,
     })
   }
 }

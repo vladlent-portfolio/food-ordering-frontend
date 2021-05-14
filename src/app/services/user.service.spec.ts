@@ -1,10 +1,7 @@
 import { fakeAsync, TestBed } from "@angular/core/testing"
 
 import { UserService } from "./user.service"
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing"
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
 import { User } from "../models/models"
 import { environment } from "../../environments/environment"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
@@ -91,6 +88,25 @@ describe("UserService", () => {
       expect(request.body).toEqual({ email: user.email, password })
 
       req.flush(user)
+    })
+
+    it("should update store with returned user on successful request", () => {
+      const spy = spyOn(store, "dispatch")
+      service.signUp(user.email, "123").subscribe(() => {
+        expect(spy).toHaveBeenCalledWith(setUserInfo({ user }))
+      })
+
+      const req = controller.expectOne(`${baseURL}/signup`)
+      req.flush(user)
+    })
+
+    it("should not update store on error", () => {
+      const spy = spyOn(store, "dispatch")
+      service.signUp(user.email, "123").subscribe({ error: () => {} })
+
+      const req = controller.expectOne(`${baseURL}/signup`)
+      req.flush("404 Error", { status: 404, statusText: "Not Found" })
+      expect(spy).not.toHaveBeenCalled()
     })
   })
 

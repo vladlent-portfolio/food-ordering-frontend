@@ -56,7 +56,7 @@ describe("CategoryService", () => {
       const req = httpController.expectOne(getURL())
       const { request } = req
       expect(request.method).toBe("POST")
-      expect(request.headers.get("Content-Type")).toContain("application/json")
+      expect(request.withCredentials).toBeTrue()
       expect(request.body).toEqual(
         { title, removable: true },
         "expected new category to be removable",
@@ -76,6 +76,7 @@ describe("CategoryService", () => {
       const { request } = req
       expect(request.method).toBe("PATCH")
       expect(request.headers.get("Content-Type")).toBe("application/form-data")
+      expect(request.withCredentials).toBeTrue()
 
       expect(request.body instanceof FormData).toBeTrue()
       expect(request.body.get("image")).toEqual(image)

@@ -19,33 +19,19 @@ export class UserService {
   me(): Observable<User> {
     return this.http
       .get<User>(`${this.baseURL}/me`, { withCredentials: true })
-      .pipe(
-        tap(user => {
-          this.store.dispatch(setUserInfo({ user }))
-        }),
-      )
+      .pipe(tap(user => this.store.dispatch(setUserInfo({ user }))))
   }
 
   signIn(email: string, password: string): Observable<User> {
     return this.http
-      .post<User>(
-        `${this.baseURL}/signin`,
-        { email, password },
-        { withCredentials: true },
-      )
-      .pipe(
-        tap(user => {
-          this.store.dispatch(setUserInfo({ user }))
-        }),
-      )
+      .post<User>(`${this.baseURL}/signin`, { email, password }, { withCredentials: true })
+      .pipe(tap(user => this.store.dispatch(setUserInfo({ user }))))
   }
 
   signUp(email: string, password: string): Observable<User> {
-    return this.http.post<User>(
-      `${this.baseURL}/signup`,
-      { email, password },
-      { withCredentials: true },
-    )
+    return this.http
+      .post<User>(`${this.baseURL}/signup`, { email, password }, { withCredentials: true })
+      .pipe(tap(user => this.store.dispatch(setUserInfo({ user }))))
   }
 
   signOut(): Observable<void> {
