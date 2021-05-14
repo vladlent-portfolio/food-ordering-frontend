@@ -23,7 +23,7 @@ import { NgLetModule } from "@ngrx-utils/store"
 import { MatIconModule } from "@angular/material/icon"
 import { Router } from "@angular/router"
 import { Component } from "@angular/core"
-import { of } from "rxjs"
+import { of, throwError } from "rxjs"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
@@ -37,7 +37,9 @@ describe("AppComponent", () => {
 
   beforeEach(() => {
     dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
-    userServiceSpy = jasmine.createSpyObj("UserService", ["signOut"])
+    userServiceSpy = jasmine.createSpyObj("UserService", ["me", "signOut"])
+
+    userServiceSpy.me.and.returnValue(of(user))
 
     TestBed.configureTestingModule({
       imports: [
@@ -93,6 +95,11 @@ describe("AppComponent", () => {
 
     expect(querySpinner()).toBeNull()
   }))
+
+  it("should check if user is already authorized on init", () => {
+    component.ngOnInit()
+    expect(userServiceSpy.me).toHaveBeenCalledTimes(1)
+  })
 
   it("should show login btn  if user is not logged in", () => {
     store.setState({ user: null, openRequests: 0 })

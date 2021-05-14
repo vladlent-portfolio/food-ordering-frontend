@@ -6,7 +6,7 @@ import { delay, filter, map } from "rxjs/operators"
 import { MatDialog } from "@angular/material/dialog"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { UserService } from "./services/user.service"
-import { NavigationEnd, Router, RouterEvent } from "@angular/router"
+import { NavigationEnd, Router } from "@angular/router"
 
 @Component({
   selector: "app-root",
@@ -33,7 +33,13 @@ export class AppComponent implements OnInit {
     private router: Router,
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkAuth()
+  }
+
+  checkAuth() {
+    this.userService.me().subscribe()
+  }
 
   openDialog() {
     this.dialog.open(LoginDialogComponent)
