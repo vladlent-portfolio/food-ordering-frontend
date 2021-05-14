@@ -23,13 +23,7 @@ const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule]
     CategoryDialogComponent,
     ImageUploadComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    AdminRoutingModule,
-    AdminStoreModule,
-    ...MATERIAL_MODULES,
-  ],
+  imports: [CommonModule, SharedModule, AdminRoutingModule, AdminStoreModule, ...MATERIAL_MODULES],
   exports: [...MATERIAL_MODULES],
 })
 export class AdminModule {}

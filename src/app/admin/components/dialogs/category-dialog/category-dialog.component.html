@@ -7,6 +7,7 @@
     <mat-form-field>
       <mat-label>Title</mat-label>
       <input formControlName="title" matInput placeholder="Pizza" />
+      <mat-error *ngIf="errorMsg" data-test="error-msg">{{ errorMsg }}</mat-error>
     </mat-form-field>
 
     <app-image-upload
@@ -15,10 +16,24 @@
     ></app-image-upload>
 
     <div class="form__actions">
-      <button class="close-btn" type="button" mat-raised-button mat-dialog-close>
+      <button
+        class="close-btn"
+        type="button"
+        mat-raised-button
+        mat-dialog-close
+        data-test="cancel-btn"
+      >
         Cancel
       </button>
-      <button class="submit-btn" mat-raised-button color="primary">Create</button>
+      <button
+        class="submit-btn"
+        mat-raised-button
+        color="primary"
+        data-test="submit-btn"
+        [disabled]="isLoading || formGroup.pristine"
+      >
+        Create
+      </button>
     </div>
   </form>
 </main>
