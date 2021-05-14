@@ -129,13 +129,6 @@ describe("AppComponent", () => {
     expect(dialogSpy.open).toHaveBeenCalled()
   })
 
-  it("should call signOut when clicked on logout btn", () => {
-    userServiceSpy.signOut.and.returnValue(of({} as any))
-    loginAsUser()
-    queryLogOutBtn().click()
-    expect(userServiceSpy.signOut).toHaveBeenCalledTimes(1)
-  })
-
   describe("title", () => {
     it("should be set", () => {
       fixture.detectChanges()
@@ -191,6 +184,24 @@ describe("AppComponent", () => {
       expect(queryAppBtn()).toBeNull()
       loginAsAdmin()
       expect(queryAppBtn()).toBeNull()
+    })
+  })
+
+  describe("logout", () => {
+    it("should call signOut when clicked on logout btn", () => {
+      userServiceSpy.signOut.and.returnValue(of())
+      loginAsUser()
+      queryLogOutBtn().click()
+      expect(userServiceSpy.signOut).toHaveBeenCalledTimes(1)
+    })
+
+    it("should redirect to the app if user is on admin page", async () => {
+      userServiceSpy.signOut.and.returnValue(of())
+      loginAsAdmin()
+      await navigateToAdmin()
+      queryLogOutBtn().click()
+      await fixture.whenStable()
+      expect(router.url).toBe("/")
     })
   })
 

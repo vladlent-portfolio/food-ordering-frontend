@@ -2,11 +2,12 @@ import { Component, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
 import { selectIsAdmin, selectIsLoading, selectIsLoggedIn } from "./store/selectors"
 import { AppState } from "./store/reducers"
-import { delay, filter, map } from "rxjs/operators"
+import { delay, filter, map, switchMap, withLatestFrom } from "rxjs/operators"
 import { MatDialog } from "@angular/material/dialog"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { UserService } from "./services/user.service"
 import { NavigationEnd, Router } from "@angular/router"
+import { combineLatest, zip } from "rxjs"
 
 @Component({
   selector: "app-root",
@@ -46,6 +47,12 @@ export class AppComponent implements OnInit {
   }
 
   signOut() {
-    this.userService.signOut().subscribe()
+    this.userService.signOut().subscribe({
+      complete: () => {
+        if (this.router.url.includes("/admin")) {
+          this.router.navigateByUrl("/")
+        }
+      },
+    })
   }
 }
