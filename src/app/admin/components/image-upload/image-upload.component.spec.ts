@@ -1,6 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from "@angular/core/testing"
 
-import { ImageUploadComponent } from "./image-upload.component"
+import { ImageUploadComponent, ImageUploadError } from "./image-upload.component"
 import { MatIconModule } from "@angular/material/icon"
 import { MatButtonModule } from "@angular/material/button"
 import { Component } from "@angular/core"
@@ -65,7 +65,7 @@ describe("ImageUploadComponent", () => {
   })
 
   it(
-    "should update img's src and emit uploaded file on upload",
+    "should update img's src and emit file on upload",
     waitForAsync(() => {
       const input = queryFileInput()
       expect(input).not.toBeNull()
@@ -94,6 +94,21 @@ describe("ImageUploadComponent", () => {
     expect(queryFileInput()?.accept.trim()).not.toBe("")
   })
 
+  it("should toggle error messages", () => {
+    fixture.detectChanges()
+    expect(queryError()).toBeNull()
+    const tests: { [Key in keyof typeof ImageUploadError]: string } = {
+      Size: "filesize is too big",
+      Type: "unsupported filetype",
+    }
+
+    Object.entries(tests).forEach(([type, msg]) => {
+      component.error = type as ImageUploadError
+      fixture.detectChanges()
+      expect(queryError().textContent?.toLowerCase()).toContain(msg)
+    })
+  })
+
   function queryTitle() {
     return nativeEl.querySelector(".title")
   }
@@ -117,17 +132,24 @@ describe("ImageUploadComponent", () => {
   function queryFileInput() {
     return nativeEl.querySelector(".upload-input") as HTMLInputElement
   }
+
+  function queryError() {
+    return nativeEl.querySelector("[data-test='error-msg']") as HTMLElement
+  }
 })
 
 @Component({
   template: `<app-image-upload
     [title]="title"
     [imageSrc]="imageSrc"
+    [error]="error"
     (upload)="uploadedFile = $event"
   ></app-image-upload>`,
 })
 class TestHostComponent {
-  title: string | undefined
-  imageSrc = ""
+  title: ImageUploadComponent["title"]
+  imageSrc: ImageUploadComponent["imageSrc"]
+  error: ImageUploadComponent["error"]
+
   uploadedFile: File | undefined
 }
