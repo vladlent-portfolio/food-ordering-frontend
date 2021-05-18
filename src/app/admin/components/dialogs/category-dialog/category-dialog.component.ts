@@ -1,15 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core"
 import { Category } from "../../../../models/models"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
-import { FormBuilder, FormControl, ValidationErrors, Validators } from "@angular/forms"
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms"
 import { CategoryService } from "../../../../services/category.service"
 import { HttpErrorResponse } from "@angular/common/http"
-import { ImageUploadError } from "../../image-upload/image-upload.component"
+import { defer } from "rxjs"
 
-export type CategoryDialogData = {
-  mode: "create" | "edit"
-  category?: Category
-}
+export type CategoryDialogData = { mode: "create" } | { mode: "edit"; category: Category }
 
 @Component({
   selector: "app-category-dialog",
@@ -21,9 +18,7 @@ export class CategoryDialogComponent implements OnInit {
   title = ""
   titleError: string | undefined
 
-  formGroup = this.fb.group({
-    title: [this.data.category?.title, [Validators.required, this.duplicateError()]],
-  })
+  formGroup = this.createFormGroup()
 
   get titleControl() {
     return this.formGroup.get("title") as FormControl
@@ -38,6 +33,19 @@ export class CategoryDialogComponent implements OnInit {
 
   ngOnInit() {
     this.setTitle()
+  }
+
+  private createFormGroup(): FormGroup {
+    const titleValidators = [Validators.required, this.duplicateError()]
+
+    if (this.data.mode === "create") {
+      return this.fb.group({ title: [null, titleValidators] })
+    }
+
+    return this.fb.group({
+      ...this.data.category,
+      title: [this.data.category.title, titleValidators],
+    })
   }
 
   private duplicateError(): () => ValidationErrors | null {
@@ -57,7 +65,12 @@ export class CategoryDialogComponent implements OnInit {
 
     const title = this.formGroup.value.title.trim()
 
-    this.categoryService.create(title.trim()).subscribe(
+    defer(() => {
+      if (this.data.mode === "create") {
+        return this.categoryService.create(title.trim())
+      }
+      return this.categoryService.update({ ...this.data.category, title })
+    }).subscribe(
       () => {
         this.dialogRef.close()
       },

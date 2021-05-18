@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { CategoryDialogComponent } from "./category-dialog.component"
+import { CategoryDialogComponent, CategoryDialogData } from "./category-dialog.component"
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -8,21 +8,16 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import {
-  ImageUploadComponent,
-  ImageUploadError,
-} from "../../image-upload/image-upload.component"
+import { ImageUploadComponent } from "../../image-upload/image-upload.component"
 import { Component } from "@angular/core"
-import { FormControl, ReactiveFormsModule } from "@angular/forms"
+import { ReactiveFormsModule } from "@angular/forms"
 import { MatInputModule } from "@angular/material/input"
-import { By } from "@angular/platform-browser"
 import { CategoryService } from "../../../../services/category.service"
 import { of, throwError } from "rxjs"
 import { Category } from "../../../../models/models"
 import { MatIconModule } from "@angular/material/icon"
 
 const title = "Burgers"
-const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
 const category: Category = {
   id: 2,
   title,
@@ -36,11 +31,12 @@ describe("CategoryDialogComponent", () => {
   let nativeEl: HTMLElement
   let dialogRefSpy: jasmine.SpyObj<MatDialogRef<CategoryDialogComponent>>
   let serviceSpy: jasmine.SpyObj<CategoryService>
-  let titleControl: FormControl
+  let data: CategoryDialogData
 
   beforeEach(() => {
+    data = { mode: "create" }
     dialogRefSpy = jasmine.createSpyObj("MatDialogRef", ["close"])
-    serviceSpy = jasmine.createSpyObj("CategoryService", ["create", "updateImage"])
+    serviceSpy = jasmine.createSpyObj("CategoryService", ["create", "update"])
 
     serviceSpy.create.and.returnValue(of({} as Category))
 
@@ -54,7 +50,7 @@ describe("CategoryDialogComponent", () => {
         MatIconModule,
       ],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: MAT_DIALOG_DATA, useValue: data },
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: CategoryService, useValue: serviceSpy },
       ],
@@ -65,7 +61,6 @@ describe("CategoryDialogComponent", () => {
     fixture = TestBed.createComponent(CategoryDialogComponent)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
-    titleControl = component.formGroup.get("title") as FormControl
   })
 
   it("should call setTitle on init", () => {
@@ -91,7 +86,7 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should be disabled while request is in progress", () => {
-      titleControl.setValue("Fish")
+      updateTitleControl("Fish")
       fixture.detectChanges()
       querySubmitBtn().click()
       fixture.detectChanges()
@@ -99,11 +94,8 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should be re-enabled if request is unsuccessful", () => {
-      serviceSpy.create.and.returnValue(
-        throwError({ status: 409, statusText: "Conflict" }),
-      )
-      titleControl.setValue("Fish")
-      component.formGroup.markAsDirty()
+      serviceSpy.create.and.returnValue(throwError({ status: 409, statusText: "Conflict" }))
+      updateTitleControl("Fish")
       fixture.detectChanges()
       querySubmitBtn().click()
       fixture.detectChanges()
@@ -130,12 +122,12 @@ describe("CategoryDialogComponent", () => {
 
   describe("setTitle()", () => {
     it("should change title based on mode", () => {
-      component.data.mode = "create"
+      data.mode = "create"
       component.setTitle()
       fixture.detectChanges()
       expect(queryTitle()?.textContent).toContain("Create New Category")
 
-      component.data.mode = "edit"
+      data.mode = "edit"
       component.setTitle()
       fixture.detectChanges()
       expect(queryTitle()?.textContent).toContain("Edit Category")
@@ -144,19 +136,15 @@ describe("CategoryDialogComponent", () => {
 
   describe("submit()", () => {
     it("should close the dialog on successful request", () => {
-      titleControl.setValue(title)
-      component.formGroup.markAsDirty()
+      updateTitleControl(title)
       fixture.detectChanges()
       querySubmitBtn().click()
       expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
     })
 
     it("should not close the dialog on error", () => {
-      serviceSpy.create.and.returnValue(
-        throwError({ status: 403, statusText: "Forbidden" }),
-      )
-      titleControl.setValue(title)
-      component.formGroup.markAsDirty()
+      serviceSpy.create.and.returnValue(throwError({ status: 403, statusText: "Forbidden" }))
+      updateTitleControl(title)
       fixture.detectChanges()
       querySubmitBtn().click()
       expect(dialogRefSpy.close).not.toHaveBeenCalled()
@@ -164,25 +152,20 @@ describe("CategoryDialogComponent", () => {
   })
 
   describe("create mode", () => {
-    beforeEach(() => {
-      component.data.mode = "create"
-    })
-
     it("should hide component for image uploading", () => {
       fixture.detectChanges()
       expect(queryImageUpload()).toBeNull()
     })
 
-    it("should create category without image", () => {
+    it("should create category", () => {
       serviceSpy.create.and.returnValue(of(category))
 
-      titleControl.setValue(title)
-      component.formGroup.markAsDirty()
+      updateTitleControl(title)
       fixture.detectChanges()
       querySubmitBtn().click()
 
       expect(serviceSpy.create).toHaveBeenCalledWith(title)
-      expect(serviceSpy.updateImage).not.toHaveBeenCalled()
+      expect(serviceSpy.update).not.toHaveBeenCalled()
     })
 
     it("should trim title", () => {
@@ -190,8 +173,7 @@ describe("CategoryDialogComponent", () => {
       const titles = ["  Pizza", "Pizza  ", "  Pizza  "]
 
       titles.forEach(title => {
-        titleControl.setValue(title)
-        component.formGroup.markAsDirty()
+        updateTitleControl(title)
         fixture.detectChanges()
         querySubmitBtn().click()
         expect(serviceSpy.create).toHaveBeenCalledWith(title.trim())
@@ -201,8 +183,20 @@ describe("CategoryDialogComponent", () => {
 
   describe("edit mode", () => {
     beforeEach(() => {
-      component.data.mode = "edit"
+      data.mode = "edit"
+      // @ts-ignore
+      data.category = category
+    })
+
+    it("should call update from category service with correct values", () => {
+      serviceSpy.update.and.returnValue(of({} as any))
+
+      const newTitle = "Seafood"
+      updateTitleControl(newTitle)
       fixture.detectChanges()
+      querySubmitBtn().click()
+      expect(serviceSpy.create).not.toHaveBeenCalled()
+      expect(serviceSpy.update).toHaveBeenCalledWith({ ...category, title: newTitle })
     })
   })
 
@@ -210,9 +204,7 @@ describe("CategoryDialogComponent", () => {
     prop: keyof CategoryDialogComponent & "titleError",
     queryFn: () => HTMLElement,
   ) {
-    titleControl.setValue("Pizza")
-    titleControl.markAsDirty()
-    titleControl.markAsTouched()
+    updateTitleControl("Pizza")
     component[prop] = "error"
     fixture.detectChanges()
     const el = queryFn()
@@ -221,6 +213,12 @@ describe("CategoryDialogComponent", () => {
     component[prop] = undefined
     fixture.detectChanges()
     expect(queryFn()).toBeNull()
+  }
+
+  function updateTitleControl(value: string) {
+    component.titleControl.setValue(value)
+    component.titleControl.markAsDirty()
+    component.titleControl.markAsTouched()
   }
 
   function queryTitle() {
