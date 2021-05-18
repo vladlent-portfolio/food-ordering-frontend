@@ -3,7 +3,10 @@ import { AdminCardComponent } from "./card.component"
 import { MatCardModule } from "@angular/material/card"
 import { MatIconModule } from "@angular/material/icon"
 import { Component } from "@angular/core"
+import { ImageUploadComponent } from "../image-upload/image-upload.component"
+import { By } from "@angular/platform-browser"
 
+const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
 describe("CardComponent", () => {
   let component: TestHostComponent
   let fixture: ComponentFixture<TestHostComponent>
@@ -12,7 +15,7 @@ describe("CardComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [MatCardModule, MatIconModule],
-      declarations: [AdminCardComponent, TestHostComponent],
+      declarations: [AdminCardComponent, TestHostComponent, ImageUploadComponent],
     })
   })
 
@@ -41,22 +44,9 @@ describe("CardComponent", () => {
     }
   })
 
-  it("should toggle image visibility depending on Input prop", () => {
-    const imageSrc = "/image/image1.png"
-    component.imageSrc = imageSrc
+  it("should show image upload component", () => {
     fixture.detectChanges()
-
-    let imageEl = nativeEl.querySelector("img")
-
-    if (expect(imageEl).not.toBeNull("expected card img to be in the DOM") && imageEl) {
-      expect(imageEl.src).toBe(imageSrc, "expected card img to have provided src")
-    }
-
-    component.imageSrc = undefined
-    fixture.detectChanges()
-
-    imageEl = nativeEl.querySelector("img")
-    expect(imageEl).toBeNull("expected img element to be removed from DOM")
+    expect(nativeEl.querySelector("app-image-upload")).not.toBeNull()
   })
 
   it("should toggle Remove btn disable state based on removable prop", () => {
@@ -73,6 +63,17 @@ describe("CardComponent", () => {
       expect(btn.disabled).toBeTrue()
     }
   })
+
+  it("should emit upload event", () => {
+    queryUploadComponent().upload.emit(image)
+    fixture.detectChanges()
+    expect(component.uploadedImage).toEqual(image)
+  })
+
+  function queryUploadComponent() {
+    return fixture.debugElement.query(By.directive(ImageUploadComponent))
+      .componentInstance as ImageUploadComponent
+  }
 })
 
 @Component({
@@ -81,11 +82,13 @@ describe("CardComponent", () => {
     [title]="title"
     [subtitle]="subtitle"
     [removable]="removable"
+    (upload)="uploadedImage = $event"
   ></app-admin-card>`,
 })
 class TestHostComponent {
-  imageSrc: string | undefined
-  title: string | undefined
-  subtitle: string | undefined
+  imageSrc: AdminCardComponent["imageSrc"]
+  title: AdminCardComponent["title"]
+  subtitle: AdminCardComponent["subtitle"]
   removable = false
+  uploadedImage: File | undefined
 }

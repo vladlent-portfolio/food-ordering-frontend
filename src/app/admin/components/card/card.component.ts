@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from "@angular/core"
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core"
 
 @Component({
   selector: "app-admin-card",
@@ -11,6 +18,8 @@ export class AdminCardComponent implements OnInit {
   @Input() subtitle: string | undefined
   @Input() imageSrc: string | undefined
   @Input() removable = false
+
+  @Output() upload = new EventEmitter<File>()
 
   constructor() {}
 

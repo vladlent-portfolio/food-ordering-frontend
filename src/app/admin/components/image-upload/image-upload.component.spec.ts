@@ -109,6 +109,13 @@ describe("ImageUploadComponent", () => {
     })
   })
 
+  it("should show default error message if error is not in enum", () => {
+    const msg = "generic error message"
+    component.error = msg
+    fixture.detectChanges()
+    expect(queryError().textContent).toContain(msg)
+  })
+
   function queryTitle() {
     return nativeEl.querySelector(".title")
   }

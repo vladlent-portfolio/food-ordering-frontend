@@ -3,9 +3,8 @@ import { Category } from "../../../../models/models"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
 import { FormBuilder, FormControl, ValidationErrors, Validators } from "@angular/forms"
 import { CategoryService } from "../../../../services/category.service"
-import { switchMap } from "rxjs/operators"
-import { of } from "rxjs"
 import { HttpErrorResponse } from "@angular/common/http"
+import { ImageUploadError } from "../../image-upload/image-upload.component"
 
 export type CategoryDialogData = {
   mode: "create" | "edit"
@@ -20,9 +19,8 @@ export type CategoryDialogData = {
 export class CategoryDialogComponent implements OnInit {
   isLoading = false
   title = ""
-  errorMsg: string | undefined = "error"
+  titleError: string | undefined
 
-  newImage: File | undefined
   formGroup = this.fb.group({
     title: [this.data.category?.title, [Validators.required, this.duplicateError()]],
   })
@@ -40,11 +38,10 @@ export class CategoryDialogComponent implements OnInit {
 
   ngOnInit() {
     this.setTitle()
-    this.formGroup.get("title")?.markAsTouched()
   }
 
   private duplicateError(): () => ValidationErrors | null {
-    return () => (this.errorMsg ? { duplicate: true } : null)
+    return () => (this.titleError ? { duplicate: true } : null)
   }
 
   setTitle() {
@@ -58,23 +55,18 @@ export class CategoryDialogComponent implements OnInit {
   submit() {
     this.isLoading = true
 
-    this.categoryService
-      .create(this.formGroup.value.title.trim())
-      .pipe(
-        switchMap(c =>
-          this.newImage ? this.categoryService.updateImage(c.id, this.newImage) : of(c),
-        ),
-      )
-      .subscribe(
-        () => {
-          this.dialogRef.close()
-        },
-        (err: HttpErrorResponse) => {
-          this.isLoading = false
-          if (err.status === 409) {
-            this.errorMsg = `Category with name '${this.titleControl.value}' already exits.`
-          }
-        },
-      )
+    const title = this.formGroup.value.title.trim()
+
+    this.categoryService.create(title.trim()).subscribe(
+      () => {
+        this.dialogRef.close()
+      },
+      (err: HttpErrorResponse) => {
+        this.isLoading = false
+        if (err.status === 409) {
+          this.titleError = `Category with name '${this.titleControl.value}' already exits.`
+        }
+      },
+    )
   }
 }

@@ -21,7 +21,7 @@ export enum ImageUploadError {
 export class ImageUploadComponent {
   @Input() title: string | undefined
   @Input() imageSrc: string | undefined
-  @Input() error: ImageUploadError | undefined
+  @Input() error: ImageUploadError | string | undefined
 
   @Output() upload = new EventEmitter<File>()
 

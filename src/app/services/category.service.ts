@@ -27,6 +27,12 @@ export class CategoryService {
     )
   }
 
+  update(category: Category): Observable<Category> {
+    return this.http.put<Category>(`${this.baseURL}/${category.id}`, category, {
+      withCredentials: true,
+    })
+  }
+
   updateImage(id: number, img: File): Observable<string> {
     const formData = new FormData()
     formData.set("image", img)

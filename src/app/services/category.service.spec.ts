@@ -84,4 +84,25 @@ describe("CategoryService", () => {
       req.flush(response)
     })
   })
+
+  describe("update()", () => {
+    it("should update category", () => {
+      const cat: Category = {
+        id: 1337,
+        removable: false,
+        title: "Salads",
+        image: "/some-image.jpeg",
+      }
+      service.update(cat).subscribe(res => expect(res).toEqual(cat))
+
+      const req = httpController.expectOne(getURL(cat.id))
+      const { request } = req
+
+      expect(request.method).toBe("PUT")
+      expect(request.withCredentials).toBeTrue()
+      expect(request.body).toEqual(cat)
+
+      req.flush(cat)
+    })
+  })
 })

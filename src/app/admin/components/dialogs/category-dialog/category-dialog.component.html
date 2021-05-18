@@ -7,13 +7,8 @@
     <mat-form-field>
       <mat-label>Title</mat-label>
       <input formControlName="title" matInput placeholder="Pizza" />
-      <mat-error *ngIf="errorMsg" data-test="error-msg">{{ errorMsg }}</mat-error>
+      <mat-error *ngIf="titleError" data-test="title-error">{{ titleError }}</mat-error>
     </mat-form-field>
-
-    <app-image-upload
-      [imageSrc]="data.category?.image"
-      (upload)="newImage = $event"
-    ></app-image-upload>
 
     <div class="form__actions">
       <button

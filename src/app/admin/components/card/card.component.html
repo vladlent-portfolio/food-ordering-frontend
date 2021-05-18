@@ -1,9 +1,15 @@
 <mat-card class="card">
-  <img *ngIf="imageSrc" [src]="imageSrc" alt="" />
+  <app-image-upload
+    class="card__upload"
+    [imageSrc]="imageSrc"
+    (upload)="upload.emit($event)"
+  ></app-image-upload>
+
   <mat-card-content class="card__content">
     <p class="card__title">{{ title }}</p>
     <p class="card__subtitle">{{ subtitle }}</p>
   </mat-card-content>
+
   <mat-card-actions class="card__actions">
     <button class="card__edit" mat-raised-button><mat-icon>edit</mat-icon>Edit</button>
     <button class="card__remove" mat-raised-button [disabled]="!removable">Remove</button>

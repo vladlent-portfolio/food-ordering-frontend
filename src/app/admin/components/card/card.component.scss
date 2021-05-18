@@ -1,3 +1,15 @@
 :host {
   display: block;
 }
+
+.card {
+  &__upload {
+    padding-bottom: 1rem;
+  }
+
+  &__title {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+}

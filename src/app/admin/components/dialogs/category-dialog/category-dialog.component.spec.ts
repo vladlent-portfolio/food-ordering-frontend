@@ -8,7 +8,10 @@ import {
   MatDialogRef,
 } from "@angular/material/dialog"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { ImageUploadComponent } from "../../image-upload/image-upload.component"
+import {
+  ImageUploadComponent,
+  ImageUploadError,
+} from "../../image-upload/image-upload.component"
 import { Component } from "@angular/core"
 import { FormControl, ReactiveFormsModule } from "@angular/forms"
 import { MatInputModule } from "@angular/material/input"
@@ -18,7 +21,15 @@ import { of, throwError } from "rxjs"
 import { Category } from "../../../../models/models"
 import { MatIconModule } from "@angular/material/icon"
 
+const title = "Burgers"
 const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
+const category: Category = {
+  id: 2,
+  title,
+  removable: true,
+  image: "/image.png",
+}
+
 describe("CategoryDialogComponent", () => {
   let component: CategoryDialogComponent
   let fixture: ComponentFixture<CategoryDialogComponent>
@@ -63,27 +74,8 @@ describe("CategoryDialogComponent", () => {
     expect(spy).toHaveBeenCalled()
   })
 
-  it("should listen for upload events on image-upload component", () => {
-    const uploadComponent: ImageUploadComponent = fixture.debugElement.query(
-      By.directive(ImageUploadComponent),
-    ).componentInstance
-
-    expect(component.newImage).toBeUndefined()
-
-    uploadComponent.upload.emit(image)
-    fixture.detectChanges()
-    expect(component.newImage).toEqual(image)
-  })
-
-  it("should toggle error msg ", () => {
-    component.errorMsg = "error"
-    fixture.detectChanges()
-    const el = queryError()
-    expect(el).not.toBeNull()
-    expect(el?.textContent).toContain(component.errorMsg)
-    component.errorMsg = undefined
-    fixture.detectChanges()
-    expect(queryError()).toBeNull()
+  it("should toggle title's error msg ", () => {
+    testErrorToggle("titleError", queryTitleError)
   })
 
   describe("Submit button", () => {
@@ -107,7 +99,9 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should be re-enabled if request is unsuccessful", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 409, statusText: "Conflict" }))
+      serviceSpy.create.and.returnValue(
+        throwError({ status: 409, statusText: "Conflict" }),
+      )
       titleControl.setValue("Fish")
       component.formGroup.markAsDirty()
       fixture.detectChanges()
@@ -149,15 +143,6 @@ describe("CategoryDialogComponent", () => {
   })
 
   describe("submit()", () => {
-    const title = "Burgers"
-    const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
-    const category: Category = {
-      id: 2,
-      title,
-      removable: true,
-      image: "/image.png",
-    }
-
     it("should close the dialog on successful request", () => {
       titleControl.setValue(title)
       component.formGroup.markAsDirty()
@@ -167,63 +152,83 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should not close the dialog on error", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 403, statusText: "Forbidden" }))
+      serviceSpy.create.and.returnValue(
+        throwError({ status: 403, statusText: "Forbidden" }),
+      )
       titleControl.setValue(title)
       component.formGroup.markAsDirty()
       fixture.detectChanges()
       querySubmitBtn().click()
       expect(dialogRefSpy.close).not.toHaveBeenCalled()
     })
+  })
 
-    describe("create", () => {
-      beforeEach(() => {
-        component.data.mode = "create"
-      })
+  describe("create mode", () => {
+    beforeEach(() => {
+      component.data.mode = "create"
+    })
 
-      it("should create category with image", () => {
-        serviceSpy.create.and.returnValue(of(category))
+    it("should hide component for image uploading", () => {
+      fixture.detectChanges()
+      expect(queryImageUpload()).toBeNull()
+    })
 
-        fixture.detectChanges()
+    it("should create category without image", () => {
+      serviceSpy.create.and.returnValue(of(category))
+
+      titleControl.setValue(title)
+      component.formGroup.markAsDirty()
+      fixture.detectChanges()
+      querySubmitBtn().click()
+
+      expect(serviceSpy.create).toHaveBeenCalledWith(title)
+      expect(serviceSpy.updateImage).not.toHaveBeenCalled()
+    })
+
+    it("should trim title", () => {
+      serviceSpy.create.and.returnValue(of(category))
+      const titles = ["  Pizza", "Pizza  ", "  Pizza  "]
+
+      titles.forEach(title => {
         titleControl.setValue(title)
-        component.newImage = image
         component.formGroup.markAsDirty()
         fixture.detectChanges()
         querySubmitBtn().click()
-
-        expect(serviceSpy.create).toHaveBeenCalledBefore(serviceSpy.updateImage)
-        expect(serviceSpy.create).toHaveBeenCalledWith(title)
-        expect(serviceSpy.updateImage).toHaveBeenCalledWith(category.id, image)
-      })
-
-      it("should create category without image", () => {
-        serviceSpy.create.and.returnValue(of(category))
-
-        titleControl.setValue(title)
-        component.formGroup.markAsDirty()
-        fixture.detectChanges()
-        querySubmitBtn().click()
-
-        expect(serviceSpy.create).toHaveBeenCalledWith(title)
-        expect(serviceSpy.updateImage).not.toHaveBeenCalled()
-      })
-
-      it("should trim title", () => {
-        serviceSpy.create.and.returnValue(of(category))
-        const titles = ["  Pizza", "Pizza  ", "  Pizza  "]
-
-        titles.forEach(title => {
-          titleControl.setValue(title)
-          component.formGroup.markAsDirty()
-          fixture.detectChanges()
-          querySubmitBtn().click()
-          expect(serviceSpy.create).toHaveBeenCalledWith(title.trim())
-        })
+        expect(serviceSpy.create).toHaveBeenCalledWith(title.trim())
       })
     })
   })
 
+  describe("edit mode", () => {
+    beforeEach(() => {
+      component.data.mode = "edit"
+      fixture.detectChanges()
+    })
+  })
+
+  function testErrorToggle(
+    prop: keyof CategoryDialogComponent & "titleError",
+    queryFn: () => HTMLElement,
+  ) {
+    titleControl.setValue("Pizza")
+    titleControl.markAsDirty()
+    titleControl.markAsTouched()
+    component[prop] = "error"
+    fixture.detectChanges()
+    const el = queryFn()
+    expect(el).not.toBeNull()
+    expect(el?.textContent).toContain(component[prop])
+    component[prop] = undefined
+    fixture.detectChanges()
+    expect(queryFn()).toBeNull()
+  }
+
   function queryTitle() {
     return nativeEl.querySelector(".title")
+  }
+
+  function queryImageUpload() {
+    return nativeEl.querySelector("app-image-upload") as HTMLElement
   }
 
   function queryCancelBtn() {
@@ -234,8 +239,8 @@ describe("CategoryDialogComponent", () => {
     return nativeEl.querySelector("[data-test='submit-btn']") as HTMLButtonElement
   }
 
-  function queryError() {
-    return nativeEl.querySelector("[data-test='error-msg']") as HTMLElement
+  function queryTitleError() {
+    return nativeEl.querySelector("[data-test='title-error']") as HTMLElement
   }
 })
 
