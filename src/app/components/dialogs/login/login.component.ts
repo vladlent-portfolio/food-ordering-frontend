@@ -5,6 +5,7 @@ import { MatDialogRef } from "@angular/material/dialog"
 import { HttpErrorResponse } from "@angular/common/http"
 import { Observable } from "rxjs"
 import { User } from "../../../models/models"
+import { MatTabChangeEvent } from "@angular/material/tabs"
 
 type SubmitType = "SignIn" | "SignUp"
 
@@ -20,6 +21,7 @@ export class LoginDialogComponent {
     password: ["", [Validators.required, Validators.minLength(8)]],
   })
   isLoading = false
+  currentTabIndex = 0
 
   admin = {
     email: "Marcelle.Marks@gmail.com",
@@ -56,24 +58,22 @@ export class LoginDialogComponent {
     this.isLoading = true
     this.errorMsg = undefined
 
-    let action: (email: string, password: string) => Observable<User>
+    const { email, password } = this.formGroup.value
+    let result: Observable<User>
     let errorHandler: (err: HttpErrorResponse) => void
 
-    // TODO: Refactor this binding
     switch (type) {
       case "SignIn":
-        action = this.userService.signIn.bind(this.userService)
+        result = this.userService.signIn(email, password)
         errorHandler = err => this.handleSignInError(err)
         break
       case "SignUp":
-        action = this.userService.signUp.bind(this.userService)
+        result = this.userService.signUp(email, password)
         errorHandler = err => this.handleSignUpError(err)
         break
     }
 
-    const { email, password } = this.formGroup.value
-
-    action(email, password).subscribe(
+    result.subscribe(
       () => {
         this.dialogRef.close()
       },
@@ -96,7 +96,8 @@ export class LoginDialogComponent {
     }
   }
 
-  onTabChange() {
+  onTabChange(e: MatTabChangeEvent) {
+    this.currentTabIndex = e.index
     this.formGroup.reset()
     this.errorMsg = undefined
   }

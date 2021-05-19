@@ -99,13 +99,15 @@ describe("LoginDialogComponent", () => {
   })
 
   it("should clear error on tab change", async () => {
+    component.currentTabIndex = 1
     fixture.detectChanges()
-    queryTabs()[1].click()
+    await fixture.whenStable()
 
     for await (const tab of queryTabs()) {
       component.errorMsg = "error msg"
       fixture.detectChanges()
       tab.click()
+      fixture.detectChanges()
       await fixture.whenStable()
       fixture.detectChanges()
       expect(component.errorMsg).toBeFalsy()
@@ -203,6 +205,8 @@ describe("LoginDialogComponent", () => {
       component.signIn()
       expect(spy).toHaveBeenCalled()
     })
+
+    testAutocomplete("current-password")
   })
 
   describe("sign up", () => {
@@ -283,6 +287,8 @@ describe("LoginDialogComponent", () => {
       expect(err).not.toBeNull()
       expect(err.textContent?.trim().length).toBeGreaterThan(0)
     })
+
+    testAutocomplete("new-password")
   })
 
   describe("email FormControl", () => {
@@ -340,6 +346,15 @@ describe("LoginDialogComponent", () => {
       )
     })
   })
+
+  function testAutocomplete(password: string) {
+    it("should have autocomplete attributes on inputs", async () => {
+      await fixture.whenStable()
+      fixture.detectChanges()
+      expect(queryEmail().autocomplete).toBe("email")
+      expect(queryPassword().autocomplete).toBe(password)
+    })
+  }
 
   function queryTabs(): HTMLElement[] {
     return Array.from(nativeEl.querySelectorAll(".mat-tab-label"))
