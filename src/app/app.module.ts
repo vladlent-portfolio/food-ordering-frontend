@@ -29,7 +29,7 @@ const MATERIAL_MODULES = [MatToolbarModule, MatProgressSpinnerModule, MatTabsMod
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: (s: UserService) => () => s.me().toPromise(),
+      useFactory: (s: UserService) => () => checkLogin(s),
       deps: [UserService],
       multi: true,
     },
@@ -38,3 +38,10 @@ const MATERIAL_MODULES = [MatToolbarModule, MatProgressSpinnerModule, MatTabsMod
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+function checkLogin(service: UserService) {
+  return service
+    .me()
+    .toPromise()
+    .catch(() => {})
+}
