@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core"
+import { APP_INITIALIZER, NgModule } from "@angular/core"
 import { BrowserModule } from "@angular/platform-browser"
 import { AppRoutingModule } from "./app-routing.module"
 import { AppComponent } from "./app.component"
@@ -11,6 +11,7 @@ import { LoadingInterceptor } from "./interceptors/loading.interceptor"
 import { MatTabsModule } from "@angular/material/tabs"
 import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
+import { UserService } from "./services/user.service"
 
 const MATERIAL_MODULES = [MatToolbarModule, MatProgressSpinnerModule, MatTabsModule]
 
@@ -25,7 +26,15 @@ const MATERIAL_MODULES = [MatToolbarModule, MatProgressSpinnerModule, MatTabsMod
     AppStoreModule,
     ...MATERIAL_MODULES,
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true }],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (s: UserService) => () => s.me().toPromise(),
+      deps: [UserService],
+      multi: true,
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
