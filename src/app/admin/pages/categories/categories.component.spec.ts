@@ -14,6 +14,7 @@ import {
 import { MatIconModule } from "@angular/material/icon"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
+import { ConfirmDialogComponent } from "../../../components/dialogs/confirm/confirm.component"
 
 let testCategories: Category[]
 
@@ -24,6 +25,8 @@ describe("CategoriesComponent", () => {
   let nativeEl: HTMLElement
   let serviceSpy: jasmine.SpyObj<CategoryService>
   let dialog: MatDialog
+  let dialogRef: MatDialogRef<TestDialogComponent>
+  let dialogOpen: jasmine.Spy<MatDialog["open"]>
 
   beforeEach(() => {
     testCategories = [
@@ -32,7 +35,6 @@ describe("CategoriesComponent", () => {
     ]
 
     serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll", "updateImage"])
-
     serviceSpy.getAll.and.returnValue(of(testCategories))
 
     TestBed.configureTestingModule({
@@ -48,6 +50,13 @@ describe("CategoriesComponent", () => {
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
     dialog = TestBed.inject(MatDialog)
+
+    dialogRef = dialog.open(TestDialogComponent)
+    dialogOpen = spyOn(dialog, "open").and.returnValue(dialogRef)
+  })
+
+  afterEach(() => {
+    dialogRef.close()
   })
 
   it("should call getAll in ngOnInit", () => {
@@ -97,18 +106,6 @@ describe("CategoriesComponent", () => {
   })
 
   describe("openDialog()", () => {
-    let dialogRef: MatDialogRef<TestDialogComponent>
-    let open: jasmine.Spy
-
-    beforeEach(() => {
-      dialogRef = dialog.open(TestDialogComponent)
-      open = spyOn(dialog, "open").and.returnValue(dialogRef)
-    })
-
-    afterAll(() => {
-      dialogRef.close()
-    })
-
     it("should call dialog open with provided options and default settings", () => {
       const dialogOptions: CategoryDialogData[] = [
         { mode: "create" },
@@ -117,7 +114,7 @@ describe("CategoriesComponent", () => {
 
       dialogOptions.forEach(opt => {
         component.openDialog(opt)
-        expect(open).toHaveBeenCalledWith(CategoryDialogComponent, {
+        expect(dialogOpen).toHaveBeenCalledWith(CategoryDialogComponent, {
           data: opt,
           disableClose: true,
         })
@@ -125,20 +122,23 @@ describe("CategoriesComponent", () => {
     })
 
     describe("afterClosed", () => {
-      let getAll: jasmine.Spy
-
       beforeEach(() => {
-        getAll = spyOn(component, "getAll")
+        fixture.detectChanges()
       })
 
+      // TODO: Fix this tests
       it("should update categories if dialog was closed with 'true'", async () => {
+        const getAll = spyOn(component, "getAll")
         dialogRef.close(true)
+        await fixture.whenStable()
         fixture.detectChanges()
         expect(getAll).toHaveBeenCalled()
       })
 
       it("should not update categories if dialog was close with 'false'", () => {
+        const getAll = spyOn(component, "getAll")
         dialogRef.close(false)
+        fixture.detectChanges()
         expect(getAll).not.toHaveBeenCalled()
       })
     })
@@ -149,6 +149,53 @@ describe("CategoriesComponent", () => {
       const spy = spyOn(component, "openDialog")
       queryAddBtn().click()
       expect(spy).toHaveBeenCalledWith({ mode: "create" })
+    })
+  })
+
+  describe("remove()", () => {
+    it("should be called on click", () => {
+      const remove = spyOn(component, "remove")
+      fixture.detectChanges()
+      const cards = queryCardsComponents()
+      cards.forEach((card, i) => {
+        card.remove.emit()
+        expect(remove).toHaveBeenCalledWith(testCategories[i])
+      })
+    })
+
+    it("should call dialog open", () => {
+      const category = { ...testCategories[0], removable: true }
+      component.remove(category)
+      if (expect(dialogOpen).toHaveBeenCalled()) {
+        const args = dialogOpen.calls.mostRecent().args
+        expect(args[0]).toBe(ConfirmDialogComponent)
+        // @ts-ignore
+        expect(args[1].data.content).toBeDefined()
+      }
+    })
+
+    it("should not call dialog open if category isn't removable", () => {
+      const category = { ...testCategories[0], removable: false }
+      component.remove(category)
+      expect(dialogOpen).not.toHaveBeenCalled()
+    })
+
+    it("should refresh categories on confirm", () => {
+      const category = { ...testCategories[0], removable: true }
+      fixture.detectChanges()
+      const getAll = spyOn(component, "getAll")
+      component.remove(category)
+      dialogRef.close(true)
+      expect(getAll).toHaveBeenCalled()
+    })
+
+    it("should not refresh categories on cancel", () => {
+      const getAll = spyOn(component, "getAll")
+      fixture.detectChanges()
+      const category = { ...testCategories[0], removable: true }
+      component.remove(category)
+      dialogRef.close(false)
+      expect(getAll).not.toHaveBeenCalled()
     })
   })
 

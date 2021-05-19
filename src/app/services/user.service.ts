@@ -24,13 +24,21 @@ export class UserService {
 
   signIn(email: string, password: string): Observable<User> {
     return this.http
-      .post<User>(`${this.baseURL}/signin`, { email, password }, { withCredentials: true })
+      .post<User>(
+        `${this.baseURL}/signin`,
+        { email, password },
+        { withCredentials: true },
+      )
       .pipe(tap(user => this.store.dispatch(setUserInfo({ user }))))
   }
 
   signUp(email: string, password: string): Observable<User> {
     return this.http
-      .post<User>(`${this.baseURL}/signup`, { email, password }, { withCredentials: true })
+      .post<User>(
+        `${this.baseURL}/signup`,
+        { email, password },
+        { withCredentials: true },
+      )
       .pipe(tap(user => this.store.dispatch(setUserInfo({ user }))))
   }
 

@@ -12,10 +12,11 @@
 
 <main *ngIf="categories" class="cards-container">
   <app-admin-card
-    *ngFor="let c of categories"
+    *ngFor="let c of categories; trackBy: trackBy"
     [title]="c.title"
     [removable]="c.removable"
     [imageSrc]="c.image"
     (edit)="edit(c)"
+    (remove)="remove(c)"
   ></app-admin-card>
 </main>

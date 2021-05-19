@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  TrackByFunction,
 } from "@angular/core"
 import { CategoryService } from "../../../services/category.service"
 import { Observable, throwError } from "rxjs"
@@ -15,6 +16,10 @@ import {
 import { catchError, filter } from "rxjs/operators"
 import { HttpErrorResponse } from "@angular/common/http"
 import { ImageUploadError } from "../../components/image-upload/image-upload.component"
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from "../../../components/dialogs/confirm/confirm.component"
 
 @Component({
   selector: "app-categories",
@@ -36,6 +41,8 @@ export class CategoriesPageComponent implements OnInit {
     this.getAll()
   }
 
+  trackBy: TrackByFunction<Category> = (index, c) => c.id
+
   getAll(): void {
     this.categoryService.getAll().subscribe(categories => {
       this.categories = categories
@@ -49,6 +56,24 @@ export class CategoriesPageComponent implements OnInit {
 
   edit(category: Category): void {
     this.openDialog({ mode: "edit", category })
+  }
+
+  remove(category: Category) {
+    if (!category.removable) {
+      return
+    }
+
+    const data: ConfirmDialogData = {
+      content: `Are you sure you want to delete '${category.title}' and all it's associated products?`,
+    }
+
+    this.dialog
+      .open(ConfirmDialogComponent, { data })
+      .afterClosed()
+      .pipe(filter(Boolean))
+      .subscribe(() => {
+        this.getAll()
+      })
   }
 
   openDialog(data: CategoryDialogData) {
