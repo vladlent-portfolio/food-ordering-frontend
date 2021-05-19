@@ -183,9 +183,7 @@ describe("CategoryDialogComponent", () => {
 
   describe("edit mode", () => {
     beforeEach(() => {
-      data.mode = "edit"
-      // @ts-ignore
-      data.category = category
+      Object.assign(data, { mode: "edit", category })
     })
 
     it("should call update from category service with correct values", () => {

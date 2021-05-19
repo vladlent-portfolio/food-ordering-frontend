@@ -77,7 +77,7 @@ export class CategoryDialogComponent implements OnInit {
       (err: HttpErrorResponse) => {
         this.isLoading = false
         if (err.status === 409) {
-          this.titleError = `Category with name '${this.titleControl.value}' already exits.`
+          this.titleError = `Category with name '${this.titleControl.value}' already exists.`
         }
       },
     )
