@@ -52,7 +52,7 @@ describe("CardComponent", () => {
   it("should toggle Remove btn disable state based on removable prop", () => {
     component.removable = false
     fixture.detectChanges()
-    let btn = nativeEl.querySelector<HTMLButtonElement>(".card__remove")
+    let btn = queryEditBtn()
 
     if (expect(btn).not.toBeNull("expected Remove btn to be in the DOM") && btn) {
       expect(btn.disabled).toBeFalse()
@@ -70,9 +70,29 @@ describe("CardComponent", () => {
     expect(component.uploadedImage).toEqual(image)
   })
 
+  it("should emit edit event", () => {
+    const edit = spyOn(component, "edit")
+    queryEditBtn().click()
+    expect(edit).toHaveBeenCalled()
+  })
+
+  it("should remove edit event", () => {
+    const remove = spyOn(component, "remove")
+    queryEditBtn().click()
+    expect(remove).toHaveBeenCalled()
+  })
+
   function queryUploadComponent() {
     return fixture.debugElement.query(By.directive(ImageUploadComponent))
       .componentInstance as ImageUploadComponent
+  }
+
+  function queryEditBtn() {
+    return nativeEl.querySelector("[data-test='edit-btn']") as HTMLButtonElement
+  }
+
+  function queryRemoveBtn() {
+    return nativeEl.querySelector("[data-test='remove-btn']") as HTMLButtonElement
   }
 })
 
@@ -83,6 +103,8 @@ describe("CardComponent", () => {
     [subtitle]="subtitle"
     [removable]="removable"
     (upload)="uploadedImage = $event"
+    (edit)="edit()"
+    (remove)="remove()"
   ></app-admin-card>`,
 })
 class TestHostComponent {
@@ -91,4 +113,8 @@ class TestHostComponent {
   subtitle: AdminCardComponent["subtitle"]
   removable = false
   uploadedImage: File | undefined
+
+  edit() {}
+
+  remove() {}
 }

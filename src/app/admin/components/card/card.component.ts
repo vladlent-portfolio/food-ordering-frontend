@@ -20,6 +20,8 @@ export class AdminCardComponent implements OnInit {
   @Input() removable = false
 
   @Output() upload = new EventEmitter<File>()
+  @Output() edit = new EventEmitter<void>()
+  @Output() remove = new EventEmitter<void>()
 
   constructor() {}
 

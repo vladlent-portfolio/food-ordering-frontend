@@ -11,7 +11,24 @@
   </mat-card-content>
 
   <mat-card-actions class="card__actions">
-    <button class="card__edit" mat-raised-button><mat-icon>edit</mat-icon>Edit</button>
-    <button class="card__remove" mat-raised-button [disabled]="!removable">Remove</button>
+    <button
+      class="card__edit"
+      mat-flat-button
+      color="accent"
+      data-test="edit-btn"
+      (click)="edit.emit()"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      class="card__remove"
+      mat-flat-button
+      color="warn"
+      [disabled]="!removable"
+      data-test="remove-btn"
+      (click)="remove.emit()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
   </mat-card-actions>
 </mat-card>
