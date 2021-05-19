@@ -10,7 +10,7 @@
   </button>
 </header>
 
-<main *ngIf="categories$ | async as categories" class="cards-container">
+<main *ngIf="categories" class="cards-container">
   <app-admin-card
     *ngFor="let c of categories"
     [title]="c.title"

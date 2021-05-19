@@ -15,7 +15,7 @@
         class="close-btn"
         type="button"
         mat-raised-button
-        mat-dialog-close
+        (click)="close()"
         data-test="cancel-btn"
       >
         Cancel
@@ -27,7 +27,7 @@
         data-test="submit-btn"
         [disabled]="isLoading || formGroup.pristine"
       >
-        Create
+        {{ data.mode === "create" ? "Create" : "Confirm" }}
       </button>
     </div>
   </form>

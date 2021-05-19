@@ -1,7 +1,13 @@
 import { Component, Inject, OnInit } from "@angular/core"
 import { Category } from "../../../../models/models"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
-import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms"
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  Validators,
+} from "@angular/forms"
 import { CategoryService } from "../../../../services/category.service"
 import { HttpErrorResponse } from "@angular/common/http"
 import { defer } from "rxjs"
@@ -36,7 +42,7 @@ export class CategoryDialogComponent implements OnInit {
   }
 
   private createFormGroup(): FormGroup {
-    const titleValidators = [Validators.required, this.duplicateError()]
+    const titleValidators = [Validators.required, this.titleValidator()]
 
     if (this.data.mode === "create") {
       return this.fb.group({ title: [null, titleValidators] })
@@ -48,8 +54,8 @@ export class CategoryDialogComponent implements OnInit {
     })
   }
 
-  private duplicateError(): () => ValidationErrors | null {
-    return () => (this.titleError ? { duplicate: true } : null)
+  private titleValidator(): () => ValidationErrors | null {
+    return () => (this.titleError ? { title: true } : null)
   }
 
   setTitle() {
@@ -58,6 +64,10 @@ export class CategoryDialogComponent implements OnInit {
     } else {
       this.title = "Edit Category"
     }
+  }
+
+  close() {
+    this.dialogRef.close(false)
   }
 
   submit() {
@@ -72,13 +82,14 @@ export class CategoryDialogComponent implements OnInit {
       return this.categoryService.update({ ...this.data.category, title })
     }).subscribe(
       () => {
-        this.dialogRef.close()
+        this.dialogRef.close(true)
       },
       (err: HttpErrorResponse) => {
         this.isLoading = false
         if (err.status === 409) {
           this.titleError = `Category with name '${this.titleControl.value}' already exists.`
         }
+        this.titleControl.updateValueAndValidity()
       },
     )
   }

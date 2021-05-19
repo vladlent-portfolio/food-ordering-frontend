@@ -74,6 +74,10 @@ describe("CategoryDialogComponent", () => {
   })
 
   describe("Submit button", () => {
+    it("should be of type submit", () => {
+      expect(querySubmitBtn().type).toBe("submit")
+    })
+
     it("should be disabled if form hasn't changed", () => {
       fixture.detectChanges()
       expect(querySubmitBtn().disabled).toBeTrue()
@@ -94,7 +98,9 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should be re-enabled if request is unsuccessful", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 409, statusText: "Conflict" }))
+      serviceSpy.create.and.returnValue(
+        throwError({ status: 409, statusText: "Conflict" }),
+      )
       updateTitleControl("Fish")
       fixture.detectChanges()
       querySubmitBtn().click()
@@ -102,8 +108,13 @@ describe("CategoryDialogComponent", () => {
       expect(querySubmitBtn().disabled).toBeFalse()
     })
 
-    it("should be of type submit", () => {
-      expect(querySubmitBtn().type).toBe("submit")
+    it("should change it's label based on mode", () => {
+      data.mode = "create"
+      fixture.detectChanges()
+      expect(querySubmitBtn().textContent).toContain("Create")
+      Object.assign(data, { mode: "edit", category })
+      fixture.detectChanges()
+      expect(querySubmitBtn().textContent).toContain("Confirm")
     })
   })
 
@@ -112,7 +123,7 @@ describe("CategoryDialogComponent", () => {
       const btn = queryCancelBtn()
       expect(btn).not.toBeNull()
       btn.click()
-      expect(dialogRefSpy.close).toHaveBeenCalled()
+      expect(dialogRefSpy.close).toHaveBeenCalledWith(false)
     })
 
     it("should be of type button", () => {
@@ -139,15 +150,29 @@ describe("CategoryDialogComponent", () => {
       updateTitleControl(title)
       fixture.detectChanges()
       querySubmitBtn().click()
-      expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+      expect(dialogRefSpy.close).toHaveBeenCalledWith(true)
     })
 
     it("should not close the dialog on error", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 403, statusText: "Forbidden" }))
+      serviceSpy.create.and.returnValue(
+        throwError({ status: 403, statusText: "Forbidden" }),
+      )
       updateTitleControl(title)
       fixture.detectChanges()
       querySubmitBtn().click()
       expect(dialogRefSpy.close).not.toHaveBeenCalled()
+    })
+
+    it("should update title error on 409", () => {
+      serviceSpy.create.and.returnValue(throwError({ status: 409 }))
+      updateTitleControl("Pizza")
+      fixture.detectChanges()
+      component.submit()
+      fixture.detectChanges()
+      expect(queryTitleError()).not.toBeNull()
+      expect(queryTitleError().textContent).toContain(
+        "Category with name 'Pizza' already exists",
+      )
     })
   })
 

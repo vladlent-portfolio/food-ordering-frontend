@@ -6,12 +6,14 @@ import { Category } from "../../../models/models"
 import { CategoryService } from "../../../services/category.service"
 import { AdminCardComponent } from "../../components/card/card.component"
 import { ImageUploadError } from "../../components/image-upload/image-upload.component"
-import { MatDialog, MatDialogModule } from "@angular/material/dialog"
+import { MatDialog, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
 import {
   CategoryDialogComponent,
   CategoryDialogData,
 } from "../../components/dialogs/category-dialog/category-dialog.component"
 import { MatIconModule } from "@angular/material/icon"
+import { NoopAnimationsModule } from "@angular/platform-browser/animations"
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
 
 let testCategories: Category[]
 
@@ -31,10 +33,13 @@ describe("CategoriesComponent", () => {
 
     serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll", "updateImage"])
 
+    serviceSpy.getAll.and.returnValue(of(testCategories))
+
     TestBed.configureTestingModule({
       declarations: [CategoriesPageComponent, AdminCardComponent],
-      imports: [MatDialogModule, MatIconModule],
+      imports: [MatDialogModule, MatIconModule, NoopAnimationsModule],
       providers: [{ provide: CategoryService, useValue: serviceSpy }],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
   })
 
@@ -53,7 +58,6 @@ describe("CategoriesComponent", () => {
   })
 
   it("should open category dialog in edit mode", () => {
-    serviceSpy.getAll.and.returnValue(of(testCategories))
     const openDialog = spyOn(component, "openDialog")
     fixture.detectChanges()
     const cards = queryCardsComponents()
@@ -72,9 +76,6 @@ describe("CategoriesComponent", () => {
       component.getAll()
       expect(serviceSpy.getAll).toHaveBeenCalled()
 
-      component.categories$?.subscribe(categories => {
-        expect(categories).toEqual(testCategories)
-      })
       fixture.detectChanges()
 
       const cards = queryCardsComponents()
@@ -96,8 +97,19 @@ describe("CategoriesComponent", () => {
   })
 
   describe("openDialog()", () => {
+    let dialogRef: MatDialogRef<TestDialogComponent>
+    let open: jasmine.Spy
+
+    beforeEach(() => {
+      dialogRef = dialog.open(TestDialogComponent)
+      open = spyOn(dialog, "open").and.returnValue(dialogRef)
+    })
+
+    afterAll(() => {
+      dialogRef.close()
+    })
+
     it("should call dialog open with provided options and default settings", () => {
-      const open = spyOn(dialog, "open")
       const dialogOptions: CategoryDialogData[] = [
         { mode: "create" },
         { mode: "edit", category: testCategories[0] },
@@ -109,6 +121,25 @@ describe("CategoriesComponent", () => {
           data: opt,
           disableClose: true,
         })
+      })
+    })
+
+    describe("afterClosed", () => {
+      let getAll: jasmine.Spy
+
+      beforeEach(() => {
+        getAll = spyOn(component, "getAll")
+      })
+
+      it("should update categories if dialog was closed with 'true'", async () => {
+        dialogRef.close(true)
+        fixture.detectChanges()
+        expect(getAll).toHaveBeenCalled()
+      })
+
+      it("should not update categories if dialog was close with 'false'", () => {
+        dialogRef.close(false)
+        expect(getAll).not.toHaveBeenCalled()
       })
     })
   })
@@ -167,3 +198,8 @@ describe("CategoriesComponent", () => {
     return nativeEl.querySelector("[data-test='add-category-btn']") as HTMLButtonElement
   }
 })
+
+@Component({
+  template: "",
+})
+class TestDialogComponent {}

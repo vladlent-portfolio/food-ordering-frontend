@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core"
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from "@angular/core"
 import { CategoryService } from "../../../services/category.service"
 import { Observable, throwError } from "rxjs"
 import { Category } from "../../../models/models"
@@ -7,7 +12,7 @@ import {
   CategoryDialogComponent,
   CategoryDialogData,
 } from "../../components/dialogs/category-dialog/category-dialog.component"
-import { catchError } from "rxjs/operators"
+import { catchError, filter } from "rxjs/operators"
 import { HttpErrorResponse } from "@angular/common/http"
 import { ImageUploadError } from "../../components/image-upload/image-upload.component"
 
@@ -18,17 +23,24 @@ import { ImageUploadError } from "../../components/image-upload/image-upload.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesPageComponent implements OnInit {
-  categories$: Observable<Category[]> | undefined
+  categories: Category[] = []
   uploadError: ImageUploadError | string | undefined
 
-  constructor(private categoryService: CategoryService, private dialog: MatDialog) {}
+  constructor(
+    private categoryService: CategoryService,
+    private dialog: MatDialog,
+    private cdRef: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.getAll()
   }
 
   getAll(): void {
-    this.categories$ = this.categoryService.getAll()
+    this.categoryService.getAll().subscribe(categories => {
+      this.categories = categories
+      this.cdRef.markForCheck()
+    })
   }
 
   create(): void {
@@ -39,8 +51,17 @@ export class CategoriesPageComponent implements OnInit {
     this.openDialog({ mode: "edit", category })
   }
 
-  openDialog(data: CategoryDialogData): void {
-    this.dialog.open(CategoryDialogComponent, { data, disableClose: true })
+  openDialog(data: CategoryDialogData) {
+    this.dialog
+      .open(CategoryDialogComponent, {
+        data,
+        disableClose: true,
+      })
+      .afterClosed()
+      .pipe(filter(Boolean))
+      .subscribe(() => {
+        this.getAll()
+      })
   }
 
   updateImage(id: number, img: File): Observable<string> {
