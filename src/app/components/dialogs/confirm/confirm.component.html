@@ -1,0 +1,19 @@
+<h1 *ngIf="data.title" mat-dialog-title data-test="confirm-dialog-title">
+  {{ data.title }}
+</h1>
+<main *ngIf="data.content" data-test="confirm-dialog-content">
+  <p>{{ data.content }}</p>
+</main>
+<footer mat-dialog-actions>
+  <button mat-stroked-button data-test="confirm-dialog-cancel" (click)="close(false)">
+    {{ data.cancelBtnText }}
+  </button>
+  <button
+    mat-stroked-button
+    color="primary"
+    data-test="confirm-dialog-ok"
+    (click)="close(true)"
+  >
+    {{ data.confirmBtnText }}
+  </button>
+</footer>
