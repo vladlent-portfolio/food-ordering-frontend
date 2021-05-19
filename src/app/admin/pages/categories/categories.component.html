@@ -1,5 +1,11 @@
 <header>
-  <button class="add-btn" mat-raised-button color="primary" (click)="openDialog()">
+  <button
+    class="add-btn"
+    mat-raised-button
+    color="primary"
+    (click)="create()"
+    data-test="add-category-btn"
+  >
     + New Category
   </button>
 </header>
@@ -10,5 +16,6 @@
     [title]="c.title"
     [removable]="c.removable"
     [imageSrc]="c.image"
+    (edit)="edit(c)"
   ></app-admin-card>
 </main>

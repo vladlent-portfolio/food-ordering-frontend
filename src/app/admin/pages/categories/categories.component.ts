@@ -31,15 +31,19 @@ export class CategoriesPageComponent implements OnInit {
     this.categories$ = this.categoryService.getAll()
   }
 
-  openDialog() {
-    const data: CategoryDialogData = {
-      mode: "create",
-    }
+  create(): void {
+    this.openDialog({ mode: "create" })
+  }
 
+  edit(category: Category): void {
+    this.openDialog({ mode: "edit", category })
+  }
+
+  openDialog(data: CategoryDialogData): void {
     this.dialog.open(CategoryDialogComponent, { data, disableClose: true })
   }
 
-  updateImage(id: number, img: File) {
+  updateImage(id: number, img: File): Observable<string> {
     return this.categoryService.updateImage(id, img).pipe(
       catchError((err: HttpErrorResponse) => {
         switch (err.status) {

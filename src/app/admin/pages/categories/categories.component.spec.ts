@@ -5,11 +5,13 @@ import { CategoriesPageComponent } from "./categories.component"
 import { Category } from "../../../models/models"
 import { CategoryService } from "../../../services/category.service"
 import { AdminCardComponent } from "../../components/card/card.component"
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
+import { ImageUploadError } from "../../components/image-upload/image-upload.component"
+import { MatDialog, MatDialogModule } from "@angular/material/dialog"
 import {
-  ImageUploadComponent,
-  ImageUploadError,
-} from "../../components/image-upload/image-upload.component"
+  CategoryDialogComponent,
+  CategoryDialogData,
+} from "../../components/dialogs/category-dialog/category-dialog.component"
+import { MatIconModule } from "@angular/material/icon"
 
 let testCategories: Category[]
 
@@ -19,6 +21,7 @@ describe("CategoriesComponent", () => {
   let fixture: ComponentFixture<CategoriesPageComponent>
   let nativeEl: HTMLElement
   let serviceSpy: jasmine.SpyObj<CategoryService>
+  let dialog: MatDialog
 
   beforeEach(() => {
     testCategories = [
@@ -26,12 +29,12 @@ describe("CategoriesComponent", () => {
       { id: 2, image: "/images/2.png", removable: true, title: "Burgers" },
     ]
 
-    serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll"])
+    serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll", "updateImage"])
 
     TestBed.configureTestingModule({
       declarations: [CategoriesPageComponent, AdminCardComponent],
+      imports: [MatDialogModule, MatIconModule],
       providers: [{ provide: CategoryService, useValue: serviceSpy }],
-      // schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
   })
 
@@ -39,6 +42,7 @@ describe("CategoriesComponent", () => {
     fixture = TestBed.createComponent(CategoriesPageComponent)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
+    dialog = TestBed.inject(MatDialog)
   })
 
   it("should call getAll in ngOnInit", () => {
@@ -46,6 +50,19 @@ describe("CategoriesComponent", () => {
     expect(spy).not.toHaveBeenCalled()
     component.ngOnInit()
     expect(spy).toHaveBeenCalled()
+  })
+
+  it("should open category dialog in edit mode", () => {
+    serviceSpy.getAll.and.returnValue(of(testCategories))
+    const openDialog = spyOn(component, "openDialog")
+    fixture.detectChanges()
+    const cards = queryCardsComponents()
+
+    cards.forEach((card, i) => {
+      const category = testCategories[i]
+      card.edit.emit()
+      expect(openDialog).toHaveBeenCalledWith({ mode: "edit", category })
+    })
   })
 
   describe("getAll()", () => {
@@ -60,9 +77,7 @@ describe("CategoriesComponent", () => {
       })
       fixture.detectChanges()
 
-      const cards: AdminCardComponent[] = fixture.debugElement
-        .queryAll(By.directive(AdminCardComponent))
-        .map(de => de.componentInstance)
+      const cards = queryCardsComponents()
       if (
         expect(cards.length).toBe(
           testCategories.length,
@@ -77,6 +92,32 @@ describe("CategoriesComponent", () => {
           expect(card.imageSrc).toBe(category.image)
         })
       }
+    })
+  })
+
+  describe("openDialog()", () => {
+    it("should call dialog open with provided options and default settings", () => {
+      const open = spyOn(dialog, "open")
+      const dialogOptions: CategoryDialogData[] = [
+        { mode: "create" },
+        { mode: "edit", category: testCategories[0] },
+      ]
+
+      dialogOptions.forEach(opt => {
+        component.openDialog(opt)
+        expect(open).toHaveBeenCalledWith(CategoryDialogComponent, {
+          data: opt,
+          disableClose: true,
+        })
+      })
+    })
+  })
+
+  describe("create()", () => {
+    it("should call dialog open", () => {
+      const spy = spyOn(component, "openDialog")
+      queryAddBtn().click()
+      expect(spy).toHaveBeenCalledWith({ mode: "create" })
     })
   })
 
@@ -115,4 +156,14 @@ describe("CategoriesComponent", () => {
   //   expect(upload).toBeDefined()
   //   expect(upload.error).toEqual(msg)
   // })
+
+  function queryCardsComponents(): AdminCardComponent[] {
+    return fixture.debugElement
+      .queryAll(By.directive(AdminCardComponent))
+      .map(de => de.componentInstance)
+  }
+
+  function queryAddBtn() {
+    return nativeEl.querySelector("[data-test='add-category-btn']") as HTMLButtonElement
+  }
 })
