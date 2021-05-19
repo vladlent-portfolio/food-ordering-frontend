@@ -78,7 +78,9 @@ describe("CardComponent", () => {
 
   it("should remove edit event", () => {
     const remove = spyOn(component, "remove")
-    queryEditBtn().click()
+    component.removable = true
+    fixture.detectChanges()
+    queryRemoveBtn().click()
     expect(remove).toHaveBeenCalled()
   })
 
