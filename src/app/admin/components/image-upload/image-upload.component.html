@@ -5,12 +5,14 @@
 </div>
 
 <p *ngIf="error" [ngSwitch]="error" class="error" data-test="error-msg">
-  <ng-container *ngSwitchCase="errorType.Size">Filesize is too big</ng-container>
+  <ng-container *ngSwitchCase="errorType.Size">
+    Maximum filesize is {{ maxFileSize / 1024 }} KiB
+  </ng-container>
   <ng-container *ngSwitchCase="errorType.Type">Unsupported filetype</ng-container>
   <ng-container *ngSwitchDefault>{{ error }}</ng-container>
 </p>
 
-<span class="sub-text">(Max filesize is 512 KiB)</span>
+<p *ngIf="!error" class="error error--placeholder" data-test="error-placeholder">a</p>
 
 <button class="upload-btn" type="button" mat-stroked-button (click)="input.click()">
   Upload new picture
@@ -20,6 +22,6 @@
   #input
   class="upload-input"
   type="file"
-  accept="image/png, image/jpeg"
+  [accept]="acceptedTypes ? acceptedTypes.join(', ') : null"
   (change)="handleUpload(input.files)"
 />

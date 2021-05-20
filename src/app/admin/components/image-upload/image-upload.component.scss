@@ -48,6 +48,10 @@ $iconSize: 2.5rem;
 
 .error {
   margin-bottom: 0.5rem;
+
+  &--placeholder {
+    color: transparent;
+  }
 }
 
 .sub-text {

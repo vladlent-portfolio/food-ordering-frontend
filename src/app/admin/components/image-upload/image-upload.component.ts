@@ -19,9 +19,27 @@ export enum ImageUploadError {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageUploadComponent {
+  private _error: ImageUploadError | string | undefined
   @Input() title: string | undefined
   @Input() imageSrc: string | undefined
-  @Input() error: ImageUploadError | string | undefined
+
+  /** Maximum allowed size of the file in bytes. */
+  @Input() maxFileSize = 100 * 1024
+
+  /** An array of accepted filetypes.
+   * If this value is falsy - all types will be accepted */
+  @Input() acceptedTypes: string[] | null = ["image/png", "image/jpeg"]
+
+  /** Time in milliseconds for error message to be visible.
+   * Zero or less equals forever. */
+  @Input() errorTimeout = 1500
+  @Input()
+  set error(err: ImageUploadError | string | undefined) {
+    this.setError(err)
+  }
+  get error() {
+    return this._error
+  }
 
   @Output() upload = new EventEmitter<File>()
 
@@ -29,14 +47,25 @@ export class ImageUploadComponent {
 
   constructor(private cdRef: ChangeDetectorRef) {}
 
-  // TODO: Add filesize check
   handleUpload(files: FileList | null) {
     if (!files) {
       return
     }
 
-    this.upload.emit(files[0])
-    this.generatePreview(files[0])
+    const file = files[0]
+
+    if (file.size > this.maxFileSize) {
+      this.error = ImageUploadError.Size
+      return
+    }
+
+    if (this.acceptedTypes && !this.acceptedTypes.includes(file.type)) {
+      this.error = ImageUploadError.Type
+      return
+    }
+
+    this.upload.emit(file)
+    this.generatePreview(file)
   }
 
   generatePreview(file: File) {
@@ -50,5 +79,16 @@ export class ImageUploadComponent {
     })
 
     reader.readAsDataURL(file)
+  }
+
+  private setError(err: ImageUploadComponent["error"]) {
+    this._error = err
+
+    if (err && this.errorTimeout > 0) {
+      setTimeout(() => {
+        this._error = undefined
+        this.cdRef.detectChanges()
+      }, this.errorTimeout)
+    }
   }
 }
