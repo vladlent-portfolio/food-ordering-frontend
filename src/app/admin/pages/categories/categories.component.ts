@@ -13,7 +13,7 @@ import {
   CategoryDialogComponent,
   CategoryDialogData,
 } from "../../components/dialogs/category-dialog/category-dialog.component"
-import { catchError, filter } from "rxjs/operators"
+import { catchError, filter, switchMap } from "rxjs/operators"
 import { HttpErrorResponse } from "@angular/common/http"
 import { ImageUploadError } from "../../components/image-upload/image-upload.component"
 import {
@@ -70,7 +70,10 @@ export class CategoriesPageComponent implements OnInit {
     this.dialog
       .open(ConfirmDialogComponent, { data })
       .afterClosed()
-      .pipe(filter(Boolean))
+      .pipe(
+        filter(Boolean),
+        switchMap(() => this.categoryService.remove(category.id)),
+      )
       .subscribe(() => {
         this.getAll()
       })

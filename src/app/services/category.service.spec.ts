@@ -104,4 +104,19 @@ describe("CategoryService", () => {
       req.flush(cat)
     })
   })
+
+  describe("remove()", () => {
+    it("should delete category", () => {
+      const cat = testCategories[0]
+      service.remove(1).subscribe(res => expect(res).toEqual(cat))
+
+      const req = httpController.expectOne(getURL(1))
+      const { request } = req
+
+      expect(request.method).toBe("DELETE")
+      expect(request.withCredentials).toBeTrue()
+
+      req.flush(cat)
+    })
+  })
 })

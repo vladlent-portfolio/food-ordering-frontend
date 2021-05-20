@@ -42,4 +42,8 @@ export class CategoryService {
       withCredentials: true,
     })
   }
+
+  remove(id: number): Observable<Category> {
+    return this.http.delete<Category>(`${this.baseURL}/${id}`, { withCredentials: true })
+  }
 }

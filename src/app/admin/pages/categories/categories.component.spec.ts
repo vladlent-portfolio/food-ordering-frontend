@@ -34,7 +34,11 @@ describe("CategoriesComponent", () => {
       { id: 2, image: "/images/2.png", removable: true, title: "Burgers" },
     ]
 
-    serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll", "updateImage"])
+    serviceSpy = jasmine.createSpyObj("CategoryService", [
+      "getAll",
+      "remove",
+      "updateImage",
+    ])
     serviceSpy.getAll.and.returnValue(of(testCategories))
 
     TestBed.configureTestingModule({
@@ -121,24 +125,26 @@ describe("CategoriesComponent", () => {
       })
     })
 
-    describe("afterClosed", () => {
+    describe("after closed", () => {
       beforeEach(() => {
         fixture.detectChanges()
       })
 
-      // TODO: Fix this tests
       it("should update categories if dialog was closed with 'true'", async () => {
         const getAll = spyOn(component, "getAll")
+        component.openDialog({ mode: "create" })
         dialogRef.close(true)
-        await fixture.whenStable()
         fixture.detectChanges()
+        await fixture.whenStable()
         expect(getAll).toHaveBeenCalled()
       })
 
-      it("should not update categories if dialog was close with 'false'", () => {
+      it("should not update categories if dialog was close with 'false'", async () => {
         const getAll = spyOn(component, "getAll")
+        component.openDialog({ mode: "create" })
         dialogRef.close(false)
         fixture.detectChanges()
+        await fixture.whenStable()
         expect(getAll).not.toHaveBeenCalled()
       })
     })
@@ -148,7 +154,7 @@ describe("CategoriesComponent", () => {
     it("should call dialog open", () => {
       const spy = spyOn(component, "openDialog")
       queryAddBtn().click()
-      expect(spy).toHaveBeenCalledWith({ mode: "create" })
+      expect(spy).toHaveBeenCalledOnceWith({ mode: "create" })
     })
   })
 
@@ -174,27 +180,46 @@ describe("CategoriesComponent", () => {
       }
     })
 
+    it("should call service's remove method", async () => {
+      const cat = { ...testCategories[0], removable: true }
+      serviceSpy.remove.and.returnValue(of(cat))
+
+      component.remove(cat)
+      dialogRef.close(true)
+      fixture.detectChanges()
+      await fixture.whenStable()
+      expect(serviceSpy.remove).toHaveBeenCalledOnceWith(cat.id)
+    })
+
     it("should not call dialog open if category isn't removable", () => {
       const category = { ...testCategories[0], removable: false }
       component.remove(category)
       expect(dialogOpen).not.toHaveBeenCalled()
     })
 
-    it("should refresh categories on confirm", () => {
+    it("should refresh categories on success", async () => {
       const category = { ...testCategories[0], removable: true }
+      serviceSpy.remove.and.returnValue(of(category))
+
       fixture.detectChanges()
       const getAll = spyOn(component, "getAll")
+
       component.remove(category)
       dialogRef.close(true)
+      fixture.detectChanges()
+      await fixture.whenStable()
       expect(getAll).toHaveBeenCalled()
     })
 
-    it("should not refresh categories on cancel", () => {
-      const getAll = spyOn(component, "getAll")
-      fixture.detectChanges()
+    it("should not refresh categories on cancel", async () => {
       const category = { ...testCategories[0], removable: true }
+      fixture.detectChanges()
+      const getAll = spyOn(component, "getAll")
+
       component.remove(category)
       dialogRef.close(false)
+      fixture.detectChanges()
+      await fixture.whenStable()
       expect(getAll).not.toHaveBeenCalled()
     })
   })
