@@ -29,7 +29,6 @@ import {
 })
 export class CategoriesPageComponent implements OnInit {
   categories: Category[] = []
-  uploadError: ImageUploadError | string | undefined
 
   constructor(
     private categoryService: CategoryService,
@@ -93,21 +92,7 @@ export class CategoriesPageComponent implements OnInit {
       })
   }
 
-  updateImage(id: number, img: File): Observable<string> {
-    return this.categoryService.updateImage(id, img).pipe(
-      catchError((err: HttpErrorResponse) => {
-        switch (err.status) {
-          case 413:
-            this.uploadError = ImageUploadError.Size
-            break
-          case 415:
-            this.uploadError = ImageUploadError.Type
-            break
-          default:
-            this.uploadError = "Unexpected error. Please try again later."
-        }
-        return throwError(err)
-      }),
-    )
+  updateImage(id: number, img: File) {
+    return this.categoryService.updateImage(id, img).subscribe()
   }
 }

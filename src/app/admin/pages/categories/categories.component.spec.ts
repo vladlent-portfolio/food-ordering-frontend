@@ -225,40 +225,23 @@ describe("CategoriesComponent", () => {
   })
 
   describe("updateImage()", () => {
-    const errorHandleTest = async (
-      status: number,
-      error: NonNullable<CategoriesPageComponent["uploadError"]>,
-    ) => {
-      serviceSpy.updateImage.and.returnValue(throwError({ status }))
-      component.updateImage(5, image).subscribe({ error: () => {} })
+    it("should be called by cards upload", () => {
       fixture.detectChanges()
-      expect(component.uploadError).toEqual(error)
-    }
+      const updateImage = spyOn(component, "updateImage")
+      const file = new File([new Blob()], "file")
+
+      queryCardsComponents().forEach((card, i) => {
+        card.upload.emit(file)
+        expect(updateImage).toHaveBeenCalledWith(i + 1, file)
+      })
+    })
 
     it("should call service's updateImage", () => {
       serviceSpy.updateImage.and.returnValue(of("123"))
-      component.updateImage(5, image).subscribe()
+      component.updateImage(5, image)
       expect(serviceSpy.updateImage).toHaveBeenCalledWith(5, image)
     })
-
-    it("should handle 413 error", () => errorHandleTest(413, ImageUploadError.Size))
-
-    it("should handle 415 error", () => errorHandleTest(415, ImageUploadError.Type))
-
-    it("should have default error msg", () =>
-      errorHandleTest(438, "Unexpected error. Please try again later."))
   })
-  //
-  // it("should bind uploadError to image-upload component", () => {
-  //   const msg = "error msg"
-  //   component.uploadError = msg
-  //   fixture.detectChanges()
-  //   const upload: AdminCardComponent = fixture.debugElement.query(
-  //     By.directive(AdminCardComponent),
-  //   ).componentInstance
-  //   expect(upload).toBeDefined()
-  //   expect(upload.error).toEqual(msg)
-  // })
 
   function queryCardsComponents(): AdminCardComponent[] {
     return fixture.debugElement

@@ -71,10 +71,10 @@ describe("CategoryService", () => {
       const response = getURL("static/categories/3.png")
       service.updateImage(id, image).subscribe(url => expect(url).toBe(response))
 
-      const req = httpController.expectOne(getURL(id))
+      const req = httpController.expectOne(getURL(id) + "/upload")
       const { request } = req
       expect(request.method).toBe("PATCH")
-      expect(request.headers.get("Content-Type")).toBe("application/form-data")
+      expect(request.headers.get("Content-Type")).toBeNull()
       expect(request.withCredentials).toBeTrue()
 
       expect(request.body instanceof FormData).toBeTrue()

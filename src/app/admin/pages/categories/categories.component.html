@@ -18,5 +18,6 @@
     [imageSrc]="c.image"
     (edit)="edit(c)"
     (remove)="remove(c)"
+    (upload)="updateImage(c.id, $event)"
   ></app-admin-card>
 </main>

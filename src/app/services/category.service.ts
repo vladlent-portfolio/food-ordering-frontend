@@ -37,8 +37,7 @@ export class CategoryService {
     const formData = new FormData()
     formData.set("image", img)
 
-    return this.http.patch<string>(`${this.baseURL}/${id}`, formData, {
-      headers: { "Content-Type": "application/form-data" },
+    return this.http.patch<string>(`${this.baseURL}/${id}/upload`, formData, {
       withCredentials: true,
     })
   }
