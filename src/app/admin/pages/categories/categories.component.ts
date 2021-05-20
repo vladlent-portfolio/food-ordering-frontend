@@ -64,7 +64,8 @@ export class CategoriesPageComponent implements OnInit {
     }
 
     const data: ConfirmDialogData = {
-      content: `Are you sure you want to delete '${category.title}' and all it's associated products?`,
+      type: "warn",
+      content: `Are you sure you want to delete '${category.title}' category and all it's associated products?`,
     }
 
     this.dialog

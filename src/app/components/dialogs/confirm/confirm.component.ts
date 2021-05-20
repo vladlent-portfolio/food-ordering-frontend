@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
 
 type DialogData = {
+  type: "confirm" | "warn"
   title: string | null
   content: string | null
   confirmBtnText: string
@@ -17,6 +18,7 @@ export type ConfirmDialogData = Partial<DialogData>
 })
 export class ConfirmDialogComponent implements OnInit {
   data: DialogData = {
+    type: "confirm",
     title: "Confirm action",
     content: "Are you sure?",
     confirmBtnText: "OK",

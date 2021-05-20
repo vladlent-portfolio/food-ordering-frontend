@@ -1,7 +1,12 @@
-<h1 *ngIf="data.title" mat-dialog-title data-test="confirm-dialog-title">
+<h2 *ngIf="data.title" mat-dialog-title data-test="confirm-dialog-title">
   {{ data.title }}
-</h1>
-<main *ngIf="data.content" mat-dialog-content data-test="confirm-dialog-content">
+</h2>
+<main
+  *ngIf="data.content"
+  class="content"
+  mat-dialog-content
+  data-test="confirm-dialog-content"
+>
   <p>{{ data.content }}</p>
 </main>
 <footer class="actions" mat-dialog-actions>
@@ -10,7 +15,7 @@
   </button>
   <button
     mat-flat-button
-    color="primary"
+    [color]="data.type === 'warn' ? 'warn' : 'primary'"
     data-test="confirm-dialog-ok"
     (click)="close(true)"
   >
