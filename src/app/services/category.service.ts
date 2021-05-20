@@ -33,11 +33,12 @@ export class CategoryService {
     })
   }
 
-  updateImage(id: number, img: File): Observable<string> {
+  updateImage(id: number, img: File) {
     const formData = new FormData()
     formData.set("image", img)
 
-    return this.http.patch<string>(`${this.baseURL}/${id}/upload`, formData, {
+    return this.http.patch(`${this.baseURL}/${id}/upload`, formData, {
+      responseType: "text",
       withCredentials: true,
     })
   }

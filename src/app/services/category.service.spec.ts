@@ -75,6 +75,7 @@ describe("CategoryService", () => {
       const { request } = req
       expect(request.method).toBe("PATCH")
       expect(request.headers.get("Content-Type")).toBeNull()
+      expect(request.responseType).toBe("text")
       expect(request.withCredentials).toBeTrue()
 
       expect(request.body instanceof FormData).toBeTrue()
