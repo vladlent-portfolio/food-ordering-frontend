@@ -32,7 +32,7 @@ export class ImageUploadComponent {
 
   /** Time in milliseconds for error message to be visible.
    * Zero or less equals forever. */
-  @Input() errorTimeout = 1500
+  @Input() errorTimeout = 3000
   @Input()
   set error(err: ImageUploadError | string | undefined) {
     this.setError(err)
