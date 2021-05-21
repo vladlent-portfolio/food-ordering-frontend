@@ -7,7 +7,6 @@ import {
 import { Category } from "../models/models"
 import { environment } from "../../environments/environment"
 
-let testCategories: Category[]
 const getURL = (param?: number | string) => {
   const baseURL = `${environment.apiURL}/categories`
   return param ? `${baseURL}/${param}` : baseURL
@@ -16,6 +15,7 @@ const getURL = (param?: number | string) => {
 describe("CategoryService", () => {
   let service: CategoryService
   let httpController: HttpTestingController
+  let testCategories: Category[]
 
   beforeEach(() => {
     TestBed.configureTestingModule({ imports: [HttpClientTestingModule] })
@@ -33,7 +33,7 @@ describe("CategoryService", () => {
   })
 
   describe("getAll()", () => {
-    it("should get an array of categories from API", () => {
+    it("should query all categories from API", () => {
       service.getAll().subscribe(categories => expect(categories).toEqual(testCategories))
 
       const req = httpController.expectOne(getURL())

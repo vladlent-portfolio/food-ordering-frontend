@@ -9,7 +9,7 @@ export type Dish = {
   id: number
   title: string
   price: number
-  image: string
+  image?: string
   removable: boolean
   category_id: number
   category: Category
