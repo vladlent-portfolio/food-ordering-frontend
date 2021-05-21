@@ -71,9 +71,13 @@ export class CategoryDialogComponent implements OnInit {
   }
 
   submit() {
+    if (this.formGroup.invalid) {
+      return
+    }
+
     this.isLoading = true
 
-    const title = this.formGroup.value.title.trim()
+    const title = this.formGroup.value.title?.trim()
 
     defer(() => {
       if (this.data.mode === "create") {

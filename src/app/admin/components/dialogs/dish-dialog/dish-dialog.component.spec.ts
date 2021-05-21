@@ -26,12 +26,11 @@ describe("DishDialogComponent", () => {
   let categories: Category[]
 
   beforeEach(() => {
-    data = { mode: "create", categories }
-    dto = { title: "Margherita", price: 4.2, category_id: 3 }
     categories = [
       { id: 1, title: "Salads", removable: false, image: "/categories/1.png" },
       { id: 3, title: "Pizza", removable: true, image: "/categories/3.jpg" },
     ]
+    data = { mode: "create", categories }
     dish = {
       id: 2,
       title: "Crunchy Cashew Salad",
@@ -41,6 +40,7 @@ describe("DishDialogComponent", () => {
       category_id: 1,
       category: categories[0],
     }
+    dto = { title: "Margherita", price: 4.2, category_id: 3 }
     dialogRefSpy = jasmine.createSpyObj("MatDialogRef", ["close"])
     serviceSpy = jasmine.createSpyObj("CategoryService", ["create", "update"])
 
@@ -152,6 +152,7 @@ describe("DishDialogComponent", () => {
       serviceSpy.create.and.returnValue(
         throwError({ status: 409, statusText: "Conflict" }),
       )
+
       fixture.detectChanges()
       updateForm(dto.title, dto.price, dto.category_id)
       fixture.detectChanges()
@@ -203,6 +204,7 @@ describe("DishDialogComponent", () => {
 
   describe("submit()", () => {
     it("should close the dialog on successful request", () => {
+      serviceSpy.create.and.returnValue(of(dish))
       fixture.detectChanges()
       updateForm(dto.title, dto.price, dto.category_id)
       fixture.detectChanges()
@@ -222,18 +224,51 @@ describe("DishDialogComponent", () => {
       expect(dialogRefSpy.close).not.toHaveBeenCalled()
     })
 
-    it("should update title error on 409", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 409 }))
+    it("should return early if form is invalid", () => {
+      updateForm("", -5, 3)
+      fixture.detectChanges()
+      component.submit()
+      expect(component.isLoading).toBeFalse()
+      expect(serviceSpy.create).not.toHaveBeenCalled()
+      expect(serviceSpy.update).not.toHaveBeenCalled()
+    })
+
+    it("should trim title", () => {
+      serviceSpy.create.and.returnValue(of(dish))
+      serviceSpy.update.and.returnValue(of(dish))
+      const titles = ["  4 Cheese", "4 Cheese  ", "  4 Cheese  "]
+      const modes: DishDialogData["mode"][] = ["create", "edit"]
 
       fixture.detectChanges()
-      updateTitleControl("Pizza")
+
+      modes.forEach(mode => {
+        component.data.mode = mode
+        fixture.detectChanges()
+
+        titles.forEach(title => {
+          updateForm(title, dto.price, dto.category_id)
+          fixture.detectChanges()
+          querySubmitBtn().click()
+          expect(serviceSpy.create.calls.mostRecent().args[0].title).toBe("4 Cheese")
+        })
+      })
+    })
+
+    it("should update title error on 409", async () => {
+      serviceSpy.create.and.returnValue(throwError({ status: 409 }))
+
+      updateForm(dto.title, dto.price, dto.category_id)
       fixture.detectChanges()
       component.submit()
       fixture.detectChanges()
-      expect(queryTitleError()).not.toBeNull()
-      expect(queryTitleError().textContent).toContain(
-        "Dish with name 'Pizza' already exists",
-      )
+
+      const error = queryTitleError()
+
+      if (expect(error).not.toBeNull()) {
+        expect(error.textContent).toContain(
+          `Dish with name '${dto.title}' already exists`,
+        )
+      }
     })
   })
 
@@ -249,19 +284,6 @@ describe("DishDialogComponent", () => {
       expect(serviceSpy.create).toHaveBeenCalledWith(dto)
       expect(serviceSpy.update).not.toHaveBeenCalled()
     })
-
-    it("should trim title", () => {
-      serviceSpy.create.and.returnValue(of(dish))
-      const titles = ["  Pizza", "Pizza  ", "  Pizza  "]
-
-      fixture.detectChanges()
-      titles.forEach(title => {
-        updateTitleControl(title)
-        fixture.detectChanges()
-        querySubmitBtn().click()
-        expect(serviceSpy.create.calls.mostRecent().args[0].title).toBe(title.trim())
-      })
-    })
   })
 
   describe("edit mode", () => {
@@ -276,7 +298,7 @@ describe("DishDialogComponent", () => {
       const category_id = 5
 
       fixture.detectChanges()
-      updateForm(dish.title, dish.price, dish.category_id)
+      updateForm(title, price, category_id)
       fixture.detectChanges()
       querySubmitBtn().click()
       expect(serviceSpy.create).not.toHaveBeenCalled()
@@ -299,7 +321,7 @@ describe("DishDialogComponent", () => {
 
   function updateForm(title: string, price: number, id: number) {
     component.formGroup.patchValue({ title, price, category_id: id })
-    component.formGroup.markAsTouched()
+    component.formGroup.markAllAsTouched()
     component.formGroup.markAsDirty()
   }
 

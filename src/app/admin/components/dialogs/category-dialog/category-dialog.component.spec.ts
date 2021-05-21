@@ -153,6 +153,15 @@ describe("CategoryDialogComponent", () => {
       expect(dialogRefSpy.close).not.toHaveBeenCalled()
     })
 
+    it("should return early if form is invalid", () => {
+      updateTitleControl("")
+      fixture.detectChanges()
+      component.submit()
+      expect(component.isLoading).toBeFalse()
+      expect(serviceSpy.create).not.toHaveBeenCalled()
+      expect(serviceSpy.update).not.toHaveBeenCalled()
+    })
+
     it("should update title error on 409", () => {
       serviceSpy.create.and.returnValue(throwError({ status: 409 }))
       updateTitleControl("Pizza")

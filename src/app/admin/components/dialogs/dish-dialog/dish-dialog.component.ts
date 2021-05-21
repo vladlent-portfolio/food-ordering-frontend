@@ -9,6 +9,8 @@ import {
 } from "@angular/forms"
 import { DishService } from "../../../../services/dish.service"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
+import { defer } from "rxjs"
+import { HttpErrorResponse } from "@angular/common/http"
 
 export type DishDialogData = ({ mode: "create" } | { mode: "edit"; dish: Dish }) & {
   categories: Category[]
@@ -40,6 +42,11 @@ export class DishDialogComponent implements OnInit {
     private dishService: DishService,
     private dialogRef: MatDialogRef<DishDialogData>,
   ) {}
+
+  ngOnInit() {
+    this.setTitle()
+  }
+
   private createFormGroup(): FormGroup {
     let title = null
     let price = null
@@ -60,10 +67,6 @@ export class DishDialogComponent implements OnInit {
     return () => (this.titleError ? { title: true } : null)
   }
 
-  ngOnInit() {
-    this.setTitle()
-  }
-
   setTitle() {
     if (this.data.mode === "create") {
       this.title = "Create New Dish"
@@ -76,5 +79,34 @@ export class DishDialogComponent implements OnInit {
     this.dialogRef.close(false)
   }
 
-  submit() {}
+  submit() {
+    if (this.formGroup.invalid) {
+      return
+    }
+
+    this.isLoading = true
+
+    const { value } = this.formGroup
+    value.title = value.title.trim()
+
+    defer(() => {
+      if (this.data.mode === "create") {
+        return this.dishService.create(value)
+      }
+
+      return this.dishService.update({ ...this.data.dish, ...value })
+    }).subscribe(
+      () => {
+        this.dialogRef.close(true)
+      },
+      (err: HttpErrorResponse) => {
+        this.isLoading = false
+        if (err.status === 409) {
+          this.titleError = `Dish with name '${this.titleControl.value}' already exists.`
+        }
+        this.titleControl.updateValueAndValidity()
+      },
+      () => {},
+    )
+  }
 }
