@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-import { of, throwError } from "rxjs"
+import { of } from "rxjs"
 import { By } from "@angular/platform-browser"
 import { CategoriesPageComponent } from "./categories.component"
 import { Category } from "../../../models/models"
 import { CategoryService } from "../../../services/category.service"
 import { AdminCardComponent } from "../../components/card/card.component"
-import { ImageUploadError } from "../../components/image-upload/image-upload.component"
 import { MatDialog, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
 import {
   CategoryDialogComponent,
@@ -16,8 +15,6 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"
 import { ConfirmDialogComponent } from "../../../components/dialogs/confirm/confirm.component"
 
-let testCategories: Category[]
-
 const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
 describe("CategoriesComponent", () => {
   let component: CategoriesPageComponent
@@ -27,6 +24,7 @@ describe("CategoriesComponent", () => {
   let dialog: MatDialog
   let dialogRef: MatDialogRef<TestDialogComponent>
   let dialogOpen: jasmine.Spy<MatDialog["open"]>
+  let testCategories: Category[]
 
   beforeEach(() => {
     testCategories = [
@@ -53,8 +51,8 @@ describe("CategoriesComponent", () => {
     fixture = TestBed.createComponent(CategoriesPageComponent)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
-    dialog = TestBed.inject(MatDialog)
 
+    dialog = TestBed.inject(MatDialog)
     dialogRef = dialog.open(TestDialogComponent)
     dialogOpen = spyOn(dialog, "open").and.returnValue(dialogRef)
   })

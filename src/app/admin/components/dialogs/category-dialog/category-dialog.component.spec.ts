@@ -1,21 +1,12 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { CategoryDialogComponent, CategoryDialogData } from "./category-dialog.component"
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogConfig,
-  MatDialogModule,
-  MatDialogRef,
-} from "@angular/material/dialog"
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { ImageUploadComponent } from "../../image-upload/image-upload.component"
-import { Component } from "@angular/core"
 import { ReactiveFormsModule } from "@angular/forms"
 import { MatInputModule } from "@angular/material/input"
 import { CategoryService } from "../../../../services/category.service"
 import { of, throwError } from "rxjs"
 import { Category } from "../../../../models/models"
-import { MatIconModule } from "@angular/material/icon"
 
 const title = "Burgers"
 const category: Category = {
@@ -41,13 +32,12 @@ describe("CategoryDialogComponent", () => {
     serviceSpy.create.and.returnValue(of({} as Category))
 
     TestBed.configureTestingModule({
-      declarations: [CategoryDialogComponent, ImageUploadComponent, TestHostComponent],
+      declarations: [CategoryDialogComponent],
       imports: [
         MatDialogModule,
         MatInputModule,
         NoopAnimationsModule,
         ReactiveFormsModule,
-        MatIconModule,
       ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: data },
@@ -177,11 +167,6 @@ describe("CategoryDialogComponent", () => {
   })
 
   describe("create mode", () => {
-    it("should hide component for image uploading", () => {
-      fixture.detectChanges()
-      expect(queryImageUpload()).toBeNull()
-    })
-
     it("should create category", () => {
       serviceSpy.create.and.returnValue(of(category))
 
@@ -248,10 +233,6 @@ describe("CategoryDialogComponent", () => {
     return nativeEl.querySelector(".title")
   }
 
-  function queryImageUpload() {
-    return nativeEl.querySelector("app-image-upload") as HTMLElement
-  }
-
   function queryCancelBtn() {
     return nativeEl.querySelector("[data-test='cancel-btn']") as HTMLButtonElement
   }
@@ -264,14 +245,3 @@ describe("CategoryDialogComponent", () => {
     return nativeEl.querySelector("[data-test='title-error']") as HTMLElement
   }
 })
-
-@Component({
-  template: "",
-})
-class TestHostComponent {
-  constructor(public dialog: MatDialog) {}
-
-  open(config?: MatDialogConfig) {
-    return this.dialog.open(CategoryDialogComponent)
-  }
-}

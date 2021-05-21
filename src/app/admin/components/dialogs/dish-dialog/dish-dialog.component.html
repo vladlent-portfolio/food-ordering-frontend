@@ -3,11 +3,28 @@
 </header>
 
 <main>
-  <form class="form" [formGroup]="formGroup" (ngSubmit)="submit()">
+  <form *ngIf="formGroup" class="form" [formGroup]="formGroup" (ngSubmit)="submit()">
     <mat-form-field>
       <mat-label>Title</mat-label>
-      <input formControlName="title" type="text" matInput placeholder="Pizza" />
+      <input formControlName="title" type="text" matInput placeholder="Margherita" />
       <mat-error *ngIf="titleError" data-test="title-error">{{ titleError }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Price</mat-label>
+      <input formControlName="price" type="number" min="0" matInput />
+      <mat-error *ngIf="priceControl.hasError('min')" data-test="price-error">
+        Price can't be negative
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category_id">
+        <mat-option *ngFor="let c of data.categories" [value]="c.id">
+          {{ c.title }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <div class="form__actions">
