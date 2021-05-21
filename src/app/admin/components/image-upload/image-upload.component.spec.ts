@@ -60,7 +60,11 @@ describe("ImageUploadComponent", () => {
     host.imageSrc = "/image1.png"
     fixture.detectChanges()
     expect(queryIcon()).toBeNull()
-    expect(queryImg()).not.toBeNull()
+
+    const img = queryImg()
+    if (expect(img).not.toBeNull()) {
+      expect(queryImg().loading).toBe("lazy")
+    }
   })
 
   it("should trigger click event on file input, when clicked on upload button", () => {
@@ -219,7 +223,7 @@ describe("ImageUploadComponent", () => {
   }
 
   function queryImg() {
-    return nativeEl.querySelector("img")
+    return nativeEl.querySelector("img") as HTMLImageElement
   }
 
   function queryIcon() {

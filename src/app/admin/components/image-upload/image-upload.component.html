@@ -1,7 +1,7 @@
 <p *ngIf="title?.trim()" class="title">{{ title }}</p>
 <div [class.has-image]="imageSrc" class="img-container">
   <mat-icon *ngIf="!imageSrc">image</mat-icon>
-  <img *ngIf="imageSrc" [src]="imageSrc" />
+  <img *ngIf="imageSrc" [src]="imageSrc" loading="lazy" />
 </div>
 
 <p *ngIf="error" [ngSwitch]="error" class="error" data-test="error-msg">

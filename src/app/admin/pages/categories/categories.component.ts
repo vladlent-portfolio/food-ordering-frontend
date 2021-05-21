@@ -6,16 +6,13 @@ import {
   TrackByFunction,
 } from "@angular/core"
 import { CategoryService } from "../../../services/category.service"
-import { Observable, throwError } from "rxjs"
 import { Category } from "../../../models/models"
 import { MatDialog } from "@angular/material/dialog"
 import {
   CategoryDialogComponent,
   CategoryDialogData,
 } from "../../components/dialogs/category-dialog/category-dialog.component"
-import { catchError, filter, switchMap } from "rxjs/operators"
-import { HttpErrorResponse } from "@angular/common/http"
-import { ImageUploadError } from "../../components/image-upload/image-upload.component"
+import { filter, switchMap } from "rxjs/operators"
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
