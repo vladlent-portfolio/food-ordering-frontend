@@ -1,13 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core"
 import { Category } from "../../../../models/models"
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from "@angular/forms"
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms"
 import { CategoryService } from "../../../../services/category.service"
 import { HttpErrorResponse } from "@angular/common/http"
 import { defer } from "rxjs"
@@ -42,15 +36,10 @@ export class CategoryDialogComponent implements OnInit {
   }
 
   private createFormGroup(): FormGroup {
-    const titleValidators = [Validators.required, this.titleValidator()]
-
-    if (this.data.mode === "create") {
-      return this.fb.group({ title: [null, titleValidators] })
-    }
+    const title = this.data.mode === "edit" ? this.data.category.title : null
 
     return this.fb.group({
-      ...this.data.category,
-      title: [this.data.category.title, titleValidators],
+      title: [title, [Validators.required, this.titleValidator()]],
     })
   }
 
@@ -58,7 +47,7 @@ export class CategoryDialogComponent implements OnInit {
     return () => (this.titleError ? { title: true } : null)
   }
 
-  setTitle() {
+  setTitle(): void {
     if (this.data.mode === "create") {
       this.title = "Create New Category"
     } else {
@@ -66,22 +55,21 @@ export class CategoryDialogComponent implements OnInit {
     }
   }
 
-  close() {
+  close(): void {
     this.dialogRef.close(false)
   }
 
-  submit() {
+  submit(): void {
     if (this.formGroup.invalid) {
       return
     }
 
     this.isLoading = true
-
-    const title = this.formGroup.value.title?.trim()
+    const title = this.formGroup.value.title.trim()
 
     defer(() => {
       if (this.data.mode === "create") {
-        return this.categoryService.create(title.trim())
+        return this.categoryService.create(title)
       }
       return this.categoryService.update({ ...this.data.category, title })
     }).subscribe(
