@@ -9,11 +9,21 @@
   >
     + New Dish
   </button>
+
+  <mat-form-field>
+    <mat-label>Category</mat-label>
+    <mat-select [formControl]="categoriesFilter" data-test="category-select">
+      <mat-option
+        *ngFor="let c of [{ id: 0, title: 'All' }].concat($any(categories)) as cats"
+        [value]="c.id"
+      >
+        {{ c.title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </header>
 
-<!--Add Sorting-->
-
-<main *ngIf="dishes" class="cards-container">
+<main *ngIf="filteredDishes$ | async as dishes" class="cards-container">
   <app-admin-card
     *ngFor="let d of dishes; trackBy: trackBy"
     [title]="d.title"

@@ -3,9 +3,15 @@
 }
 
 header {
-  padding-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  padding-bottom: 2rem;
 }
 
 .cards-container {
   display: flex;
+}
+
+.add-btn {
+  margin-right: 1.5rem;
 }

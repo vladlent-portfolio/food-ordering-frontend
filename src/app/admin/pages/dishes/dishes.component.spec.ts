@@ -16,6 +16,8 @@ import {
 } from "../../components/dialogs/dish-dialog/dish-dialog.component"
 import { ConfirmDialogComponent } from "../../../components/dialogs/confirm/confirm.component"
 import { CategoryService } from "../../../services/category.service"
+import { MatSelectModule } from "@angular/material/select"
+import { MatOption } from "@angular/material/core"
 
 const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
 describe("DishesComponent", () => {
@@ -67,7 +69,7 @@ describe("DishesComponent", () => {
 
     TestBed.configureTestingModule({
       declarations: [DishesPageComponent, TestDialogComponent, AdminCardComponent],
-      imports: [MatDialogModule, MatIconModule, NoopAnimationsModule],
+      imports: [MatDialogModule, MatIconModule, NoopAnimationsModule, MatSelectModule],
       providers: [
         { provide: DishService, useValue: dishServiceSpy },
         { provide: CategoryService, useValue: categoryServiceSpy },
@@ -93,10 +95,10 @@ describe("DishesComponent", () => {
   it("should call getDishes in ngOnInit", () => {
     const spy = spyOn(component, "getDishes").and.callThrough()
     expect(spy).not.toHaveBeenCalled()
+    component.dishes$.subscribe(d => expect(d).toEqual(dishes))
     component.ngOnInit()
     expect(dishServiceSpy.getAll).toHaveBeenCalled()
     expect(spy).toHaveBeenCalled()
-    expect(component.dishes).toEqual(dishes)
   })
 
   it("should call getCategories in ngOnInit", () => {
@@ -108,9 +110,9 @@ describe("DishesComponent", () => {
     expect(component.categories).toEqual(categories)
   })
 
-  it("should render dishes cards", async () => {
-    component.dishes = dishes
+  it("should render dishes cards", () => {
     fixture.detectChanges()
+    component.ngOnInit()
 
     const cards = queryCardsComponents()
     if (
@@ -132,12 +134,86 @@ describe("DishesComponent", () => {
   it("should open dishes dialog in edit mode", () => {
     const openDialog = spyOn(component, "openDialog")
     fixture.detectChanges()
+    component.ngOnInit()
     const cards = queryCardsComponents()
 
     cards.forEach((card, i) => {
       const dish = dishes[i]
       card.edit.emit()
       expect(openDialog).toHaveBeenCalledWith({ mode: "edit", dish, categories })
+    })
+  })
+
+  describe("categories filter", () => {
+    let filters: { id: number; title: string }[]
+
+    beforeEach(() => {
+      filters = [...categories, { id: 0, title: "All" }]
+    })
+
+    it("should be populated with categories", () => {
+      fixture.detectChanges()
+      const options = queryCategoriesOptions()
+
+      expect(options.length).toBe(filters.length)
+
+      for (const opt of options) {
+        const filter = filters.find(f => opt.value === f.id)
+        if (expect(filter).toBeDefined()) {
+          expect(opt.viewValue).toBe(filter!.title)
+        }
+      }
+    })
+
+    it("should filter dishes by selected category", () => {
+      fixture.detectChanges()
+      component.ngOnInit()
+      expect(queryCardsComponents().length).toBe(dishes.length)
+
+      for (const dish of dishes) {
+        component.categoriesFilter.setValue(dish.category_id)
+        fixture.detectChanges()
+        const filteredDishes = dishes.filter(d => d.category_id === dish.category_id)
+        expect(queryCardsComponents().length).toBe(filteredDishes.length)
+      }
+    })
+
+    it("should preserve filter on dishes update", () => {
+      const category = categories[1]
+      const newDishes = [
+        ...dishes,
+        {
+          id: 3,
+          title: "4 Cheese",
+          category_id: category.id,
+          category,
+          removable: true,
+        } as Dish,
+      ]
+
+      dishServiceSpy.getAll.and.returnValue(of(newDishes))
+      fixture.detectChanges()
+
+      component.categoriesFilter.setValue(category.id)
+      fixture.detectChanges()
+      component.getDishes()
+      fixture.detectChanges()
+      expect(queryCardsComponents().length).toBe(
+        newDishes.filter(d => d.category_id === category.id).length,
+      )
+    })
+
+    it("should have initial value of 0", () => {
+      expect(component.categoriesFilter.value).toBe(0)
+    })
+
+    it("should be disabled if categories are falsy", () => {
+      expect(component.categoriesFilter.disabled).toBeTrue()
+    })
+
+    it("should be enabled if categories are truthy", () => {
+      fixture.detectChanges()
+      expect(component.categoriesFilter.disabled).toBeFalse()
     })
   })
 
@@ -221,6 +297,7 @@ describe("DishesComponent", () => {
     it("should be called on click", () => {
       const remove = spyOn(component, "remove")
       fixture.detectChanges()
+      component.ngOnInit()
       const cards = queryCardsComponents()
       cards.forEach((card, i) => {
         card.remove.emit()
@@ -286,6 +363,7 @@ describe("DishesComponent", () => {
   describe("updateImage()", () => {
     it("should be called by cards upload", () => {
       fixture.detectChanges()
+      component.ngOnInit()
       const updateImage = spyOn(component, "updateImage")
       const file = new File([new Blob()], "file")
 
@@ -296,6 +374,7 @@ describe("DishesComponent", () => {
     })
 
     it("should call service's updateImage", () => {
+      fixture.detectChanges()
       dishServiceSpy.updateImage.and.returnValue(of("123"))
       component.updateImage(5, image)
       expect(dishServiceSpy.updateImage).toHaveBeenCalledWith(5, image)
@@ -310,6 +389,19 @@ describe("DishesComponent", () => {
 
   function queryAddBtn() {
     return nativeEl.querySelector("[data-test='add-dish-btn']") as HTMLButtonElement
+  }
+
+  function queryCategorySelect() {
+    return nativeEl.querySelector("[data-test='category-select']") as HTMLElement
+  }
+
+  function queryCategoriesOptions(): MatOption[] {
+    const select = queryCategorySelect()
+    select.click()
+    fixture.detectChanges()
+    return fixture.debugElement
+      .queryAll(By.directive(MatOption))
+      .map(de => de.componentInstance)
   }
 })
 @Component({

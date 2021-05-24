@@ -13,11 +13,13 @@ import { Category, Dish } from "../../../models/models"
 import { CategoryService } from "../../../services/category.service"
 import { DishService } from "../../../services/dish.service"
 import { MatDialog } from "@angular/material/dialog"
-import { filter, switchMap } from "rxjs/operators"
+import { filter, map, switchMap } from "rxjs/operators"
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from "../../../components/dialogs/confirm/confirm.component"
+import { FormControl } from "@angular/forms"
+import { combineLatest, Subject } from "rxjs"
 
 @Component({
   selector: "app-dishes",
@@ -26,8 +28,15 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DishesPageComponent implements OnInit {
-  dishes: Dish[] = []
+  dishes$ = new Subject<Dish[]>()
   categories: Category[] = []
+  categoriesFilter = new FormControl({ value: 0, disabled: !this.categories.length })
+  filteredDishes$ = combineLatest([
+    this.dishes$,
+    this.categoriesFilter.valueChanges,
+  ]).pipe(
+    map(([dishes, id]) => (id !== 0 ? dishes.filter(d => d.category_id === id) : dishes)),
+  )
 
   constructor(
     private categoryService: CategoryService,
@@ -45,7 +54,7 @@ export class DishesPageComponent implements OnInit {
 
   getDishes() {
     this.dishService.getAll().subscribe(dishes => {
-      this.dishes = dishes
+      this.dishes$.next(dishes)
       this.cdRef.detectChanges()
     })
   }
@@ -53,6 +62,7 @@ export class DishesPageComponent implements OnInit {
   getCategories() {
     this.categoryService.getAll().subscribe(categories => {
       this.categories = categories
+      this.categoriesFilter.enable()
       this.cdRef.detectChanges()
     })
   }
