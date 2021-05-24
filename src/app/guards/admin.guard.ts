@@ -10,7 +10,7 @@ import { selectIsAdmin } from "../store/selectors"
 })
 export class AdminGuard implements CanLoad {
   constructor(private store: Store<AppState>) {}
-  canLoad(route: Route): Observable<boolean> {
+  canLoad(_: Route): Observable<boolean> {
     return this.store.select(selectIsAdmin)
   }
 }

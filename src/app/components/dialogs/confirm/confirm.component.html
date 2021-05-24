@@ -1,12 +1,7 @@
 <h2 *ngIf="data.title" mat-dialog-title data-test="confirm-dialog-title">
   {{ data.title }}
 </h2>
-<main
-  *ngIf="data.content"
-  class="content"
-  mat-dialog-content
-  data-test="confirm-dialog-content"
->
+<main *ngIf="data.content" class="content" mat-dialog-content data-test="confirm-dialog-content">
   <p>{{ data.content }}</p>
 </main>
 <footer class="actions" mat-dialog-actions>

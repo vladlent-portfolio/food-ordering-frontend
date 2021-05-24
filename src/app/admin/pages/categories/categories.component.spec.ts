@@ -32,11 +32,7 @@ describe("CategoriesComponent", () => {
       { id: 2, image: "/images/2.png", removable: true, title: "Burgers" },
     ]
 
-    serviceSpy = jasmine.createSpyObj("CategoryService", [
-      "getAll",
-      "remove",
-      "updateImage",
-    ])
+    serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll", "remove", "updateImage"])
     serviceSpy.getAll.and.returnValue(of(testCategories))
 
     TestBed.configureTestingModule({

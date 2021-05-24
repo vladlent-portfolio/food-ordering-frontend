@@ -5,7 +5,6 @@ import {
   tick,
   waitForAsync,
 } from "@angular/core/testing"
-
 import { ImageUploadComponent, ImageUploadError } from "./image-upload.component"
 import { MatIconModule } from "@angular/material/icon"
 import { MatButtonModule } from "@angular/material/button"
@@ -207,11 +206,6 @@ describe("ImageUploadComponent", () => {
   function createImagePNG(size: number) {
     const blob = new Blob([new ArrayBuffer(size)])
     return new File([blob], "image.png", { type: "image/png" })
-  }
-
-  function createImageJPEG(size: number) {
-    const blob = new Blob([new ArrayBuffer(size)])
-    return new File([blob], "image.jpeg", { type: "image/jpeg" })
   }
 
   function queryTitle() {

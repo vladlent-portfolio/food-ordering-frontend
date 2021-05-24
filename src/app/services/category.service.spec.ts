@@ -1,9 +1,6 @@
 import { TestBed } from "@angular/core/testing"
 import { CategoryService } from "./category.service"
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from "@angular/common/http/testing"
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
 import { Category } from "../models/models"
 import { environment } from "../../environments/environment"
 

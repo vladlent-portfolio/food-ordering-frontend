@@ -10,8 +10,8 @@ import { MatCardModule } from "@angular/material/card"
 import { SharedModule } from "../shared/shared.module"
 import { AdminStoreModule } from "./admin-store.module"
 import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
-import { ImageUploadComponent } from "./components/image-upload/image-upload.component";
-import { DishDialogComponent } from './components/dialogs/dish-dialog/dish-dialog.component'
+import { ImageUploadComponent } from "./components/image-upload/image-upload.component"
+import { DishDialogComponent } from "./components/dialogs/dish-dialog/dish-dialog.component"
 
 const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule]
 

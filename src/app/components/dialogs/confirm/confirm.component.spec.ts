@@ -91,9 +91,7 @@ describe("ConfirmComponent", () => {
   }
 
   function queryCancelBtn() {
-    return nativeEl.querySelector(
-      "[data-test='confirm-dialog-cancel']",
-    ) as HTMLButtonElement
+    return nativeEl.querySelector("[data-test='confirm-dialog-cancel']") as HTMLButtonElement
   }
 
   function queryConfirmBtn() {

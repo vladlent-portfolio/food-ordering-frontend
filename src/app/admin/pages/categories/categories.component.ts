@@ -37,7 +37,7 @@ export class CategoriesPageComponent implements OnInit {
     this.getAll()
   }
 
-  trackBy: TrackByFunction<Category> = (index, c) => c.id
+  trackBy: TrackByFunction<Category> = (_, c) => c.id
 
   getAll(): void {
     this.categoryService.getAll().subscribe(categories => {
