@@ -24,7 +24,11 @@ export class DishService {
   }
 
   create(dto: DishCreateDTO): Observable<Dish> {
-    return this.http.post<Dish>(this.baseURL, dto, { withCredentials: true })
+    return this.http.post<Dish>(
+      this.baseURL,
+      { ...dto, removable: true },
+      { withCredentials: true },
+    )
   }
 
   update(dish: Dish): Observable<Dish> {

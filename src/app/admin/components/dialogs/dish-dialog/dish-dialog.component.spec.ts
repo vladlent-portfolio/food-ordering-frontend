@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-
 import { DishDialogComponent, DishDialogData } from "./dish-dialog.component"
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
 import { MatInputModule } from "@angular/material/input"
@@ -273,7 +272,7 @@ describe("DishDialogComponent", () => {
   })
 
   describe("create mode", () => {
-    it("should create category", () => {
+    it("should create dish", () => {
       serviceSpy.create.and.returnValue(of(dish))
 
       fixture.detectChanges()

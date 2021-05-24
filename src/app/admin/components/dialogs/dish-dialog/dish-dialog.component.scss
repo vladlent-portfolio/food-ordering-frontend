@@ -1,3 +1,26 @@
 :host {
   display: block;
+  padding: 1.5rem;
+}
+
+.title {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  }
 }

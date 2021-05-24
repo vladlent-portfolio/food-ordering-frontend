@@ -78,10 +78,7 @@ export class CategoriesPageComponent implements OnInit {
 
   openDialog(data: CategoryDialogData) {
     this.dialog
-      .open(CategoryDialogComponent, {
-        data,
-        disableClose: true,
-      })
+      .open(CategoryDialogComponent, { data })
       .afterClosed()
       .pipe(filter(Boolean))
       .subscribe(() => {
@@ -90,6 +87,6 @@ export class CategoriesPageComponent implements OnInit {
   }
 
   updateImage(id: number, img: File) {
-    return this.categoryService.updateImage(id, img).subscribe()
+    this.categoryService.updateImage(id, img).subscribe()
   }
 }

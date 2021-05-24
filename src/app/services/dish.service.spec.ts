@@ -101,7 +101,7 @@ describe("DishService", () => {
       const { request } = req
 
       expect(request.method).toBe("POST")
-      expect(request.body).toEqual(dto)
+      expect(request.body).toEqual({ ...dto, removable: true })
       expect(request.withCredentials).toBeTrue()
 
       req.flush(expected)

@@ -9,7 +9,6 @@ import {
 import { RouterTestingModule } from "@angular/router/testing"
 import { AppComponent } from "./app.component"
 import { AppState } from "./store/reducers"
-
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
@@ -23,7 +22,7 @@ import { NgLetModule } from "@ngrx-utils/store"
 import { MatIconModule } from "@angular/material/icon"
 import { Router } from "@angular/router"
 import { Component } from "@angular/core"
-import { of, throwError } from "rxjs"
+import { of } from "rxjs"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>

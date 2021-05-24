@@ -32,7 +32,11 @@ describe("CategoriesComponent", () => {
       { id: 2, image: "/images/2.png", removable: true, title: "Burgers" },
     ]
 
-    serviceSpy = jasmine.createSpyObj("CategoryService", ["getAll", "remove", "updateImage"])
+    serviceSpy = jasmine.createSpyObj("CategoryService", [
+      "getAll",
+      "remove",
+      "updateImage",
+    ])
     serviceSpy.getAll.and.returnValue(of(testCategories))
 
     TestBed.configureTestingModule({
@@ -76,47 +80,50 @@ describe("CategoriesComponent", () => {
     })
   })
 
+  it("should render categories cards", () => {
+    component.categories = testCategories
+    fixture.detectChanges()
+
+    const cards = queryCardsComponents()
+    if (
+      expect(cards.length).toBe(
+        testCategories.length,
+        `expected to render ${testCategories.length} cards`,
+      )
+    ) {
+      cards.forEach((card, i) => {
+        const category = testCategories[i]
+        expect(card.title).toBe(category.title)
+        expect(card.subtitle).toBeUndefined()
+        expect(card.removable).toBe(category.removable)
+        expect(card.imageSrc).toBe(category.image)
+      })
+    }
+  })
+
   describe("getAll()", () => {
     it("should call getAll from CategoryService and update component's state", () => {
-      const categories$ = of(testCategories)
-      serviceSpy.getAll.and.returnValue(categories$)
+      serviceSpy.getAll.and.returnValue(of(testCategories))
       component.getAll()
       expect(serviceSpy.getAll).toHaveBeenCalled()
-
-      fixture.detectChanges()
-
-      const cards = queryCardsComponents()
-      if (
-        expect(cards.length).toBe(
-          testCategories.length,
-          `expected to render ${testCategories.length} cards`,
-        )
-      ) {
-        cards.forEach((card, i) => {
-          const category = testCategories[i]
-          expect(card.title).toBe(category.title)
-          expect(card.subtitle).toBeUndefined()
-          expect(card.removable).toBe(category.removable)
-          expect(card.imageSrc).toBe(category.image)
-        })
-      }
+      expect(component.categories).toEqual(testCategories)
     })
   })
 
   describe("openDialog()", () => {
-    it("should call dialog open with provided options and default settings", () => {
-      const dialogOptions: CategoryDialogData[] = [
-        { mode: "create" },
-        { mode: "edit", category: testCategories[0] },
-      ]
+    let dialogOptions: CategoryDialogData[]
 
-      dialogOptions.forEach(opt => {
+    beforeEach(() => {
+      dialogOptions = [{ mode: "create" }, { mode: "edit", category: testCategories[0] }]
+    })
+
+    it("should call dialog open with provided options and default settings", () => {
+      for (const opt of dialogOptions) {
         component.openDialog(opt)
         expect(dialogOpen).toHaveBeenCalledWith(CategoryDialogComponent, {
           data: opt,
-          disableClose: true,
         })
-      })
+      }
     })
 
     describe("after closed", () => {
@@ -126,19 +133,26 @@ describe("CategoriesComponent", () => {
 
       it("should update categories if dialog was closed with 'true'", async () => {
         const getAll = spyOn(component, "getAll")
-        component.openDialog({ mode: "create" })
-        dialogRef.close(true)
-        fixture.detectChanges()
-        await fixture.whenStable()
-        expect(getAll).toHaveBeenCalled()
+
+        for (const opt of dialogOptions) {
+          component.openDialog(opt)
+          dialogRef.close(true)
+          fixture.detectChanges()
+          await fixture.whenStable()
+          expect(getAll).toHaveBeenCalledTimes(1)
+          getAll.calls.reset()
+        }
       })
 
       it("should not update categories if dialog was close with 'false'", async () => {
         const getAll = spyOn(component, "getAll")
-        component.openDialog({ mode: "create" })
-        dialogRef.close(false)
-        fixture.detectChanges()
-        await fixture.whenStable()
+
+        for (const opt of dialogOptions) {
+          component.openDialog(opt)
+          dialogRef.close(false)
+          fixture.detectChanges()
+          await fixture.whenStable()
+        }
         expect(getAll).not.toHaveBeenCalled()
       })
     })

@@ -12,9 +12,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
 import { defer } from "rxjs"
 import { HttpErrorResponse } from "@angular/common/http"
 
-export type DishDialogData = ({ mode: "create" } | { mode: "edit"; dish: Dish }) & {
-  categories: Category[]
-}
+export type DishDialogData = { categories: Category[] } & (
+  | { mode: "create" }
+  | { mode: "edit"; dish: Dish }
+)
 
 @Component({
   selector: "app-dish-dialog",

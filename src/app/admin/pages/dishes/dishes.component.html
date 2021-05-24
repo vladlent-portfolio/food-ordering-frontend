@@ -1,1 +1,27 @@
-<p>dishes works!</p>
+<header>
+  <button
+    class="add-btn"
+    mat-raised-button
+    color="primary"
+    (click)="create()"
+    [disabled]="!categories"
+    data-test="add-dish-btn"
+  >
+    + New Dish
+  </button>
+</header>
+
+<!--Add Sorting-->
+
+<main *ngIf="dishes" class="cards-container">
+  <app-admin-card
+    *ngFor="let d of dishes; trackBy: trackBy"
+    [title]="d.title"
+    [subtitle]="d.category.title"
+    [removable]="d.removable"
+    [imageSrc]="d.image"
+    (edit)="edit(d)"
+    (remove)="remove(d)"
+    (upload)="updateImage(d.id, $event)"
+  ></app-admin-card>
+</main>

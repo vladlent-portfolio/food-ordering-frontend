@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
 import { AdminNavComponent } from "./nav.component"
-import { pages } from "../../admin-routing.module"
 import { MatListModule } from "@angular/material/list"
 import { RouterTestingModule } from "@angular/router/testing"
 
@@ -27,6 +26,7 @@ describe("NavComponent", () => {
   it("should render navigation links from routing pages", async () => {
     fixture.detectChanges()
     const links = Array.from(nativeEl.querySelectorAll("a"))
+    const pages = component.links
     expect(links).toHaveSize(pages.length)
 
     links.forEach(a => {
