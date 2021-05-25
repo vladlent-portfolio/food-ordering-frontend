@@ -16,6 +16,10 @@ export class UserService {
 
   constructor(private http: HttpClient, private store: Store<AppState>) {}
 
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(this.baseURL, { withCredentials: true })
+  }
+
   me(): Observable<User> {
     return this.http
       .get<User>(`${this.baseURL}/me`, { withCredentials: true })

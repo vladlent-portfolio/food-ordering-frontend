@@ -1,1 +1,36 @@
-<p>customers works!</p>
+<table mat-table [dataSource]="users" data-test="users-table">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef data-test="users-table-header-cell">
+      Customer ID
+    </th>
+    <td mat-cell *matCellDef="let user" data-test="users-table-cell">{{ user.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef data-test="users-table-header-cell">E-mail</th>
+    <td mat-cell *matCellDef="let user" data-test="users-table-cell">{{ user.email }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="created_at">
+    <th mat-header-cell *matHeaderCellDef data-test="users-table-header-cell">
+      Join Date
+    </th>
+    <td mat-cell *matCellDef="let user" data-test="users-table-cell">
+      {{ user.created_at }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="is_admin">
+    <th mat-header-cell *matHeaderCellDef data-test="users-table-header-cell">Admin</th>
+    <td mat-cell *matCellDef="let user" data-test="users-table-cell">
+      {{ user.is_admin }}
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    data-test="users-table-row"
+  ></tr>
+</table>

@@ -38,6 +38,21 @@ describe("UserService", () => {
     controller.verify()
   })
 
+  describe("getAll()", () => {
+    it("should get array of users", () => {
+      const expected = [user]
+      service.getAll().subscribe(resp => expect(resp).toEqual(expected))
+
+      const req = controller.expectOne(baseURL)
+      const { request } = req
+
+      expect(request.method).toBe("GET")
+      expect(request.withCredentials).toBeTrue()
+
+      req.flush(expected)
+    })
+  })
+
   describe("signIn()", () => {
     it("should send email and password and return User", () => {
       const password = "superpass123"

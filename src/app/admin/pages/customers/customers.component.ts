@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core"
+import { User } from "../../../models/models"
+import { UserService } from "../../../services/user.service"
 
 @Component({
   selector: "app-customers",
@@ -7,7 +14,19 @@ import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomersPageComponent implements OnInit {
-  constructor() {}
+  displayedColumns = ["id", "email", "created_at", "is_admin"]
+  users: User[] = []
 
-  ngOnInit(): void {}
+  constructor(private userService: UserService, private cdRef: ChangeDetectorRef) {}
+
+  ngOnInit(): void {
+    this.getAll()
+  }
+
+  getAll() {
+    this.userService.getAll().subscribe(users => {
+      this.users = users
+      this.cdRef.detectChanges()
+    })
+  }
 }

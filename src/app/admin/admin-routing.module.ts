@@ -9,7 +9,7 @@ import { OrdersPageComponent } from "./pages/orders/orders.component"
 export const PAGES_COMPONENTS = [
   CategoriesPageComponent,
   DishesPageComponent,
-  CategoriesPageComponent,
+  CustomersPageComponent,
   OrdersPageComponent,
 ]
 
