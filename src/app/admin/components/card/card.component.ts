@@ -5,6 +5,7 @@ import {
   Input,
   Output,
   EventEmitter,
+  TemplateRef,
 } from "@angular/core"
 
 @Component({
@@ -18,6 +19,7 @@ export class AdminCardComponent implements OnInit {
   @Input() subtitle: string | undefined
   @Input() imageSrc: string | undefined
   @Input() removable = false
+  @Input() subtitleTemplate: TemplateRef<any> | undefined
 
   @Output() upload = new EventEmitter<File>()
   @Output() edit = new EventEmitter<void>()

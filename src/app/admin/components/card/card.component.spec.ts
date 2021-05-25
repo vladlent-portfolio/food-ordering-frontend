@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { AdminCardComponent } from "./card.component"
 import { MatCardModule } from "@angular/material/card"
 import { MatIconModule } from "@angular/material/icon"
-import { Component } from "@angular/core"
+import { Component, TemplateRef, ViewChild } from "@angular/core"
 import { ImageUploadComponent } from "../image-upload/image-upload.component"
 import { By } from "@angular/platform-browser"
 
@@ -36,8 +36,8 @@ describe("CardComponent", () => {
     const contentEl = nativeEl.querySelector(".card__content")
 
     if (expect(contentEl).not.toBeNull("expected card content to exist") && contentEl) {
-      const titleEl = contentEl.querySelector(".card__title")
-      const subtitleEl = contentEl.querySelector(".card__subtitle")
+      const titleEl = queryTitle()
+      const subtitleEl = querySubtitle()
 
       expect(titleEl?.textContent).toContain(title)
       expect(subtitleEl?.textContent).toContain(subtitle)
@@ -84,6 +84,32 @@ describe("CardComponent", () => {
     expect(remove).toHaveBeenCalled()
   })
 
+  describe("subtitle template", () => {
+    it("should use default template if it isn't provided by the user", () => {
+      fixture.detectChanges()
+      component.subtitleTemplate = undefined
+      fixture.detectChanges()
+      expect(queryUserSubtitle()).toBeNull()
+      expect(querySubtitle()).not.toBeNull()
+    })
+
+    it("should use user's version if it is provided", () => {
+      fixture.detectChanges()
+      component.subtitleTemplate = component.mySubtitle
+      fixture.detectChanges()
+      expect(queryUserSubtitle()).not.toBeNull()
+      expect(querySubtitle()).toBeNull()
+    })
+  })
+
+  function queryTitle() {
+    return nativeEl.querySelector("[data-test='card-title']") as HTMLElement
+  }
+
+  function querySubtitle() {
+    return nativeEl.querySelector("[data-test='card-subtitle']") as HTMLElement
+  }
+
   function queryUploadComponent() {
     return fixture.debugElement.query(By.directive(ImageUploadComponent))
       .componentInstance as ImageUploadComponent
@@ -96,6 +122,10 @@ describe("CardComponent", () => {
   function queryRemoveBtn() {
     return nativeEl.querySelector("[data-test='remove-btn']") as HTMLButtonElement
   }
+
+  function queryUserSubtitle() {
+    return nativeEl.querySelector(".user-subtitle") as HTMLElement
+  }
 })
 
 @Component({
@@ -104,12 +134,22 @@ describe("CardComponent", () => {
     [title]="title"
     [subtitle]="subtitle"
     [removable]="removable"
+    [subtitleTemplate]="subtitleTemplate"
     (upload)="uploadedImage = $event"
     (edit)="edit()"
     (remove)="remove()"
-  ></app-admin-card>`,
+  >
+    <ng-template #mySubtitle>
+      <div class="user-subtitle">
+        <p>My subtitle</p>
+      </div>
+    </ng-template>
+  </app-admin-card>`,
 })
 class TestHostComponent {
+  @ViewChild("mySubtitle") mySubtitle: TemplateRef<any> | undefined
+
+  subtitleTemplate: TemplateRef<any> | undefined
   imageSrc: AdminCardComponent["imageSrc"]
   title: AdminCardComponent["title"]
   subtitle: AdminCardComponent["subtitle"]

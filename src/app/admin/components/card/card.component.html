@@ -6,8 +6,8 @@
   ></app-image-upload>
 
   <mat-card-content class="card__content">
-    <p class="card__title">{{ title }}</p>
-    <p class="card__subtitle">{{ subtitle }}</p>
+    <p class="card__title" data-test="card-title">{{ title }}</p>
+    <ng-container *ngTemplateOutlet="subtitleTemplate || defaultSubtitle"></ng-container>
   </mat-card-content>
 
   <mat-card-actions class="card__actions">
@@ -32,3 +32,7 @@
     </button>
   </mat-card-actions>
 </mat-card>
+
+<ng-template #defaultSubtitle>
+  <p class="card__subtitle" data-test="card-subtitle">{{ subtitle }}</p>
+</ng-template>
