@@ -110,25 +110,41 @@ describe("DishesComponent", () => {
     expect(component.categories).toEqual(categories)
   })
 
-  it("should render dishes cards", () => {
-    fixture.detectChanges()
-    component.ngOnInit()
+  fdescribe("dishes cards", () => {
+    beforeEach(() => {
+      fixture.detectChanges()
+      component.ngOnInit()
+    })
 
-    const cards = queryCardsComponents()
-    if (
-      expect(cards.length).toBe(
+    it("should render a card for each dish", () => {
+      const cards = queryCardsComponents()
+      expect(cards.length).toEqual(
         dishes.length,
         `expected to render ${dishes.length} cards`,
       )
-    ) {
-      cards.forEach((card, i) => {
+      {
+        cards.forEach((card, i) => {
+          const dish = dishes[i]
+          expect(card.title).toBe(dish.title)
+          expect(card.subtitle).toBeUndefined()
+          expect(card.subtitleTemplate).toBeDefined(
+            "expected card to use custom subtitle template",
+          )
+          expect(card.removable).toBe(dish.removable)
+          expect(card.imageSrc).toBe(dish.image)
+        })
+      }
+    })
+
+    it("should have custom subtitle with price and category", () => {
+      const subtitles = nativeEl.querySelectorAll("[data-test='dish-subtitle']")
+      expect(subtitles.length).toBe(dishes.length)
+      subtitles.forEach((subtitle, i) => {
         const dish = dishes[i]
-        expect(card.title).toBe(dish.title)
-        expect(card.subtitle).toBe(dish.category.title)
-        expect(card.removable).toBe(dish.removable)
-        expect(card.imageSrc).toBe(dish.image)
+        expect(subtitle.textContent).toContain(dish.price)
+        expect(subtitle.textContent).toContain(dish.category.title)
       })
-    }
+    })
   })
 
   it("should open dishes dialog in edit mode", () => {

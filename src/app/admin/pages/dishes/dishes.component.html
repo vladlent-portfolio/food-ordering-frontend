@@ -27,11 +27,18 @@
   <app-admin-card
     *ngFor="let d of dishes; trackBy: trackBy"
     [title]="d.title"
-    [subtitle]="d.category.title"
     [removable]="d.removable"
     [imageSrc]="d.image"
+    [subtitleTemplate]="subtitle"
     (edit)="edit(d)"
     (remove)="remove(d)"
     (upload)="updateImage(d.id, $event)"
-  ></app-admin-card>
+  >
+    <ng-template #subtitle>
+      <div class="subtitle" data-test="dish-subtitle">
+        <span class="subtitle__category">{{ d.category.title }}</span>
+        <span class="subtitle__price">{{ d.price | currency }}</span>
+      </div>
+    </ng-template>
+  </app-admin-card>
 </main>
