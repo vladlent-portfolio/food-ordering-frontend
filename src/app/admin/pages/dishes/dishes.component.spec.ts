@@ -110,7 +110,7 @@ describe("DishesComponent", () => {
     expect(component.categories).toEqual(categories)
   })
 
-  fdescribe("dishes cards", () => {
+  describe("dishes cards", () => {
     beforeEach(() => {
       fixture.detectChanges()
       component.ngOnInit()
