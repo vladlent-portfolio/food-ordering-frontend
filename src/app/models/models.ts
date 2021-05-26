@@ -21,3 +21,29 @@ export type User = {
   email: string
   is_admin: boolean
 }
+
+export type Order = {
+  id: number
+  created_at: string
+  updated_at: string
+  status: OrderStatus
+  items: OrderItem[]
+  total: number
+  user_id: number
+  user: User
+}
+
+export enum OrderStatus {
+  Created = 0,
+  InProgress = 1,
+  Done = 2,
+  Canceled = 3,
+}
+
+export type OrderItem = {
+  id: number
+  order_id: number
+  dish: Dish
+  dish_id: number
+  quantity: number
+}

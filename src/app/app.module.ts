@@ -13,11 +13,17 @@ import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { UserService } from "./services/user.service"
 import { ConfirmDialogComponent } from "./components/dialogs/confirm/confirm.component"
+import { MainPageComponent } from "./pages/main/main.component"
 
 const MATERIAL_MODULES = [MatToolbarModule, MatProgressSpinnerModule, MatTabsModule]
 
 @NgModule({
-  declarations: [AppComponent, LoginDialogComponent, ConfirmDialogComponent],
+  declarations: [
+    AppComponent,
+    LoginDialogComponent,
+    ConfirmDialogComponent,
+    MainPageComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

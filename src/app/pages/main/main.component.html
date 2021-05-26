@@ -1,0 +1,17 @@
+<section data-test="categories">
+  <div *ngFor="let c of categories" data-test="category-card">
+    <img [src]="c.image" alt="Image of {{ c.title }} category" />
+    <p>{{ c.title }}</p>
+  </div>
+</section>
+
+<section data-test="dishes">
+  <div *ngFor="let d of dishes" data-test="dish-card">
+    <img [src]="d.image" alt="Image of {{ d.title }}" />
+    <p>{{ d.title }}</p>
+    <div>
+      <span>{{ d.price }}</span>
+      <button data-test="add-to-card-btn">+</button>
+    </div>
+  </div>
+</section>
