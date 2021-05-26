@@ -16,7 +16,7 @@
       Join Date
     </th>
     <td mat-cell *matCellDef="let user" data-test="users-table-cell">
-      {{ user.created_at }}
+      {{ user.created_at | date: "medium" }}
     </td>
   </ng-container>
 

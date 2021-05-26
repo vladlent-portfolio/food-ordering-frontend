@@ -13,6 +13,7 @@
     <div class="form__row">
       <mat-form-field class="form__field">
         <mat-label>Price</mat-label>
+        <span matPrefix>$ &nbsp;</span>
         <input formControlName="price" type="number" min="0" matInput />
         <mat-error *ngIf="priceControl.hasError('min')" data-test="price-error">
           Price can't be negative

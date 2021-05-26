@@ -1,8 +1,8 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  Component,
+  OnInit,
 } from "@angular/core"
 import { User } from "../../../models/models"
 import { UserService } from "../../../services/user.service"
