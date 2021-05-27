@@ -30,7 +30,9 @@
       </figure>
       <footer class="dish__footer">
         <span class="dish__price">{{ d.price | currency }}</span>
-        <button class="dish__add" data-test="add-to-card-btn">+</button>
+        <button class="dish__add" (click)="addToCart(d)" data-test="add-to-card-btn">
+          +
+        </button>
       </footer>
     </div>
   </div>

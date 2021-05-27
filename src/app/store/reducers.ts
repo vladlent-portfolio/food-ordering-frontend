@@ -43,7 +43,7 @@ export const cartReducer = createReducer(
   initialState.cart,
   on(addDishToCart, (state, { dish }) => ({
     ...state,
-    [dish.id]: { dish, quantity: dish.id in state ? ++state[dish.id].quantity : 1 },
+    [dish.id]: { dish, quantity: dish.id in state ? state[dish.id].quantity + 1 : 1 },
   })),
   on(removeDishFromCart, (state, { dish, amount }) => {
     if (!state[dish.id]) {

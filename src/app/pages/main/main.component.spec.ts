@@ -5,6 +5,8 @@ import { DishService } from "../../services/dish.service"
 import { MatButtonModule } from "@angular/material/button"
 import { Category, Dish } from "../../models/models"
 import { of } from "rxjs"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
+import { addDishToCart } from "../../store/actions"
 
 describe("MainComponent", () => {
   let component: MainPageComponent
@@ -14,6 +16,7 @@ describe("MainComponent", () => {
   let categories: Category[]
   let dishServiceSpy: jasmine.SpyObj<DishService>
   let categoryServiceSpy: jasmine.SpyObj<CategoryService>
+  let store: MockStore
 
   beforeEach(() => {
     categories = [
@@ -52,6 +55,7 @@ describe("MainComponent", () => {
       providers: [
         { provide: CategoryService, useValue: categoryServiceSpy },
         { provide: DishService, useValue: dishServiceSpy },
+        provideMockStore(),
       ],
     })
   })
@@ -60,6 +64,7 @@ describe("MainComponent", () => {
     fixture = TestBed.createComponent(MainPageComponent)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
+    store = TestBed.inject(MockStore)
   })
 
   it("should fetch categories and dishes on init", () => {
@@ -146,6 +151,22 @@ describe("MainComponent", () => {
       component.selectedCategory = undefined
       detectChanges()
       expect(nativeEl.querySelector("[data-test='dishes']")).toBeNull()
+    })
+
+    it("should call addToCart on 'add' btn click", async () => {
+      const addToCart = spyOn(component, "addToCart")
+      await component.ngOnInit()
+      component.filteredDishes = dishes
+      detectChanges()
+
+      const cards = queryDishesCards()
+      expect(cards.length).toBe(dishes.length)
+
+      dishes.forEach((d, i) => {
+        const card = cards[i]
+        queryAddBtn(card).click()
+        expect(addToCart).toHaveBeenCalledWith(d)
+      })
     })
   })
 
@@ -238,6 +259,16 @@ describe("MainComponent", () => {
     })
   })
 
+  describe("addToCart()", () => {
+    it("should add dish to cart", () => {
+      const action = spyOn(store, "dispatch")
+      for (const dish of dishes) {
+        component.addToCart(dish)
+        expect(action).toHaveBeenCalledWith(addDishToCart({ dish }))
+      }
+    })
+  })
+
   function detectChanges() {
     fixture.detectChanges()
     component.cdRef.detectChanges()
@@ -252,7 +283,7 @@ describe("MainComponent", () => {
   }
 
   function queryAddBtn(dishCard: HTMLElement) {
-    return dishCard.querySelector("[data-test='add-to-card-btn']")
+    return dishCard.querySelector("[data-test='add-to-card-btn']") as HTMLElement
   }
 
   function forEachCategoryCard(fn: (card: HTMLElement, index: number) => void) {
