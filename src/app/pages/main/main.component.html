@@ -8,8 +8,14 @@
       (click)="selectedCategory = c.id"
       data-test="category-card"
     >
-      <img class="category__img" [src]="c.image" alt="Image of {{ c.title }} category" />
-      <p class="category__title">{{ c.title }}</p>
+      <figure class="category__figure">
+        <img
+          class="category__img"
+          [src]="c.image"
+          alt="Image of {{ c.title }} category"
+        />
+        <figcaption class="category__title">{{ c.title }}</figcaption>
+      </figure>
     </div>
   </div>
 </section>

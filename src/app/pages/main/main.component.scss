@@ -19,18 +19,26 @@
 }
 
 .category {
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 8.5rem;
+  height: 9.5rem;
+  padding: 1rem;
   margin-right: 2rem;
   border: 2px solid $color-accent;
   border-radius: 20px;
   background-color: rgba($color-accent, 0.1);
   transition: background-color ease-out 0.15s;
+  text-align: center;
   cursor: pointer;
+
+  &__figure {
+    margin: auto;
+  }
 
   &__img {
     width: 4rem;
     height: 4rem;
-    //border-radius: 50%;
     padding-bottom: 0.5rem;
   }
 
@@ -59,26 +67,25 @@
 }
 
 .dish {
-  width: 8rem;
+  width: 12rem;
   padding: 1.5rem;
   border-radius: 15px;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 
   &__figure {
     margin: 0;
-    padding-bottom: 0.25rem;
     text-align: center;
   }
 
   &__img {
     width: 5rem;
     height: 5rem;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
   }
 
   &__title {
     margin: 0;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
     text-align: center;
     font-size: 1rem;
     font-weight: 500;
@@ -88,7 +95,7 @@
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    padding-top: 0.5rem;
+    padding-top: 0.75rem;
     border-top: 1px solid lightgrey;
   }
 
