@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core"
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core"
 import { Category, Dish } from "../../models/models"
 import { CategoryService } from "../../services/category.service"
 import { DishService } from "../../services/dish.service"

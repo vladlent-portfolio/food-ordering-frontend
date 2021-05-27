@@ -1,3 +1,99 @@
+@import "~src/styles/colors";
+
 :host {
   display: block;
+  padding: 1.5rem;
+}
+
+.categories {
+  display: flex;
+  padding-bottom: 2rem;
+}
+
+.category {
+  padding: 2rem;
+  margin-right: 2rem;
+  border: 2px solid $color-accent;
+  border-radius: 20px;
+  background-color: rgba($color-accent, 0.1);
+  transition: background-color ease-out 0.15s;
+  cursor: pointer;
+
+  &__img {
+    width: 4rem;
+    height: 4rem;
+    //border-radius: 50%;
+    padding-bottom: 0.5rem;
+  }
+
+  &__title {
+    margin: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  &--selected,
+  &:hover {
+    background-color: $color-accent;
+  }
+}
+
+.dishes {
+  display: flex;
+}
+
+.dish {
+  width: 8rem;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+  &__figure {
+    margin: 0;
+    padding-bottom: 0.25rem;
+    text-align: center;
+  }
+
+  &__img {
+    width: 5rem;
+    height: 5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  &__title {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px solid lightgrey;
+  }
+
+  &__price {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  &__add {
+    padding: 0.05rem 0.4rem;
+    background-color: $color-accent;
+    color: white;
+    font-size: 1.3rem;
+    border-radius: 50%;
+    border: 0;
+    transition: background-color ease-out 0.1s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken($color-accent, 10%);
+    }
+  }
 }

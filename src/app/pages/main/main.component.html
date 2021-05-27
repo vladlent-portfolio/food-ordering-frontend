@@ -1,17 +1,19 @@
-<section data-test="categories">
-  <div *ngFor="let c of categories" data-test="category-card">
-    <img [src]="c.image" alt="Image of {{ c.title }} category" />
-    <p>{{ c.title }}</p>
+<section class="categories" data-test="categories">
+  <div class="category" *ngFor="let c of categories" data-test="category-card">
+    <img class="category__img" [src]="c.image" alt="Image of {{ c.title }} category" />
+    <p class="category__title">{{ c.title }}</p>
   </div>
 </section>
 
-<section data-test="dishes">
-  <div *ngFor="let d of dishes" data-test="dish-card">
-    <img [src]="d.image" alt="Image of {{ d.title }}" />
-    <p>{{ d.title }}</p>
-    <div>
-      <span>{{ d.price }}</span>
-      <button data-test="add-to-card-btn">+</button>
-    </div>
+<section class="dishes" data-test="dishes">
+  <div class="dish" *ngFor="let d of dishes" data-test="dish-card">
+    <figure class="dish__figure">
+      <img class="dish__img" [src]="d.image" alt="Image of {{ d.title }}" />
+      <figcaption class="dish__title">{{ d.title }}</figcaption>
+    </figure>
+    <footer class="dish__footer">
+      <span class="dish__price">{{ d.price | currency }}</span>
+      <button class="dish__add" data-test="add-to-card-btn">+</button>
+    </footer>
   </div>
 </section>
