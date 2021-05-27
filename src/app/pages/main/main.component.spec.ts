@@ -63,24 +63,23 @@ describe("MainComponent", () => {
   })
 
   it("should fetch categories and dishes on init", () => {
-    const getCategories = spyOn(component, "getCategories")
-    const getDishes = spyOn(component, "getDishes")
-
+    const getInitData = spyOn(component, "getInitData")
     component.ngOnInit()
-
-    expect(getCategories).toHaveBeenCalledTimes(1)
-    expect(getDishes).toHaveBeenCalledTimes(1)
+    expect(getInitData).toHaveBeenCalledTimes(1)
   })
 
-  describe("categories cards", () => {
-    it("should render a card for each category", () => {
-      fixture.detectChanges()
+  describe("categories", () => {
+    it("should have a caption", () => {
+      const caption = nativeEl.querySelector("[data-test='categories-caption']")
+      expect(caption).not.toBeNull()
+      expect(caption?.textContent).toContain("Categories")
+    })
 
-      const cards = queryCategoriesCards()
-      expect(cards.length).toBe(categories.length)
+    it("should render a card for each category", async () => {
+      await component.ngOnInit()
 
-      categories.forEach((c, i) => {
-        const card = cards[i]
+      forEachCategoryCard((card, index) => {
+        const c = categories[index]
         expect(card.textContent).toContain(c.title)
 
         const img = card.querySelector("img")
@@ -89,46 +88,162 @@ describe("MainComponent", () => {
         expect(img?.alt).toContain(c.title)
       })
     })
-  })
 
-  describe("dishes cards", () => {
-    it("should render a card for each dish", () => {
-      fixture.detectChanges()
+    it("should add 'selected' class to currently selected category", async () => {
+      await component.ngOnInit()
 
-      const cards = queryDishesCards()
-      expect(cards.length).toBe(dishes.length)
+      forEachCategoryCard((card, index) => {
+        component.selectedCategory = categories[index].id
+        detectChanges()
+        expect(card.classList.contains("category--selected")).toBeTrue()
+      })
+    })
 
-      dishes.forEach((d, i) => {
-        const card = cards[i]
-        expect(card.textContent).toContain(d.title)
-        expect(card.textContent).toContain(d.price)
+    it("should set selectedCategory on card click", async () => {
+      await component.ngOnInit()
 
-        const img = card.querySelector("img")
-        expect(img?.src).toContain(d.image)
-        expect(img?.alt).toContain(d.title)
-
-        expect(queryAddBtn(card)).not.toBeNull()
+      forEachCategoryCard((card, i) => {
+        card.click()
+        expect(component.selectedCategory).toBe(categories[i].id)
       })
     })
   })
 
+  describe("dishes", () => {
+    it("should have a caption", async () => {
+      await component.ngOnInit()
+      const caption = nativeEl.querySelector("[data-test='dishes-caption']")
+      expect(caption).not.toBeNull()
+      expect(caption?.textContent).toContain("Dishes")
+    })
+
+    it("should render a card for each filtered dish", async () => {
+      await component.ngOnInit()
+
+      for (const category of categories) {
+        component.selectedCategory = category.id
+        detectChanges()
+
+        const cards = queryDishesCards()
+        expect(cards.length).toBe(component.filteredDishes.length)
+
+        component.filteredDishes.forEach((d, i) => {
+          const card = cards[i]
+          expect(card.textContent).toContain(d.title)
+          expect(card.textContent).toContain(d.price)
+
+          const img = card.querySelector("img")
+          expect(img?.src).toContain(d.image)
+          expect(img?.alt).toContain(d.title)
+
+          expect(queryAddBtn(card)).not.toBeNull()
+        })
+      }
+    })
+
+    it("should be hidden if category isn't selected", async () => {
+      await component.ngOnInit()
+      component.selectedCategory = undefined
+      detectChanges()
+      expect(nativeEl.querySelector("[data-test='dishes']")).toBeNull()
+    })
+  })
+
+  describe("selectedCategory", () => {
+    it("should update selectedCategory", () => {
+      for (const c of categories) {
+        component.selectedCategory = c.id
+        expect(component.selectedCategory).toBe(c.id)
+      }
+    })
+
+    it("should update filteredDishes with dishes filtered by provided category id", async () => {
+      await component.ngOnInit()
+      const filterDishes = spyOn(component, "filterDishes")
+
+      for (const category of categories) {
+        component.selectedCategory = category.id
+        expect(filterDishes).toHaveBeenCalledWith(category.id)
+        expect(component.filteredDishes).toEqual(component.filterDishes(category.id))
+      }
+    })
+
+    it("should not call filterDishes if provided id is undefined", () => {
+      const filterDishes = spyOn(component, "filterDishes")
+      component.selectedCategory = undefined
+      expect(filterDishes).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("getInitData", () => {
+    it("should call getCategories before calling getDishes", async () => {
+      const getCategories = spyOn(component, "getCategories")
+      const getDishes = spyOn(component, "getDishes")
+
+      await component.ngOnInit()
+
+      expect(getCategories).toHaveBeenCalledBefore(getDishes)
+      expect(getCategories).toHaveBeenCalledTimes(1)
+      expect(getDishes).toHaveBeenCalledTimes(1)
+    })
+  })
+
   describe("getCategories()", () => {
-    it("should fetch categories and update components state", () => {
-      component.getCategories()
+    it("should fetch categories and update components state", async () => {
+      await component.getCategories()
       expect(categoryServiceSpy.getAll).toHaveBeenCalledTimes(1)
       expect(component.categories).toEqual(categories)
+    })
+
+    it("should set first category in array as selected category", async () => {
+      await component.getCategories()
+      expect(component.selectedCategory).toBe(categories[0].id)
     })
   })
 
   describe("getDishes()", () => {
-    it("should fetch dishes and update components state", () => {
-      component.getDishes()
+    it("should fetch dishes and update components state", async () => {
+      await component.getDishes()
       expect(dishServiceSpy.getAll).toHaveBeenCalledTimes(1)
       expect(component.dishes).toEqual(dishes)
     })
+
+    it("should update filteredDishes if category is selected", async () => {
+      const categoryID = categories[0].id
+      component.selectedCategory = categoryID
+      await component.getDishes()
+      expect(component.filteredDishes).toEqual(component.filterDishes(categoryID))
+    })
+
+    it("should not update filteredDishes if category isn't selected", async () => {
+      const initial = component.filteredDishes
+
+      spyOn(component, "getCategories").and.callFake(async () => {
+        component.selectedCategory = undefined
+      })
+
+      await component.getDishes()
+      expect(component.filteredDishes).toBe(initial)
+    })
   })
 
-  function queryCategoriesCards() {
+  describe("filterDishes()", () => {
+    it("should filter dishes by provided category id and return them", async () => {
+      await component.ngOnInit()
+
+      for (const category of categories) {
+        const expected = dishes.filter(d => d.category_id === category.id)
+        expect(component.filterDishes(category.id)).toEqual(expected)
+      }
+    })
+  })
+
+  function detectChanges() {
+    fixture.detectChanges()
+    component.cdRef.detectChanges()
+  }
+
+  function queryCategoriesCards(): NodeListOf<HTMLElement> {
     return nativeEl.querySelectorAll("[data-test='category-card']")
   }
 
@@ -138,5 +253,11 @@ describe("MainComponent", () => {
 
   function queryAddBtn(dishCard: HTMLElement) {
     return dishCard.querySelector("[data-test='add-to-card-btn']")
+  }
+
+  function forEachCategoryCard(fn: (card: HTMLElement, index: number) => void) {
+    const cards = queryCategoriesCards()
+    expect(cards.length).toBe(categories.length)
+    cards.forEach(fn)
   }
 })

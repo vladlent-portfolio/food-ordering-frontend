@@ -1,19 +1,31 @@
 <section class="categories" data-test="categories">
-  <div class="category" *ngFor="let c of categories" data-test="category-card">
-    <img class="category__img" [src]="c.image" alt="Image of {{ c.title }} category" />
-    <p class="category__title">{{ c.title }}</p>
+  <h2 class="categories__caption" data-test="categories-caption">Categories</h2>
+  <div class="categories__items">
+    <div
+      *ngFor="let c of categories"
+      class="category"
+      [class.category--selected]="selectedCategory === c.id"
+      (click)="selectedCategory = c.id"
+      data-test="category-card"
+    >
+      <img class="category__img" [src]="c.image" alt="Image of {{ c.title }} category" />
+      <p class="category__title">{{ c.title }}</p>
+    </div>
   </div>
 </section>
 
-<section class="dishes" data-test="dishes">
-  <div class="dish" *ngFor="let d of dishes" data-test="dish-card">
-    <figure class="dish__figure">
-      <img class="dish__img" [src]="d.image" alt="Image of {{ d.title }}" />
-      <figcaption class="dish__title">{{ d.title }}</figcaption>
-    </figure>
-    <footer class="dish__footer">
-      <span class="dish__price">{{ d.price | currency }}</span>
-      <button class="dish__add" data-test="add-to-card-btn">+</button>
-    </footer>
+<section *ngIf="selectedCategory" class="dishes" data-test="dishes">
+  <h3 class="dishes__caption" data-test="dishes-caption">Dishes</h3>
+  <div class="dishes__items">
+    <div class="dish" *ngFor="let d of filteredDishes" data-test="dish-card">
+      <figure class="dish__figure">
+        <img class="dish__img" [src]="d.image" alt="Image of {{ d.title }}" />
+        <figcaption class="dish__title">{{ d.title }}</figcaption>
+      </figure>
+      <footer class="dish__footer">
+        <span class="dish__price">{{ d.price | currency }}</span>
+        <button class="dish__add" data-test="add-to-card-btn">+</button>
+      </footer>
+    </div>
   </div>
 </section>
