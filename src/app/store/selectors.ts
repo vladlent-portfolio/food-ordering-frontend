@@ -2,6 +2,7 @@ import { createSelector } from "@ngrx/store"
 import { AppState } from "./reducers"
 
 export const selectUser = (state: AppState) => state.user
+export const selectCart = (state: AppState) => state.cart
 
 export const selectIsLoading = createSelector(
   (state: AppState) => state.openRequests,

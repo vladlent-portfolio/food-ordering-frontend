@@ -101,13 +101,13 @@ describe("AppComponent", () => {
   })
 
   it("should show login btn  if user is not logged in", () => {
-    store.setState({ user: null, openRequests: 0 })
+    store.setState({ user: null, openRequests: 0, cart: {} })
     fixture.detectChanges()
     expect(queryLogInBtn()).not.toBeNull()
   })
 
   it("should hide logout btn if user is not logged in", () => {
-    store.setState({ user: null, openRequests: 0 })
+    store.setState({ user: null, openRequests: 0, cart: {} })
     fixture.detectChanges()
     expect(queryLogOutBtn()).toBeNull()
   })
@@ -206,13 +206,13 @@ describe("AppComponent", () => {
 
   function loginAsUser() {
     user.is_admin = false
-    store.setState({ user, openRequests: 0 })
+    store.setState({ user, openRequests: 0, cart: {} })
     fixture.detectChanges()
   }
 
   function loginAsAdmin() {
     user.is_admin = true
-    store.setState({ user, openRequests: 0 })
+    store.setState({ user, openRequests: 0, cart: {} })
     fixture.detectChanges()
   }
 

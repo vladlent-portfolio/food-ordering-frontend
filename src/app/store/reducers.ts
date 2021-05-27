@@ -1,39 +1,68 @@
-import { Action, ActionReducerMap, createReducer, on } from "@ngrx/store"
-import { deleteUserInfo, loadEnd, loadStart, setUserInfo } from "./actions"
-import { User } from "../models/models"
+import { ActionReducerMap, createReducer, on } from "@ngrx/store"
+import {
+  addDishToCart,
+  deleteUserInfo,
+  loadEnd,
+  loadStart,
+  removeDishFromCart,
+  setUserInfo,
+} from "./actions"
+import { Dish, User } from "../models/models"
 
 export interface AppState {
   openRequests: number
   user: User | null
-}
-
-export const AppState: ActionReducerMap<AppState> = {
-  openRequests: requestsReducer,
-  user: userReducer,
+  cart: {
+    [dishID: number]: {
+      dish: Dish
+      quantity: number
+    }
+  }
 }
 
 export const initialState: AppState = {
   openRequests: 0,
   user: null,
+  cart: {},
 }
 
 // This reducer counts the total amount of currently open requests.
-const _requestsReducer = createReducer(
+export const requestsReducer = createReducer(
   initialState.openRequests,
   on(loadStart, req => req + 1),
   on(loadEnd, req => req - 1),
 )
 
-const _userReducer = createReducer(
+export const userReducer = createReducer(
   initialState.user,
   on(setUserInfo, (_, { user }) => user),
   on(deleteUserInfo, () => null),
 )
 
-export function requestsReducer(state: number | undefined, action: Action) {
-  return _requestsReducer(state, action)
-}
+export const cartReducer = createReducer(
+  initialState.cart,
+  on(addDishToCart, (state, { dish }) => ({
+    ...state,
+    [dish.id]: { dish, quantity: dish.id in state ? ++state[dish.id].quantity : 1 },
+  })),
+  on(removeDishFromCart, (state, { dish, amount }) => {
+    if (!state[dish.id]) {
+      return state
+    }
 
-export function userReducer(state: User | null | undefined, action: Action) {
-  return _userReducer(state, action)
+    const { quantity } = state[dish.id]
+
+    if (amount >= quantity) {
+      const { [dish.id]: _, ...newState } = state
+      return newState
+    }
+
+    return { ...state, [dish.id]: { dish, quantity: quantity - amount } }
+  }),
+)
+
+export const AppState: ActionReducerMap<AppState> = {
+  openRequests: requestsReducer,
+  user: userReducer,
+  cart: cartReducer,
 }
