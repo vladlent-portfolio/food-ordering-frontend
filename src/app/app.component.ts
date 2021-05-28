@@ -1,6 +1,11 @@
 import { Component, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
-import { selectIsAdmin, selectIsLoading, selectIsLoggedIn } from "./store/selectors"
+import {
+  selectCart,
+  selectIsAdmin,
+  selectIsLoading,
+  selectIsLoggedIn,
+} from "./store/selectors"
 import { AppState } from "./store/reducers"
 import { delay, filter, map } from "rxjs/operators"
 import { MatDialog } from "@angular/material/dialog"
@@ -25,6 +30,9 @@ export class AppComponent implements OnInit {
     filter((e): e is NavigationEnd => e instanceof NavigationEnd),
     map((e: NavigationEnd) => e.url.includes("/admin")),
   )
+  totalCartQuantity$ = this.store
+    .select(selectCart)
+    .pipe(map(cart => Object.values(cart).reduce((acc, d) => acc + d.quantity, 0)))
 
   constructor(
     private store: Store<AppState>,

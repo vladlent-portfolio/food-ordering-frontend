@@ -8,7 +8,6 @@ import {
 } from "@angular/core/testing"
 import { RouterTestingModule } from "@angular/router/testing"
 import { AppComponent } from "./app.component"
-import { AppState } from "./store/reducers"
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner"
 import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
@@ -23,6 +22,7 @@ import { MatIconModule } from "@angular/material/icon"
 import { Router } from "@angular/router"
 import { Component } from "@angular/core"
 import { of } from "rxjs"
+import { MatBadgeModule } from "@angular/material/badge"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
@@ -32,7 +32,7 @@ describe("AppComponent", () => {
   let userServiceSpy: jasmine.SpyObj<UserService>
   let user: User
   let router: Router
-  let store: MockStore<AppState>
+  let store: MockStore
 
   beforeEach(() => {
     dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
@@ -51,12 +51,13 @@ describe("AppComponent", () => {
         NgLetModule,
         NoopAnimationsModule,
         MatIconModule,
+        MatBadgeModule,
       ],
       declarations: [AppComponent, LoginDialogComponent, TestAdminComponent],
       providers: [
-        provideMockStore(),
         { provide: MatDialog, useValue: dialogSpy },
         { provide: UserService, useValue: userServiceSpy },
+        provideMockStore({ initialState: { cart: {} } }),
       ],
     })
 
@@ -145,6 +146,45 @@ describe("AppComponent", () => {
     })
   })
 
+  describe("shopping cart", () => {
+    it("should be visible if user isn't logged in", () => {
+      fixture.detectChanges()
+      expect(queryCart()).not.toBeNull()
+    })
+
+    it("should be visible if user is logged in", () => {
+      loginAsUser()
+      expect(queryCart()).not.toBeNull()
+    })
+
+    it("should be visible if user is admin", () => {
+      loginAsAdmin()
+      expect(queryCart()).not.toBeNull()
+    })
+
+    describe("total quantity badge", () => {
+      it("should have a badge with the total quantity of all items in the cart", () => {
+        store.setState({ cart: { 1: { quantity: 2 }, 2: { quantity: 4 } } })
+        fixture.detectChanges()
+        const badge = queryCartBadge()
+        expect(badge).not.toBeNull()
+        expect(badge.textContent?.trim()).toBe("6")
+
+        store.setState({
+          cart: { 1: { quantity: 2 }, 2: { quantity: 4 }, 5: { quantity: 10 } },
+        })
+        fixture.detectChanges()
+        expect(badge.textContent?.trim()).toBe("16")
+      })
+
+      it("should be hidden if cart is empty", () => {
+        store.setState({ cart: {} })
+        fixture.detectChanges()
+        expect(queryCart().classList.contains("mat-badge-hidden")).toBeTrue()
+      })
+    })
+  })
+
   describe("Go to dashboard button", () => {
     it("should not be visible if user isn't logged in or is not admin", () => {
       fixture.detectChanges()
@@ -227,6 +267,14 @@ describe("AppComponent", () => {
 
   function queryTitle() {
     return nativeEl.querySelector("[data-test='title']") as HTMLElement
+  }
+
+  function queryCart() {
+    return nativeEl.querySelector("[data-test='cart']") as HTMLElement
+  }
+
+  function queryCartBadge() {
+    return queryCart().querySelector(".mat-badge-active") as HTMLElement
   }
 
   function queryLogInBtn() {

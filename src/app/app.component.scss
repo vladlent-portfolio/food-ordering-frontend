@@ -1,8 +1,10 @@
 @use "sass:color";
+@import "~src/styles/colors";
 
 mat-toolbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .spinner-container {
@@ -17,6 +19,35 @@ mat-toolbar {
 
   mat-progress-spinner {
     margin: auto;
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.cart {
+  display: flex;
+  padding: 0.3rem 0.8rem;
+  margin-right: 0.5rem;
+  color: $color-accent;
+  background-color: rgba($color-accent, 0.1);
+  border: 2px solid $color-accent;
+  border-radius: 5px;
+  transition: background-color ease-out 0.1s;
+  cursor: pointer;
+
+  mat-icon {
+    margin: auto;
+  }
+
+  &:hover {
+    background-color: rgba($color-accent, 0.25);
+  }
+
+  &:active {
+    background-color: rgba($color-accent, 0.4);
   }
 }
 

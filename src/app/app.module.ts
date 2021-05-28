@@ -14,8 +14,14 @@ import { LoginDialogComponent } from "./components/dialogs/login/login.component
 import { UserService } from "./services/user.service"
 import { ConfirmDialogComponent } from "./components/dialogs/confirm/confirm.component"
 import { MainPageComponent } from "./pages/main/main.component"
+import { MatBadgeModule } from "@angular/material/badge"
 
-const MATERIAL_MODULES = [MatToolbarModule, MatProgressSpinnerModule, MatTabsModule]
+const MATERIAL_MODULES = [
+  MatToolbarModule,
+  MatProgressSpinnerModule,
+  MatTabsModule,
+  MatBadgeModule,
+]
 
 @NgModule({
   declarations: [
