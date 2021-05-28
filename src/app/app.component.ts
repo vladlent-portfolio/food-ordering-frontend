@@ -12,6 +12,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { UserService } from "./services/user.service"
 import { NavigationEnd, Router } from "@angular/router"
+import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
 
 @Component({
   selector: "app-root",
@@ -49,8 +50,12 @@ export class AppComponent implements OnInit {
     this.userService.me().subscribe()
   }
 
-  openDialog() {
+  openLoginDialog() {
     this.dialog.open(LoginDialogComponent)
+  }
+
+  openCartDialog() {
+    this.dialog.open(CartDialogComponent)
   }
 
   signOut() {

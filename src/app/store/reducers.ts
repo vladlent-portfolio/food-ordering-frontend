@@ -9,15 +9,18 @@ import {
 } from "./actions"
 import { Dish, User } from "../models/models"
 
+export type CartItem = {
+  dish: Dish
+  quantity: number
+}
+export type Cart = {
+  [dishID: number]: CartItem
+}
+
 export interface AppState {
   openRequests: number
   user: User | null
-  cart: {
-    [dishID: number]: {
-      dish: Dish
-      quantity: number
-    }
-  }
+  cart: Cart
 }
 
 export const initialState: AppState = {

@@ -15,6 +15,7 @@ import { UserService } from "./services/user.service"
 import { ConfirmDialogComponent } from "./components/dialogs/confirm/confirm.component"
 import { MainPageComponent } from "./pages/main/main.component"
 import { MatBadgeModule } from "@angular/material/badge"
+import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -29,6 +30,7 @@ const MATERIAL_MODULES = [
     LoginDialogComponent,
     ConfirmDialogComponent,
     MainPageComponent,
+    CartDialogComponent,
   ],
   imports: [
     BrowserModule,

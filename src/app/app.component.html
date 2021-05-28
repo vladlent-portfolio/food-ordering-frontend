@@ -15,6 +15,7 @@
       [matBadge]="o.cartQuantity"
       [matBadgeHidden]="o.cartQuantity <= 0"
       matBadgeColor="warn"
+      (click)="openCartDialog()"
       data-test="cart"
     >
       <mat-icon>shopping_basket</mat-icon>
@@ -47,7 +48,7 @@
       mat-raised-button
       color="accent"
       data-test="login-btn"
-      (click)="openDialog()"
+      (click)="openLoginDialog()"
     >
       Sign In / Sign Up
     </button>

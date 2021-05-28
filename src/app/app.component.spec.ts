@@ -23,6 +23,7 @@ import { Router } from "@angular/router"
 import { Component } from "@angular/core"
 import { of } from "rxjs"
 import { MatBadgeModule } from "@angular/material/badge"
+import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
@@ -160,6 +161,12 @@ describe("AppComponent", () => {
     it("should be visible if user is admin", () => {
       loginAsAdmin()
       expect(queryCart()).not.toBeNull()
+    })
+
+    it("should open cart dialog on click", () => {
+      fixture.detectChanges()
+      queryCart().click()
+      expect(dialogSpy.open).toHaveBeenCalledOnceWith(CartDialogComponent)
     })
 
     describe("total quantity badge", () => {

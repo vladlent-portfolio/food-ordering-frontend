@@ -1,0 +1,26 @@
+<ng-container *ngLet="cartItems$ | async as items">
+  <h2 mat-dialog-title data-test="cart-dialog-title">Shopping Cart</h2>
+  <mat-dialog-content>
+    <div *ngIf="isCartEmpty(items)" class="cart-empty" data-test="cart-dialog-empty">
+      <p class="cart-empty__msg">Cart is empty</p>
+    </div>
+
+    <table *ngIf="!isCartEmpty(items)" class="cart-table" data-test="cart-dialog-orders">
+      <tr *ngFor="let item of items" data-test="cart-dialog-row">
+        <td>
+          <img [src]="item.dish.image" alt="Image of {{ item.dish.title }}" />
+        </td>
+        <td>{{ item.quantity }} x {{ item.dish.title }}</td>
+        <td>
+          {{ item.quantity * item.dish.price | currency }}
+        </td>
+      </tr>
+    </table>
+  </mat-dialog-content>
+
+  <mat-dialog-actions *ngIf="!isCartEmpty(items)" data-test="cart-dialog-actions">
+    <button mat-raised-button color="primary" data-test="cart-dialog-checkout-btn">
+      Checkout
+    </button>
+  </mat-dialog-actions>
+</ng-container>
