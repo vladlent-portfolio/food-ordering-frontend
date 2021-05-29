@@ -1,3 +1,30 @@
 :host {
   display: block;
+  width: 35rem;
+  max-height: 60vh;
+  padding: 1rem;
+}
+
+.title {
+  margin: 0;
+  padding-bottom: 1.5rem;
+}
+
+.content {
+  margin: 0;
+  padding: 0;
+}
+
+.cart-empty {
+  text-align: center;
+
+  &__img {
+    width: 9rem;
+    height: auto;
+    padding-bottom: 2.5rem;
+  }
+
+  &__msg {
+    font-size: 1.1rem;
+  }
 }

@@ -82,6 +82,17 @@ describe("CartDialogComponent", () => {
       const emptyCart = queryEmptyCart()
       expect(emptyCart).not.toBeNull()
       expect(emptyCart.textContent).toContain("Cart is empty")
+
+      const img = emptyCart.querySelector("img")
+      expect(img).not.toBeNull("expected empty cart block to have an image")
+      expect(img?.src.trim()).not.toBe(
+        "",
+        "expected empty cart image to have a non empty src",
+      )
+      expect(img?.alt.trim()).not.toBe(
+        "",
+        "expected empty cart image to have a non empty alt",
+      )
     })
 
     it("should show orders table if cart isn't empty", () => {
