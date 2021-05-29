@@ -75,7 +75,7 @@ export class LoginDialogComponent {
 
     result.subscribe(
       () => {
-        this.dialogRef.close()
+        this.dialogRef.close(true)
       },
       (err: HttpErrorResponse) => {
         this.isLoading = false

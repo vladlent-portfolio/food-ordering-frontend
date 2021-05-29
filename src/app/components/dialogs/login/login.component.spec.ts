@@ -154,7 +154,7 @@ describe("LoginDialogComponent", () => {
       serviceSpy.signIn.and.returnValue(of({} as User))
       populateForm()
       component.signIn()
-      expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+      expect(dialogRefSpy.close).toHaveBeenCalledWith(true)
     })
 
     it("should disable all buttons and tabs when request is initiated", () => {
@@ -236,7 +236,7 @@ describe("LoginDialogComponent", () => {
       serviceSpy.signUp.and.returnValue(of({} as User))
       populateForm()
       component.signUp()
-      expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+      expect(dialogRefSpy.close).toHaveBeenCalledWith(true)
     })
 
     it("should disable all buttons and tabs when request is initiated", () => {
