@@ -7,6 +7,15 @@
         src="/assets/img/shopping-cart.svg"
         alt="Shopping cart with minus sign"
       />
+      <!--      TODO: Icon attribution -->
+      <!--      <div>-->
+      <!--        Icons made by-->
+      <!--        <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">-->
+      <!--          Pixel perfect-->
+      <!--        </a>-->
+      <!--        from-->
+      <!--        <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>-->
+      <!--      </div>-->
       <p class="cart-empty__msg">Cart is empty :(</p>
     </div>
 
@@ -19,12 +28,27 @@
         <td>
           {{ item.quantity * item.dish.price | currency }}
         </td>
+        <td>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeItemFromCart(item)"
+            data-test="cart-dialog-remove-item-btn"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
       </tr>
     </table>
   </mat-dialog-content>
 
   <mat-dialog-actions *ngIf="!isCartEmpty(items)" data-test="cart-dialog-actions">
-    <button mat-raised-button color="primary" data-test="cart-dialog-checkout-btn">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="checkout(items)"
+      data-test="cart-dialog-checkout-btn"
+    >
       Checkout
     </button>
   </mat-dialog-actions>

@@ -1,21 +1,34 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
-
 import { CartDialogComponent } from "./cart.component"
-import { MatDialogModule } from "@angular/material/dialog"
-import { Cart } from "../../../store/reducers"
+import { MatDialog, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
+import { Cart, CartItem } from "../../../store/reducers"
 import { MatButtonModule } from "@angular/material/button"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { NgLetModule } from "@ngrx-utils/store"
+import { clearCart, removeDishFromCart } from "../../../store/actions"
+import { OrderService } from "../../../services/order.service"
+import { of } from "rxjs"
+import { MatIconModule } from "@angular/material/icon"
+import { LoginDialogComponent } from "../login/login.component"
+import { Component } from "@angular/core"
+import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 
 describe("CartDialogComponent", () => {
-  // @ts-ignore
   let component: CartDialogComponent
   let fixture: ComponentFixture<CartDialogComponent>
   let nativeEl: HTMLElement
   let store: MockStore
+  let orderServiceSpy: jasmine.SpyObj<OrderService>
+  let dialog: MatDialog
+  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<CartDialogComponent>>
+  let dummyDialogRef: MatDialogRef<DummyDialogComponent>
+  let dialogOpen: jasmine.Spy<MatDialog["open"]>
   let cart: Cart
 
   beforeEach(() => {
+    orderServiceSpy = jasmine.createSpyObj("OrderService", ["create"])
+    dialogRefSpy = jasmine.createSpyObj("MatDialogRef", ["close"])
+
     cart = {
       3: {
         dish: {
@@ -54,9 +67,19 @@ describe("CartDialogComponent", () => {
     }
 
     TestBed.configureTestingModule({
-      imports: [MatDialogModule, MatButtonModule, NgLetModule],
-      declarations: [CartDialogComponent],
-      providers: [provideMockStore({ initialState: { cart: {} } })],
+      imports: [
+        MatDialogModule,
+        MatButtonModule,
+        NgLetModule,
+        MatIconModule,
+        NoopAnimationsModule,
+      ],
+      declarations: [CartDialogComponent, DummyDialogComponent],
+      providers: [
+        { provide: OrderService, useValue: orderServiceSpy },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        provideMockStore({ initialState: { cart: {} } }),
+      ],
     })
   })
 
@@ -65,6 +88,10 @@ describe("CartDialogComponent", () => {
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
     store = TestBed.inject(MockStore)
+
+    dialog = TestBed.inject(MatDialog)
+    dummyDialogRef = dialog.open(DummyDialogComponent, { hasBackdrop: false })
+    dialogOpen = spyOn(dialog, "open").and.returnValue(dummyDialogRef)
   })
 
   it("should have title", () => {
@@ -103,13 +130,15 @@ describe("CartDialogComponent", () => {
     })
 
     describe("orders table", () => {
+      let items: CartItem[]
+
       beforeEach(() => {
+        items = Object.values(cart)
         store.setState({ cart })
         fixture.detectChanges()
       })
 
       it("should have a row for each order", () => {
-        const items = Object.values(cart)
         const rows = queryTableRows()
         expect(rows.length).toBe(items.length)
 
@@ -117,13 +146,31 @@ describe("CartDialogComponent", () => {
           const { dish, quantity } = items[i]
 
           const img = row.querySelector("img")
-          expect(img).not.toBeNull()
+          expect(img).not.toBeNull("expected row to have image of a dish")
           expect(img?.src).toContain(dish.image)
           expect(img?.alt).toContain(dish.title)
 
           expect(row.textContent).toContain(dish.title)
           expect(row.textContent).toContain("$" + (dish.price * quantity).toFixed(2))
           expect(row.textContent).toContain(quantity)
+
+          expect(queryRemoveItemBtn(row)).not.toBeNull(
+            `expected row #${i + 1} to have 'Remove item from cart' button`,
+          )
+        })
+      })
+
+      describe("'Remove item from cart' button", () => {
+        it("should remove item from orders on click", () => {
+          const dispatch = spyOn(store, "dispatch")
+
+          queryTableRows().forEach((row, i) => {
+            const item = items[i]
+            queryRemoveItemBtn(row).click()
+            expect(dispatch).toHaveBeenCalledWith(
+              removeDishFromCart({ dish: item.dish, amount: item.quantity }),
+            )
+          })
         })
       })
     })
@@ -151,6 +198,87 @@ describe("CartDialogComponent", () => {
       it("should have label", () => {
         expect(queryCheckoutBtn().textContent).toContain("Checkout")
       })
+
+      it("should call component's checkout method with cart items", () => {
+        const checkout = spyOn(component, "checkout")
+        queryCheckoutBtn().click()
+        expect(checkout).toHaveBeenCalledWith(Object.values(cart))
+      })
+    })
+  })
+
+  describe("checkout()", () => {
+    let items: CartItem[]
+
+    beforeEach(() => {
+      orderServiceSpy.create.and.returnValue(of({} as any))
+      items = Object.values(cart)
+    })
+
+    it("should not create order if cart is empty", () => {
+      component.checkout([])
+      expect(orderServiceSpy.create).not.toHaveBeenCalled()
+    })
+
+    describe("user authorized", () => {
+      beforeEach(() => {
+        store.setState({ user: {} })
+      })
+
+      it("should create order with provided items", () => {
+        component.checkout(items)
+        expect(orderServiceSpy.create).toHaveBeenCalledWith(
+          items.map(({ dish, quantity }) => ({ id: dish.id, quantity: quantity })),
+        )
+      })
+
+      it("should not open login dialog", () => {
+        component.checkout(items)
+        expect(dialogOpen).not.toHaveBeenCalled()
+      })
+
+      describe("on success", () => {
+        it("should close dialog", () => {
+          component.checkout(items)
+          expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+        })
+
+        it("should clear cart", () => {
+          const dispatch = spyOn(store, "dispatch")
+          component.checkout(items)
+          expect(dialogRefSpy.close).toHaveBeenCalledBefore(dispatch)
+          expect(dispatch).toHaveBeenCalledWith(clearCart())
+        })
+      })
+    })
+
+    describe("user unauthorized", () => {
+      it("should open login dialog", () => {
+        component.checkout(items)
+        expect(dialogOpen).toHaveBeenCalledWith(LoginDialogComponent)
+        expect(orderServiceSpy.create).not.toHaveBeenCalled()
+      })
+
+      it("should continue checkout if user successfully authorizes", async () => {
+        component.checkout(items)
+        dummyDialogRef.close(true)
+        fixture.detectChanges()
+        await fixture.whenStable()
+
+        expect(orderServiceSpy.create).toHaveBeenCalledWith(
+          items.map(({ dish, quantity }) => ({ id: dish.id, quantity: quantity })),
+        )
+      })
+
+      it("should not continue checkout if user closes login dialog", async () => {
+        component.checkout(items)
+        dummyDialogRef.close(false)
+        fixture.detectChanges()
+        await fixture.whenStable()
+
+        expect(orderServiceSpy.create).not.toHaveBeenCalled()
+        expect(dialogRefSpy.close).not.toHaveBeenCalled()
+      })
     })
   })
 
@@ -166,6 +294,10 @@ describe("CartDialogComponent", () => {
     return nativeEl.querySelectorAll("[data-test='cart-dialog-row']")
   }
 
+  function queryRemoveItemBtn(row: HTMLElement) {
+    return row.querySelector("[data-test='cart-dialog-remove-item-btn']") as HTMLElement
+  }
+
   function queryEmptyCart() {
     return nativeEl.querySelector("[data-test='cart-dialog-empty']") as HTMLElement
   }
@@ -178,3 +310,8 @@ describe("CartDialogComponent", () => {
     return nativeEl.querySelector("[data-test='cart-dialog-checkout-btn']") as HTMLElement
   }
 })
+
+@Component({
+  template: "",
+})
+class DummyDialogComponent {}
