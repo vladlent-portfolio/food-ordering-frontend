@@ -16,3 +16,5 @@ export const removeDishFromCart = createAction(
   "[App] Remove Dish From Cart",
   props<{ dish: Dish; amount: number }>(),
 )
+
+export const clearCart = createAction("[App] Clear Cart")

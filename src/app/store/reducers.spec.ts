@@ -1,6 +1,7 @@
 import { cartReducer, requestsReducer, userReducer } from "./reducers"
 import {
   addDishToCart,
+  clearCart,
   deleteUserInfo,
   loadEnd,
   loadStart,
@@ -151,6 +152,17 @@ describe("Cart Reducer", () => {
         removeDishFromCart({ dish: dishes[1], amount: 5 }),
       )
       expect(newState).toBe(state)
+    })
+  })
+
+  describe("on clearCart", () => {
+    it("should assign empty object to cart", () => {
+      let state: any = {
+        [dishes[0].id]: { dish: dishes[0], quantity: 5 },
+        [dishes[1].id]: { dish: dishes[1], quantity: 2 },
+      }
+
+      expect(cartReducer(state, clearCart())).toEqual({})
     })
   })
 })

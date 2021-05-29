@@ -1,6 +1,7 @@
 import { ActionReducerMap, createReducer, on } from "@ngrx/store"
 import {
   addDishToCart,
+  clearCart,
   deleteUserInfo,
   loadEnd,
   loadStart,
@@ -62,6 +63,7 @@ export const cartReducer = createReducer(
 
     return { ...state, [dish.id]: { dish, quantity: quantity - amount } }
   }),
+  on(clearCart, () => ({})),
 )
 
 export const AppState: ActionReducerMap<AppState> = {
