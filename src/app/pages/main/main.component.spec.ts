@@ -94,14 +94,18 @@ describe("MainComponent", () => {
       })
     })
 
-    it("should add 'selected' class to currently selected category", async () => {
+    it("should set aria-pressed to 'true' on currently selected category", async () => {
       await component.ngOnInit()
 
-      forEachCategoryCard((card, index) => {
-        component.selectedCategory = categories[index].id
+      for (const category of categories) {
+        component.selectedCategoryID = category.id
         detectChanges()
-        expect(card.classList.contains("category--selected")).toBeTrue()
-      })
+
+        forEachCategoryCard(card => {
+          const expected = card.textContent?.trim() === category.title
+          expect(card.getAttribute("aria-pressed")).toBe(expected.toString())
+        })
+      }
     })
 
     it("should set selectedCategory on card click", async () => {
@@ -109,7 +113,7 @@ describe("MainComponent", () => {
 
       forEachCategoryCard((card, i) => {
         card.click()
-        expect(component.selectedCategory).toBe(categories[i].id)
+        expect(component.selectedCategoryID).toBe(categories[i].id)
       })
     })
   })
@@ -126,7 +130,7 @@ describe("MainComponent", () => {
       await component.ngOnInit()
 
       for (const category of categories) {
-        component.selectedCategory = category.id
+        component.selectedCategoryID = category.id
         detectChanges()
 
         const cards = queryDishesCards()
@@ -148,7 +152,7 @@ describe("MainComponent", () => {
 
     it("should be hidden if category isn't selected", async () => {
       await component.ngOnInit()
-      component.selectedCategory = undefined
+      component.selectedCategoryID = undefined
       detectChanges()
       expect(nativeEl.querySelector("[data-test='dishes']")).toBeNull()
     })
@@ -173,8 +177,8 @@ describe("MainComponent", () => {
   describe("selectedCategory", () => {
     it("should update selectedCategory", () => {
       for (const c of categories) {
-        component.selectedCategory = c.id
-        expect(component.selectedCategory).toBe(c.id)
+        component.selectedCategoryID = c.id
+        expect(component.selectedCategoryID).toBe(c.id)
       }
     })
 
@@ -183,7 +187,7 @@ describe("MainComponent", () => {
       const filterDishes = spyOn(component, "filterDishes")
 
       for (const category of categories) {
-        component.selectedCategory = category.id
+        component.selectedCategoryID = category.id
         expect(filterDishes).toHaveBeenCalledWith(category.id)
         expect(component.filteredDishes).toEqual(component.filterDishes(category.id))
       }
@@ -191,7 +195,7 @@ describe("MainComponent", () => {
 
     it("should not call filterDishes if provided id is undefined", () => {
       const filterDishes = spyOn(component, "filterDishes")
-      component.selectedCategory = undefined
+      component.selectedCategoryID = undefined
       expect(filterDishes).not.toHaveBeenCalled()
     })
   })
@@ -218,7 +222,7 @@ describe("MainComponent", () => {
 
     it("should set first category in array as selected category", async () => {
       await component.getCategories()
-      expect(component.selectedCategory).toBe(categories[0].id)
+      expect(component.selectedCategoryID).toBe(categories[0].id)
     })
   })
 
@@ -231,7 +235,7 @@ describe("MainComponent", () => {
 
     it("should update filteredDishes if category is selected", async () => {
       const categoryID = categories[0].id
-      component.selectedCategory = categoryID
+      component.selectedCategoryID = categoryID
       await component.getDishes()
       expect(component.filteredDishes).toEqual(component.filterDishes(categoryID))
     })
@@ -240,7 +244,7 @@ describe("MainComponent", () => {
       const initial = component.filteredDishes
 
       spyOn(component, "getCategories").and.callFake(async () => {
-        component.selectedCategory = undefined
+        component.selectedCategoryID = undefined
       })
 
       await component.getDishes()

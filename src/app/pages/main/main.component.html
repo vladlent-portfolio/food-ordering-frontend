@@ -1,26 +1,20 @@
 <section class="categories" data-test="categories">
   <h2 class="categories__caption" data-test="categories-caption">Categories</h2>
   <div class="categories__items">
-    <div
+    <button
       *ngFor="let c of categories"
       class="category"
-      [class.category--selected]="selectedCategory === c.id"
-      (click)="selectedCategory = c.id"
+      [attr.aria-pressed]="selectedCategoryID === c.id"
+      (click)="selectedCategoryID = c.id"
       data-test="category-card"
     >
-      <figure class="category__figure">
-        <img
-          class="category__img"
-          [src]="c.image"
-          alt="Image of {{ c.title }} category"
-        />
-        <figcaption class="category__title">{{ c.title }}</figcaption>
-      </figure>
-    </div>
+      <img class="category__img" [src]="c.image" alt="Image of {{ c.title }} category" />
+      {{ c.title }}
+    </button>
   </div>
 </section>
 
-<section *ngIf="selectedCategory" class="dishes" data-test="dishes">
+<section *ngIf="selectedCategoryID" class="dishes" data-test="dishes">
   <h3 class="dishes__caption" data-test="dishes-caption">Dishes</h3>
   <div class="dishes__items">
     <div class="dish" *ngFor="let d of filteredDishes" data-test="dish-card">

@@ -18,18 +18,18 @@ import { addDishToCart } from "../../store/actions"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainPageComponent implements OnInit {
-  private _selectedCategory: number | undefined
+  private _selectedCategoryID: number | undefined
 
   categories: Category[] = []
   dishes: Dish[] = []
   filteredDishes: Dish[] = []
 
-  get selectedCategory(): number | undefined {
-    return this._selectedCategory
+  get selectedCategoryID(): number | undefined {
+    return this._selectedCategoryID
   }
 
-  set selectedCategory(id: number | undefined) {
-    this._selectedCategory = id
+  set selectedCategoryID(id: number | undefined) {
+    this._selectedCategoryID = id
 
     if (id) {
       this.filteredDishes = this.filterDishes(id)
@@ -55,15 +55,15 @@ export class MainPageComponent implements OnInit {
   async getCategories(): Promise<void> {
     const categories = await this.categoryService.getAll().toPromise()
     this.categories = categories
-    this.selectedCategory = categories[0]?.id
+    this.selectedCategoryID = categories[0]?.id
     this.cdRef.detectChanges()
   }
 
   async getDishes(): Promise<void> {
     this.dishes = await this.dishService.getAll().toPromise()
 
-    if (this.selectedCategory) {
-      this.filteredDishes = this.filterDishes(this.selectedCategory)
+    if (this.selectedCategoryID) {
+      this.filteredDishes = this.filterDishes(this.selectedCategoryID)
     }
 
     this.cdRef.detectChanges()
