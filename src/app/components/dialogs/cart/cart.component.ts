@@ -55,4 +55,8 @@ export class CartDialogComponent implements OnInit {
         this.store.dispatch(clearCart())
       })
   }
+
+  getTotal(items: CartItem[]): number {
+    return items.reduce((acc, { dish, quantity }) => acc + dish.price * quantity, 0)
+  }
 }

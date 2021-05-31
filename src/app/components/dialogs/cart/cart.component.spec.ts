@@ -160,6 +160,19 @@ describe("CartDialogComponent", () => {
         })
       })
 
+      it("should have a footer row with total price of the order", () => {
+        const tfoot = nativeEl.querySelector("[data-test='cart-table-footer']")
+        expect(tfoot).not.toBeNull()
+
+        const total = items.reduce(
+          (acc, { quantity, dish }) => acc + quantity * dish.price,
+          0,
+        )
+
+        expect(tfoot?.textContent).toContain("Total")
+        expect(tfoot?.textContent).toContain("$" + total.toFixed(2))
+      })
+
       describe("'Remove item from cart' button", () => {
         it("should remove item from orders on click", () => {
           const dispatch = spyOn(store, "dispatch")

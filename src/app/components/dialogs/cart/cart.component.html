@@ -20,29 +20,49 @@
     </div>
 
     <table *ngIf="!isCartEmpty(items)" class="cart-table" data-test="cart-dialog-orders">
-      <tr *ngFor="let item of items" data-test="cart-dialog-row">
-        <td>
-          <img [src]="item.dish.image" alt="Image of {{ item.dish.title }}" />
-        </td>
-        <td>{{ item.quantity }} x {{ item.dish.title }}</td>
-        <td>
-          {{ item.quantity * item.dish.price | currency }}
-        </td>
-        <td>
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="removeItemFromCart(item)"
-            data-test="cart-dialog-remove-item-btn"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </tr>
+      <tbody>
+        <tr
+          *ngFor="let item of items"
+          class="cart-table__row"
+          data-test="cart-dialog-row"
+        >
+          <td>
+            <img [src]="item.dish.image" alt="Image of {{ item.dish.title }}" />
+          </td>
+          <td>
+            <span class="cart-table__dish">{{ item.quantity }}</span>
+            <span class="highlight">&nbsp; x &nbsp;</span>
+            <span class="cart-table__dish">{{ item.dish.title }}</span>
+          </td>
+          <td class="cart-table__price">
+            {{ item.quantity * item.dish.price | currency }}
+          </td>
+          <td class="cart-table__btn">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeItemFromCart(item)"
+              data-test="cart-dialog-remove-item-btn"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot class="cart-table__footer" data-test="cart-table-footer">
+        <tr>
+          <td colspan="2">Total</td>
+          <td class="cart-table__price">{{ getTotal(items) | currency }}</td>
+        </tr>
+      </tfoot>
     </table>
   </mat-dialog-content>
 
-  <mat-dialog-actions *ngIf="!isCartEmpty(items)" data-test="cart-dialog-actions">
+  <mat-dialog-actions
+    *ngIf="!isCartEmpty(items)"
+    align="end"
+    data-test="cart-dialog-actions"
+  >
     <button
       mat-raised-button
       color="primary"
