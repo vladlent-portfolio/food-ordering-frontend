@@ -7,6 +7,7 @@ import { MatButtonModule } from "@angular/material/button"
 import { MatDialogModule } from "@angular/material/dialog"
 import { MatIconModule } from "@angular/material/icon"
 import { MatSelectModule } from "@angular/material/select"
+import { OrderStatusComponent } from "./components/order-status/order-status.component"
 
 const MODULES = [
   NgLetModule,
@@ -18,9 +19,11 @@ const MODULES = [
   MatSelectModule,
 ]
 
+const DECLARATIONS = [OrderStatusComponent]
+
 @NgModule({
   imports: [CommonModule, ...MODULES],
-  declarations: [],
-  exports: [...MODULES],
+  declarations: [...DECLARATIONS],
+  exports: [...MODULES, ...DECLARATIONS],
 })
 export class SharedModule {}

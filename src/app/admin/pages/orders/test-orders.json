@@ -1,0 +1,212 @@
+[
+  {
+    "id": 2,
+    "created_at": "2021-06-01T12:01:12.518749+03:00",
+    "updated_at": "2021-06-01T12:01:12.518749+03:00",
+    "status": 0,
+    "user_id": 5,
+    "user": {
+      "id": 5,
+      "email": "Marcelle.Marks@gmail.com",
+      "created_at": "2021-05-28T19:55:00.159821+03:00",
+      "is_admin": true
+    },
+    "total": 6.44,
+    "items": [
+      {
+        "id": 2,
+        "order_id": 2,
+        "dish_id": 1,
+        "dish": {
+          "id": 1,
+          "title": "4 Cheese",
+          "price": 3.22,
+          "image": "http://localhost:8080/static/dishes/img/1.png",
+          "removable": true,
+          "category_id": 1,
+          "category": {
+            "id": 1,
+            "title": "Pizza",
+            "removable": false,
+            "image": "http://localhost:8080/static/categories/img/1.png"
+          }
+        },
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "created_at": "2021-06-01T13:50:08.620813+03:00",
+    "updated_at": "2021-06-01T13:50:08.620813+03:00",
+    "status": 1,
+    "user_id": 8,
+    "user": {
+      "id": 8,
+      "email": "Genevieve56@hotmail.com",
+      "created_at": "2021-06-01T13:49:47.226113+03:00",
+      "is_admin": false
+    },
+    "total": 23.56,
+    "items": [
+      {
+        "id": 3,
+        "order_id": 3,
+        "dish_id": 1,
+        "dish": {
+          "id": 1,
+          "title": "4 Cheese",
+          "price": 3.22,
+          "image": "http://localhost:8080/static/dishes/img/1.png",
+          "removable": true,
+          "category_id": 1,
+          "category": {
+            "id": 1,
+            "title": "Pizza",
+            "removable": false,
+            "image": "http://localhost:8080/static/categories/img/1.png"
+          }
+        },
+        "quantity": 1
+      },
+      {
+        "id": 4,
+        "order_id": 3,
+        "dish_id": 4,
+        "dish": {
+          "id": 4,
+          "title": "Phila",
+          "price": 4.32,
+          "removable": true,
+          "category_id": 5,
+          "category": {
+            "id": 5,
+            "title": "Sushi",
+            "removable": true
+          }
+        },
+        "quantity": 3
+      },
+      {
+        "id": 5,
+        "order_id": 3,
+        "dish_id": 5,
+        "dish": {
+          "id": 5,
+          "title": "Spring Salad",
+          "price": 3.69,
+          "removable": true,
+          "category_id": 9,
+          "category": {
+            "id": 9,
+            "title": "Salads",
+            "removable": true
+          }
+        },
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "created_at": "2021-06-01T13:54:57.553139+03:00",
+    "updated_at": "2021-06-01T13:54:57.553139+03:00",
+    "status": 2,
+    "user_id": 9,
+    "user": {
+      "id": 9,
+      "email": "sushilover@mail.com",
+      "created_at": "2021-06-01T13:54:57.540614+03:00",
+      "is_admin": false
+    },
+    "total": 17.28,
+    "items": [
+      {
+        "id": 6,
+        "order_id": 4,
+        "dish_id": 4,
+        "dish": {
+          "id": 4,
+          "title": "Phila",
+          "price": 4.32,
+          "removable": true,
+          "category_id": 5,
+          "category": {
+            "id": 5,
+            "title": "Sushi",
+            "removable": true
+          }
+        },
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "created_at": "2021-06-01T13:56:22.064109+03:00",
+    "updated_at": "2021-06-01T13:56:22.064109+03:00",
+    "status": 0,
+    "user_id": 8,
+    "user": {
+      "id": 8,
+      "email": "Genevieve56@hotmail.com",
+      "created_at": "2021-06-01T13:49:47.226113+03:00",
+      "is_admin": false
+    },
+    "total": 17.28,
+    "items": [
+      {
+        "id": 7,
+        "order_id": 5,
+        "dish_id": 4,
+        "dish": {
+          "id": 4,
+          "title": "Phila",
+          "price": 4.32,
+          "removable": true,
+          "category_id": 5,
+          "category": {
+            "id": 5,
+            "title": "Sushi",
+            "removable": true
+          }
+        },
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "created_at": "2021-06-01T13:56:28.554993+03:00",
+    "updated_at": "2021-06-01T13:56:28.554993+03:00",
+    "status": 3,
+    "user_id": 8,
+    "user": {
+      "id": 8,
+      "email": "Genevieve56@hotmail.com",
+      "created_at": "2021-06-01T13:49:47.226113+03:00",
+      "is_admin": false
+    },
+    "total": 11.07,
+    "items": [
+      {
+        "id": 8,
+        "order_id": 6,
+        "dish_id": 5,
+        "dish": {
+          "id": 5,
+          "title": "Spring Salad",
+          "price": 3.69,
+          "removable": true,
+          "category_id": 9,
+          "category": {
+            "id": 9,
+            "title": "Salads",
+            "removable": true
+          }
+        },
+        "quantity": 3
+      }
+    ]
+  }
+]

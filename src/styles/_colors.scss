@@ -1,3 +1,11 @@
+@use "sass:map";
+@use "~@angular/material/theming" as mat;
+
+// TODO: Extract colors from Material
+$color-config: mat.mat-get-color-config(mat.$mat-amber);
+@debug $color-config;
+
 $color-primary: #673ab7;
 $color-accent: #ffd740;
-// f0b530
+$color-warn: #f44336
+

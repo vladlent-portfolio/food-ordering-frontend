@@ -1,1 +1,56 @@
-<p>orders works!</p>
+<table class="orders-table" mat-table [dataSource]="orders" data-test="orders-table">
+  <ng-container matColumnDef="id">
+    <th *matHeaderCellDef mat-header-cell data-test="orders-table-head-id">Order ID</th>
+    <td *matCellDef="let order" mat-cell data-test="orders-table-id">{{ order.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="created_at">
+    <th *matHeaderCellDef mat-header-cell data-test="orders-table-head-created-at">
+      Created At
+    </th>
+    <td *matCellDef="let order" mat-cell data-test="orders-table-created-at">
+      {{ order.created_at | date: "medium" }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="updated_at">
+    <th *matHeaderCellDef mat-header-cell data-test="orders-table-head-updated-at">
+      Last Updated
+    </th>
+    <td *matCellDef="let order" mat-cell data-test="orders-table-updated-at">
+      {{ order.updated_at | date: "medium" }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="email">
+    <th *matHeaderCellDef mat-header-cell data-test="orders-table-head-email">
+      Customer's E-mail
+    </th>
+    <td *matCellDef="let order" mat-cell data-test="orders-table-email">
+      {{ order.user.email }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <th *matHeaderCellDef mat-header-cell data-test="orders-table-head-amount">Amount</th>
+    <td *matCellDef="let order" mat-cell data-test="orders-table-amount">
+      {{ order.total | currency }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th *matHeaderCellDef mat-header-cell data-test="orders-table-head-status">
+      Order's Status
+    </th>
+    <td *matCellDef="let order" mat-cell data-test="orders-table-status">
+      <app-order-status [status]="order.status"></app-order-status>
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+  <tr
+    *matRowDef="let row; columns: displayedColumns"
+    mat-row
+    data-test="orders-table-row"
+  ></tr>
+</table>
