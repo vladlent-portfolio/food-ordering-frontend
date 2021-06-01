@@ -27,7 +27,11 @@
           data-test="cart-dialog-row"
         >
           <td>
-            <img [src]="item.dish.image" alt="Image of {{ item.dish.title }}" />
+            <img
+              class="cart-table__img"
+              [src]="item.dish.image"
+              alt="Image of {{ item.dish.title }}"
+            />
           </td>
           <td>
             <span class="cart-table__dish">{{ item.quantity }}</span>

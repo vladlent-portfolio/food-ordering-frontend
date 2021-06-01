@@ -2,7 +2,7 @@
 
 :host {
   display: block;
-  width: 35rem;
+  min-width: 35rem;
   padding: 1rem;
 }
 
@@ -34,8 +34,12 @@
   width: 100%;
 
   &__row {
-    padding: 0.5rem;
     border: 1px solid lightgrey;
+  }
+
+  &__img {
+    height: 3rem;
+    width: auto;
   }
 
   &__dish {
@@ -48,7 +52,7 @@
   }
 
   &__btn {
-    text-align: right;
+    text-align: center;
   }
 
   &__footer {
