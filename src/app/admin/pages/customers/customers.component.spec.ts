@@ -5,6 +5,8 @@ import { MatTableModule } from "@angular/material/table"
 import { UserService } from "../../../services/user.service"
 import { User } from "../../../models/models"
 import { of } from "rxjs"
+import { MatIconModule } from "@angular/material/icon"
+import { formatDate } from "@angular/common"
 
 function userFactory(): (email: string, is_admin: boolean) => User {
   let id = 0
@@ -37,7 +39,7 @@ describe("CustomersComponent", () => {
     userServiceSpy.getAll.and.returnValue(of(users))
 
     TestBed.configureTestingModule({
-      imports: [MatTableModule],
+      imports: [MatTableModule, MatIconModule],
       declarations: [CustomersPageComponent],
       providers: [{ provide: UserService, useValue: userServiceSpy }],
     })
@@ -70,18 +72,21 @@ describe("CustomersComponent", () => {
       rows.forEach((row, i) => {
         const user = users[i]
 
-        for (const value of Object.values(user)) {
-          expect(row.textContent).toContain(value)
-        }
+        expect(queryIDCell(row).textContent?.trim()).toBe(user.id.toString())
+        expect(queryEmailCell(row).textContent?.trim()).toBe(user.email)
+
+        const date = queryDateCell(row).textContent?.trim()
+        expect(date).toBe(
+          formatDate(user.created_at, "medium", "en"),
+          "expected cell to have formatted date",
+        )
+
+        const icon = queryRoleCell(row).querySelector("mat-icon")?.textContent?.trim()
+        expect(icon).toBe(
+          user.is_admin ? "check" : "clear",
+          "expected cell to have appropriate icon",
+        )
       })
-    })
-
-    it("should have a column for each user's property", () => {
-      fixture.detectChanges()
-      const propsCount = Object.keys(users[0]).length
-
-      expect(queryHeaderCells().length).toBe(propsCount)
-      expect(queryCells().length).toBe(propsCount * users.length)
     })
   })
 
@@ -101,15 +106,23 @@ describe("CustomersComponent", () => {
   //   return nativeEl.querySelector("[data-test='users-table-header']") as HTMLElement
   // }
 
-  function queryHeaderCells() {
-    return nativeEl.querySelectorAll("[data-test='users-table-header-cell']")
+  function queryIDCell(row: HTMLElement) {
+    return row.querySelector("[data-test='users-table-id']") as HTMLElement
   }
 
-  function queryRows() {
+  function queryEmailCell(row: HTMLElement) {
+    return row.querySelector("[data-test='users-table-email']") as HTMLElement
+  }
+
+  function queryDateCell(row: HTMLElement) {
+    return row.querySelector("[data-test='users-table-date']") as HTMLElement
+  }
+
+  function queryRoleCell(row: HTMLElement) {
+    return row.querySelector("[data-test='users-table-role']") as HTMLElement
+  }
+
+  function queryRows(): NodeListOf<HTMLElement> {
     return nativeEl.querySelectorAll("[data-test='users-table-row']")
-  }
-
-  function queryCells() {
-    return nativeEl.querySelectorAll("[data-test='users-table-cell']")
   }
 })
