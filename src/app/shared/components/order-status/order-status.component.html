@@ -1,0 +1,8 @@
+<div
+  class="order-status"
+  [ngClass]="className"
+  [ngSwitch]="status"
+  data-test="order-status"
+>
+  <span>{{ statusText }}</span>
+</div>

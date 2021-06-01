@@ -1,0 +1,24 @@
+@import "~src/styles/colors";
+
+$status-colors: (
+  created: $color-primary,
+  in-progress: #68b7e5,
+  done: #3dc295,
+  canceled: $color-warn,
+);
+
+:host {
+  display: block;
+}
+
+.order-status {
+  padding: 1rem;
+  border-radius: 10px;
+
+  @each $status, $color in $status-colors {
+    &.#{$status} {
+      background-color: lighten($color, 15%);
+      color: $color;
+    }
+  }
+}
