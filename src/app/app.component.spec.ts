@@ -163,6 +163,12 @@ describe("AppComponent", () => {
       expect(queryCart()).not.toBeNull()
     })
 
+    it("should be hidden on dashboard", async () => {
+      fixture.detectChanges()
+      await navigateToAdmin()
+      expect(queryCart()).toBeNull()
+    })
+
     it("should open cart dialog on click", () => {
       fixture.detectChanges()
       queryCart().click()
