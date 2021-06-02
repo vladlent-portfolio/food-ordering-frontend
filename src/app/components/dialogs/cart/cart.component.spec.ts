@@ -12,6 +12,7 @@ import { MatIconModule } from "@angular/material/icon"
 import { LoginDialogComponent } from "../login/login.component"
 import { Component } from "@angular/core"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
+import { MatTableModule } from "@angular/material/table"
 
 describe("CartDialogComponent", () => {
   let component: CartDialogComponent
@@ -72,6 +73,7 @@ describe("CartDialogComponent", () => {
         MatButtonModule,
         NgLetModule,
         MatIconModule,
+        MatTableModule,
         NoopAnimationsModule,
       ],
       declarations: [CartDialogComponent, DummyDialogComponent],
