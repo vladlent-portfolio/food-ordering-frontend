@@ -65,6 +65,12 @@
                   "maximumError": "4kb"
                 }
               ]
+            },
+            "dev": {
+              "aot": false,
+              "buildOptimizer": false,
+              "optimization": false,
+              "sourceMap": true
             }
           }
         },
@@ -76,6 +82,9 @@
           "configurations": {
             "production": {
               "browserTarget": "food-ordering-frontend:build:production"
+            },
+            "dev": {
+              "browserTarget": "food-ordering-frontend:build:dev"
             }
           }
         },
