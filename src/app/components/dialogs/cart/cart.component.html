@@ -19,46 +19,66 @@
       <p class="cart-empty__msg">Cart is empty :(</p>
     </div>
 
-    <table *ngIf="!isCartEmpty(items)" class="cart-table" data-test="cart-dialog-orders">
-      <tbody>
-        <tr
-          *ngFor="let item of items"
-          class="cart-table__row"
-          data-test="cart-dialog-row"
-        >
-          <td>
-            <img
-              class="cart-table__img"
-              [src]="item.dish.image"
-              alt="Image of {{ item.dish.title }}"
-            />
-          </td>
-          <td>
-            <span class="cart-table__dish">{{ item.quantity }}</span>
-            <span class="highlight">&nbsp; x &nbsp;</span>
-            <span class="cart-table__dish">{{ item.dish.title }}</span>
-          </td>
-          <td class="cart-table__price">
-            {{ item.quantity * item.dish.price | currency }}
-          </td>
-          <td class="cart-table__btn">
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="removeItemFromCart(item)"
-              data-test="cart-dialog-remove-item-btn"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-      <tfoot class="cart-table__footer" data-test="cart-table-footer">
-        <tr>
-          <td colspan="2">Total</td>
-          <td class="cart-table__price">{{ getTotal(items) | currency }}</td>
-        </tr>
-      </tfoot>
+    <table
+      *ngIf="!isCartEmpty(items)"
+      mat-table
+      [dataSource]="items"
+      class="cart-table"
+      data-test="cart-dialog-orders"
+    >
+      <ng-container matColumnDef="img">
+        <td *matCellDef="let item" mat-cell>
+          <img
+            class="cart-table__img"
+            [src]="item.dish.image"
+            alt="Image of {{ item.dish.title }}"
+          />
+        </td>
+        <td *matFooterCellDef mat-footer-cell colspan="2">Total</td>
+      </ng-container>
+
+      <ng-container matColumnDef="items">
+        <td *matCellDef="let item" mat-cell>
+          <span class="cart-table__dish">{{ item.quantity }}</span>
+          <span class="highlight">&nbsp; x &nbsp;</span>
+          <span class="cart-table__dish">{{ item.dish.title }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="price">
+        <td *matCellDef="let item" mat-cell class="cart-table__price">
+          {{ item.quantity * item.dish.price | currency }}
+        </td>
+        <td *matFooterCellDef mat-footer-cell class="cart-table__price" colspan="2">
+          {{ getTotal(items) | currency }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="btn">
+        <td *matCellDef="let item" mat-cell class="cart-table__btn">
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeItemFromCart(item)"
+            data-test="cart-dialog-remove-item-btn"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr
+        *matRowDef="let row; columns: columns"
+        mat-row
+        class="cart-table__row"
+        data-test="cart-dialog-row"
+      ></tr>
+      <tr
+        *matFooterRowDef="['img', 'price']"
+        mat-footer-row
+        class="cart-table__footer"
+        data-test="cart-table-footer"
+      ></tr>
     </table>
   </mat-dialog-content>
 

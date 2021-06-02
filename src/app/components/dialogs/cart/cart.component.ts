@@ -15,6 +15,7 @@ import { LoginDialogComponent } from "../login/login.component"
   styleUrls: ["./cart.component.scss"],
 })
 export class CartDialogComponent implements OnInit {
+  columns = ["img", "items", "price", "btn"]
   cartItems$ = this.store.select(selectCart).pipe(map(cart => Object.values(cart)))
   isUserLoggedIn$ = this.store.select(selectIsLoggedIn)
 

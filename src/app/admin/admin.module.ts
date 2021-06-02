@@ -12,9 +12,8 @@ import { AdminStoreModule } from "./admin-store.module"
 import { CategoryDialogComponent } from "./components/dialogs/category-dialog/category-dialog.component"
 import { ImageUploadComponent } from "./components/image-upload/image-upload.component"
 import { DishDialogComponent } from "./components/dialogs/dish-dialog/dish-dialog.component"
-import { MatTableModule } from "@angular/material/table"
 
-const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule, MatTableModule]
+const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule]
 
 @NgModule({
   declarations: [

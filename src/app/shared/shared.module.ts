@@ -8,6 +8,7 @@ import { MatDialogModule } from "@angular/material/dialog"
 import { MatIconModule } from "@angular/material/icon"
 import { MatSelectModule } from "@angular/material/select"
 import { OrderStatusComponent } from "./components/order-status/order-status.component"
+import { MatTableModule } from "@angular/material/table"
 
 const MODULES = [
   NgLetModule,
@@ -17,6 +18,7 @@ const MODULES = [
   MatDialogModule,
   MatIconModule,
   MatSelectModule,
+  MatTableModule,
 ]
 
 const DECLARATIONS = [OrderStatusComponent]

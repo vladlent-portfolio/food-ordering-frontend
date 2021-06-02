@@ -48,15 +48,15 @@
 
   &__price {
     font-weight: 500;
-    color: $color-accent;
+    color: $color-primary;
   }
 
   &__btn {
     text-align: center;
   }
 
-  &__footer {
-    font-size: 1.25rem;
+  &__footer td {
+    font-size: 1.15rem;
     font-weight: 500;
   }
 }
