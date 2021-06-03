@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
 import { environment } from "../../environments/environment"
-import { Order } from "../models/models"
+import { Order, OrderStatus } from "../models/models"
 import { Observable } from "rxjs"
 
 @Injectable({
@@ -16,10 +16,21 @@ export class OrderService {
   }
 
   create(dishes: { id: number; quantity: number }[]): Observable<Order> {
-    return this.http.post<Order>(this.baseURL, { items: dishes }, { withCredentials: true })
+    return this.http.post<Order>(
+      this.baseURL,
+      { items: dishes },
+      { withCredentials: true },
+    )
   }
 
-  cancel(id: number): Observable<void> {
-    return this.http.patch<void>(`${this.baseURL}/${id}/cancel`, null, { withCredentials: true })
+  changeStatus(orderID: number, status: OrderStatus): Observable<void> {
+    const params = {
+      status,
+    }
+
+    return this.http.patch<void>(`${this.baseURL}/${orderID}`, null, {
+      params,
+      withCredentials: true,
+    })
   }
 }

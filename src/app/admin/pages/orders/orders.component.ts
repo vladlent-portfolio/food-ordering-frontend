@@ -4,7 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from "@angular/core"
-import { Order } from "../../../models/models"
+import { Order, OrderStatus } from "../../../models/models"
 import { OrderService } from "../../../services/order.service"
 
 @Component({
@@ -15,7 +15,35 @@ import { OrderService } from "../../../services/order.service"
 })
 export class OrdersPageComponent implements OnInit {
   orders: Order[] = []
-  displayedColumns = ["id", "created_at", "updated_at", "email", "amount", "status"]
+  displayedColumns = [
+    "id",
+    "created_at",
+    "updated_at",
+    "email",
+    "amount",
+    "status",
+    "action",
+  ]
+  menuItems = [
+    {
+      value: OrderStatus.InProgress,
+      text: "Accept Order",
+      class: "in-progress",
+      icon: "thumb_up",
+    },
+    {
+      value: OrderStatus.Canceled,
+      text: "Reject Order",
+      class: "canceled",
+      icon: "cancel",
+    },
+    {
+      value: OrderStatus.Done,
+      text: "Complete Order",
+      class: "done",
+      icon: "check_circle",
+    },
+  ]
 
   constructor(private orderService: OrderService, public cdRef: ChangeDetectorRef) {}
 
@@ -27,6 +55,12 @@ export class OrdersPageComponent implements OnInit {
     this.orderService.getAll().subscribe(orders => {
       this.orders = orders
       this.cdRef.detectChanges()
+    })
+  }
+
+  changeStatus(id: number, status: OrderStatus) {
+    this.orderService.changeStatus(id, status).subscribe(() => {
+      this.getAll()
     })
   }
 }

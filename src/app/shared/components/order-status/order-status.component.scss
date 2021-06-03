@@ -1,12 +1,5 @@
 @import "~src/styles/colors";
 
-$status-colors: (
-  created: $color-primary,
-  in-progress: $color-accent,
-  done: #3dc295,
-  canceled: $color-warn,
-);
-
 :host {
   display: inline-block;
 }
@@ -17,11 +10,11 @@ $status-colors: (
   text-align: center;
   font-size: 0.75rem;
   font-weight: 500;
+}
 
-  @each $status, $color in $status-colors {
-    &.#{$status} {
-      background-color: rgba($color, 35%);
-      color: $color;
-    }
+@each $status, $color in $status-colors {
+  .#{$status} {
+    background-color: rgba($color, 35%);
+    color: $color;
   }
 }

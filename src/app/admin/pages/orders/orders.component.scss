@@ -1,7 +1,15 @@
+@import "~src/styles/colors";
+
 :host {
   display: block;
 }
 
 .orders-table {
   width: 100%;
+}
+
+@each $status, $color in $status-colors {
+  .#{$status} {
+    color: $color;
+  }
 }

@@ -1,8 +1,12 @@
 import { TestBed } from "@angular/core/testing"
 
 import { OrderService } from "./order.service"
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing"
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from "@angular/common/http/testing"
 import { environment } from "../../environments/environment"
+import { OrderStatuses } from "../models/models"
 
 const getURL = (param?: number | string) => {
   const baseURL = `${environment.apiURL}/orders`
@@ -58,19 +62,25 @@ describe("OrderService", () => {
     })
   })
 
-  describe("cancel()", () => {
+  describe("changeStatus()", () => {
     it("should cancel the order", () => {
       const id = 1
-      service.cancel(id).subscribe()
 
-      const req = httpController.expectOne(getURL(id + "/cancel"))
-      const { request } = req
+      for (const status of OrderStatuses) {
+        service.changeStatus(id, status).subscribe()
+      }
 
-      expect(request.method).toBe("PATCH")
-      expect(request.withCredentials).toBeTrue()
-      expect(request.body).toBeNull()
+      const reqs = httpController.match(req => req.url === getURL(id))
 
-      req.flush(null)
+      reqs.forEach((req, i) => {
+        const { request } = req
+
+        expect(request.method).toBe("PATCH")
+        expect(request.params.get("status")).toBe(OrderStatuses[i] as any)
+        expect(request.withCredentials).toBeTrue()
+        expect(request.body).toBeNull()
+        req.flush(null)
+      })
     })
   })
 })

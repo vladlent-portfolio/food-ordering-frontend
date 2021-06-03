@@ -1,13 +1,16 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { OrdersPageComponent } from "./orders.component"
 import { OrderService } from "../../../services/order.service"
-import { Order } from "../../../models/models"
+import { Order, OrderStatus, OrderStatuses } from "../../../models/models"
 import testOrders from "./test-orders.json"
 import { of } from "rxjs"
 import { Component, Input } from "@angular/core"
 import { MatTableModule } from "@angular/material/table"
 import { formatDate } from "@angular/common"
 import { By } from "@angular/platform-browser"
+import { MatIconModule } from "@angular/material/icon"
+import { NoopAnimationsModule } from "@angular/platform-browser/animations"
+import { MatMenuModule } from "@angular/material/menu"
 
 describe("OrdersComponent", () => {
   let component: OrdersPageComponent
@@ -19,12 +22,12 @@ describe("OrdersComponent", () => {
   beforeEach(() => {
     orders = testOrders
 
-    orderServiceSpy = jasmine.createSpyObj("OrderService", ["getAll"])
+    orderServiceSpy = jasmine.createSpyObj("OrderService", ["getAll", "changeStatus"])
     orderServiceSpy.getAll.and.returnValue(of(orders))
 
     TestBed.configureTestingModule({
       declarations: [OrdersPageComponent, OrderStatusFixtureComponent],
-      imports: [MatTableModule],
+      imports: [MatTableModule, MatMenuModule, MatIconModule, NoopAnimationsModule],
       providers: [{ provide: OrderService, useValue: orderServiceSpy }],
     })
   })
@@ -42,13 +45,15 @@ describe("OrdersComponent", () => {
   })
 
   describe("orders table", () => {
-    it("should exist", () => {
+    beforeEach(() => {
       detectChanges()
+    })
+
+    it("should exist", () => {
       expect(queryTable()).not.toBeNull()
     })
 
     it("should have a header", () => {
-      detectChanges()
       const { id, createdAt, updatedAt, email, amount, status } = queryTableHeadCells()
 
       expect(id.textContent).toContain("Order ID")
@@ -60,7 +65,6 @@ describe("OrdersComponent", () => {
     })
 
     it("should render a row for each order", () => {
-      detectChanges()
       const rows = queryTableRows()
       expect(rows.length).toBe(orders.length)
 
@@ -81,12 +85,98 @@ describe("OrdersComponent", () => {
         expect(statusComponents[i].status).toBe(order.status)
       })
     })
+
+    describe("action column", () => {
+      it("should have a menu with actions for the column", async () => {
+        const expectedOptions = [
+          {
+            text: "Accept Order",
+            class: "in-progress",
+            icon: "thumb_up",
+          },
+          {
+            text: "Reject Order",
+            class: "canceled",
+            icon: "cancel",
+          },
+          {
+            text: "Complete Order",
+            class: "done",
+            icon: "check_circle",
+          },
+        ]
+        const rows = queryTableRows()
+
+        for (const row of rows) {
+          const items = await queryActionMenuItems(row)
+          expect(items.length).toBe(expectedOptions.length)
+
+          items.forEach((item, i) => {
+            const expected = expectedOptions[i]
+            expect(item.textContent).toContain(expected.text)
+
+            const icon = item.querySelector("mat-icon")
+            expect(icon).not.toBeNull(
+              `expected '${expected.text}' menu item to have an icon`,
+            )
+            expect(icon?.classList.contains(expected.class)).toBe(
+              true,
+              `expected icon to have '${expected.class}' class`,
+            )
+            expect(icon?.textContent?.trim()).toBe(expected.icon)
+          })
+        }
+      })
+
+      it("should change order's status with respective action", async () => {
+        const changeStatus = spyOn(component, "changeStatus")
+        const expectedStatuses = [
+          OrderStatus.InProgress,
+          OrderStatus.Canceled,
+          OrderStatus.Done,
+        ]
+        const rows = queryTableRows()
+
+        for (const [index, row] of rows.entries()) {
+          const order = orders[index]
+          const items = await queryActionMenuItems(row)
+
+          items.forEach((item, i) => {
+            item.click()
+            expect(changeStatus).toHaveBeenCalledWith(order.id, expectedStatuses[i])
+          })
+        }
+      })
+    })
   })
 
   describe("getAll()", () => {
     it("should fetch all orders and updated component's state", () => {
       component.getAll()
       expect(component.orders).toEqual(orders)
+    })
+  })
+
+  describe("changeStatus()", () => {
+    beforeEach(() => {
+      orderServiceSpy.changeStatus.and.returnValue(of(undefined))
+    })
+
+    it("should call changeStatus from OrderService", () => {
+      for (const [i, status] of OrderStatuses.entries()) {
+        component.changeStatus(i, status)
+        expect(orderServiceSpy.changeStatus).toHaveBeenCalledWith(i, status)
+      }
+    })
+
+    it("should call getAll() on success", () => {
+      const getAll = spyOn(component, "getAll")
+
+      for (const [i, status] of OrderStatuses.entries()) {
+        component.changeStatus(i, status)
+      }
+
+      expect(getAll).toHaveBeenCalledTimes(OrderStatuses.length)
     })
   })
 
@@ -127,6 +217,37 @@ describe("OrdersComponent", () => {
       email: queryCell("email"),
       amount: queryCell("amount"),
       status: queryCell("status"),
+    }
+  }
+
+  function queryActionsMenuTrigger(row: HTMLElement) {
+    return row.querySelector("[data-test='orders-table-actions-trigger']") as HTMLElement
+  }
+
+  async function queryActionMenuItems(
+    row: HTMLElement,
+  ): Promise<NodeListOf<HTMLElement>> {
+    await openActionsMenu(row)
+    return document.querySelectorAll("[data-test='orders-table-actions-item']")
+  }
+
+  async function openActionsMenu(row: HTMLElement) {
+    detectChanges()
+    await closeAllPopups()
+    const trigger = queryActionsMenuTrigger(row)
+    trigger.click()
+    detectChanges()
+  }
+
+  async function closeAllPopups() {
+    const backdrops = document.querySelectorAll(
+      ".cdk-overlay-backdrop",
+    ) as NodeListOf<HTMLElement>
+
+    for (const backdrop of backdrops) {
+      backdrop.click()
+      await fixture.whenStable()
+      detectChanges()
     }
   }
 

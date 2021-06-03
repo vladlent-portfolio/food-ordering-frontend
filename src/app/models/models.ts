@@ -40,6 +40,13 @@ export enum OrderStatus {
   Canceled = 3,
 }
 
+export const OrderStatuses: OrderStatus[] = [
+  OrderStatus.Created,
+  OrderStatus.InProgress,
+  OrderStatus.Done,
+  OrderStatus.Canceled,
+]
+
 export type OrderItem = {
   id: number
   order_id: number
