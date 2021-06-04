@@ -1,0 +1,29 @@
+<h2 mat-dialog-title data-test="order-details-title">Order №{{ order.id }}</h2>
+
+<main>
+  <table class="table" mat-table [dataSource]="order.items">
+    <ng-container matColumnDef="img">
+      <td *matCellDef="let item" class="table__img" mat-cell>
+        <img [src]="item.image" alt="Image of {{ item.dish.title }}" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="dish">
+      <td *matCellDef="let item" class="table__dish" mat-cell>
+        {{ item.quantity }} x {{ item.dish.title }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <td *matCellDef="let item" mat-cell>
+        {{ item.quantity * item.dish.price | currency }}
+      </td>
+    </ng-container>
+
+    <tr
+      *matRowDef="let row; columns: columns"
+      mat-row
+      data-test="order-details-table-row"
+    ></tr>
+  </table>
+</main>

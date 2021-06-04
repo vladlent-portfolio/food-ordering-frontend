@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.table {
+  width: 100%;
+
+  &__img {
+    height: 3rem;
+    width: auto;
+  }
+
+  &__dish {
+    font-weight: 500;
+  }
+}
