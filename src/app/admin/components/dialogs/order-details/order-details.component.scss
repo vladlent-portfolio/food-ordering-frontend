@@ -1,5 +1,17 @@
 :host {
   display: block;
+  min-width: 30rem;
+  padding: 1rem;
+}
+
+.title {
+  margin: 0;
+  padding-bottom: 1.5rem;
+}
+
+.content {
+  margin: 0;
+  padding: 0;
 }
 
 .table {
@@ -11,6 +23,11 @@
   }
 
   &__dish {
+    font-weight: 500;
+  }
+
+  &__footer td {
+    font-size: 1.15rem;
     font-weight: 500;
   }
 }

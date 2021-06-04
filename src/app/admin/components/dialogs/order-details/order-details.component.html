@@ -1,29 +1,53 @@
-<h2 mat-dialog-title data-test="order-details-title">Order №{{ order.id }}</h2>
+<h2 mat-dialog-title data-test="order-details-title" class="title">
+  Details for order №{{ order.id }}
+</h2>
 
-<main>
+<main mat-dialog-content class="content">
   <table class="table" mat-table [dataSource]="order.items">
     <ng-container matColumnDef="img">
-      <td *matCellDef="let item" class="table__img" mat-cell>
-        <img [src]="item.image" alt="Image of {{ item.dish.title }}" />
+      <td *matCellDef="let item" mat-cell data-test="order-details-table-img-cell">
+        <img
+          [src]="item.dish.image"
+          alt="Image of {{ item.dish.title }}"
+          class="table__img"
+        />
       </td>
+      <td *matFooterCellDef mat-footer-cell colspan="2">Total</td>
     </ng-container>
 
     <ng-container matColumnDef="dish">
-      <td *matCellDef="let item" class="table__dish" mat-cell>
+      <td
+        *matCellDef="let item"
+        class="table__dish"
+        mat-cell
+        data-test="order-details-table-dish-cell"
+      >
         {{ item.quantity }} x {{ item.dish.title }}
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="amount">
-      <td *matCellDef="let item" mat-cell>
+    <ng-container matColumnDef="price">
+      <td
+        *matCellDef="let item"
+        mat-cell
+        class="table__price"
+        data-test="order-details-table-price-cell"
+      >
         {{ item.quantity * item.dish.price | currency }}
       </td>
+      <td *matFooterCellDef mat-footer-cell colspan="2">{{ order.total | currency }}</td>
     </ng-container>
 
     <tr
       *matRowDef="let row; columns: columns"
       mat-row
       data-test="order-details-table-row"
+    ></tr>
+    <tr
+      *matFooterRowDef="['img', 'price']"
+      mat-footer-row
+      class="table__footer"
+      data-test="order-details-table-footer-row"
     ></tr>
   </table>
 </main>

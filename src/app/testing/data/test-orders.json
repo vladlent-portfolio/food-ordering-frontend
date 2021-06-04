@@ -77,6 +77,7 @@
           "id": 4,
           "title": "Phila",
           "price": 4.32,
+          "image": "http://localhost:8080/static/dishes/img/4.png",
           "removable": true,
           "category_id": 5,
           "category": {
@@ -95,6 +96,7 @@
           "id": 5,
           "title": "Spring Salad",
           "price": 3.69,
+          "image": "http://localhost:8080/static/dishes/img/5.png",
           "removable": true,
           "category_id": 9,
           "category": {
@@ -129,6 +131,7 @@
           "id": 4,
           "title": "Phila",
           "price": 4.32,
+          "image": "http://localhost:8080/static/dishes/img/4.png",
           "removable": true,
           "category_id": 5,
           "category": {
@@ -163,6 +166,7 @@
           "id": 4,
           "title": "Phila",
           "price": 4.32,
+          "image": "http://localhost:8080/static/dishes/img/4.png",
           "removable": true,
           "category_id": 5,
           "category": {
@@ -197,6 +201,7 @@
           "id": 5,
           "title": "Spring Salad",
           "price": 3.69,
+          "image": "http://localhost:8080/static/dishes/img/5.png",
           "removable": true,
           "category_id": 9,
           "category": {

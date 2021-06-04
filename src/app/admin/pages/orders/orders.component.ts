@@ -1,11 +1,13 @@
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  Component,
+  OnInit,
 } from "@angular/core"
 import { Order, OrderStatus } from "../../../models/models"
 import { OrderService } from "../../../services/order.service"
+import { MatDialog } from "@angular/material/dialog"
+import { OrderDetailsDialogComponent } from "../../components/dialogs/order-details/order-details.component"
 
 @Component({
   selector: "app-orders",
@@ -45,7 +47,11 @@ export class OrdersPageComponent implements OnInit {
     },
   ]
 
-  constructor(private orderService: OrderService, public cdRef: ChangeDetectorRef) {}
+  constructor(
+    private orderService: OrderService,
+    public cdRef: ChangeDetectorRef,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.getAll()
@@ -69,5 +75,9 @@ export class OrdersPageComponent implements OnInit {
       },
       () => {},
     )
+  }
+
+  openDetails(order: Order) {
+    this.dialog.open(OrderDetailsDialogComponent, { data: order })
   }
 }

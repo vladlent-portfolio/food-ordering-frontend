@@ -11,6 +11,8 @@ import { By } from "@angular/platform-browser"
 import { MatIconModule } from "@angular/material/icon"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
+import { MatDialog } from "@angular/material/dialog"
+import { OrderDetailsDialogComponent } from "../../components/dialogs/order-details/order-details.component"
 
 describe("OrdersComponent", () => {
   let component: OrdersPageComponent
@@ -18,17 +20,22 @@ describe("OrdersComponent", () => {
   let nativeEl: HTMLElement
   let orderServiceSpy: jasmine.SpyObj<OrderService>
   let orders: Order[]
+  let dialogSpy: jasmine.SpyObj<MatDialog>
 
   beforeEach(() => {
     orders = testOrders
 
+    dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
     orderServiceSpy = jasmine.createSpyObj("OrderService", ["getAll", "changeStatus"])
     orderServiceSpy.getAll.and.returnValue(of(orders))
 
     TestBed.configureTestingModule({
       declarations: [OrdersPageComponent, OrderStatusFixtureComponent],
       imports: [MatTableModule, MatMenuModule, MatIconModule, NoopAnimationsModule],
-      providers: [{ provide: OrderService, useValue: orderServiceSpy }],
+      providers: [
+        { provide: OrderService, useValue: orderServiceSpy },
+        { provide: MatDialog, useValue: dialogSpy },
+      ],
     })
   })
 
@@ -72,6 +79,7 @@ describe("OrdersComponent", () => {
         const order = orders[i]
         const statusComponents = queryStatusComponents()
         const { id, createdAt, updatedAt, email, amount } = queryRowCells(row)
+        expect(row.classList.contains("orders-table__row")).toBeTrue()
 
         expect(id.textContent?.trim()).toBe(order.id.toString())
         expect(createdAt.textContent?.trim()).toBe(
@@ -83,6 +91,16 @@ describe("OrdersComponent", () => {
         expect(email.textContent?.trim()).toBe(order.user.email)
         expect(amount.textContent?.trim()).toBe("$" + order.total.toString())
         expect(statusComponents[i].status).toBe(order.status)
+      })
+    })
+
+    it("should call openDetails() with order on click", () => {
+      const openDetails = spyOn(component, "openDetails")
+      const rows = queryTableRows()
+
+      rows.forEach((row, i) => {
+        row.click()
+        expect(openDetails).toHaveBeenCalledWith(orders[i])
       })
     })
 
@@ -198,6 +216,17 @@ describe("OrdersComponent", () => {
         }
       }
       expect(getAll).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("orderDetails()", () => {
+    it("should open order-detail dialog with provided order", () => {
+      for (const order of orders) {
+        component.openDetails(order)
+        expect(dialogSpy.open).toHaveBeenCalledWith(OrderDetailsDialogComponent, {
+          data: order,
+        })
+      }
     })
   })
 

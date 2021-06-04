@@ -74,8 +74,10 @@
 
   <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
   <tr
-    *matRowDef="let row; columns: displayedColumns"
+    *matRowDef="let order; columns: displayedColumns"
+    class="orders-table__row"
     mat-row
+    (click)="openDetails(order)"
     data-test="orders-table-row"
   ></tr>
 </table>

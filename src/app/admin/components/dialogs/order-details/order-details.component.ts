@@ -8,7 +8,7 @@ import { Order } from "../../../../models/models"
   styleUrls: ["./order-details.component.scss"],
 })
 export class OrderDetailsDialogComponent implements OnInit {
-  columns = ["img", "dish", "amount"]
+  columns = ["img", "dish", "price"]
 
   constructor(@Inject(MAT_DIALOG_DATA) public order: Order) {}
 
