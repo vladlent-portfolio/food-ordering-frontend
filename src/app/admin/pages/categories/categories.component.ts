@@ -11,7 +11,7 @@ import { MatDialog } from "@angular/material/dialog"
 import {
   CategoryDialogComponent,
   CategoryDialogData,
-} from "../../components/dialogs/category-dialog/category-dialog.component"
+} from "../../components/dialogs/category/category-dialog.component"
 import { filter, switchMap } from "rxjs/operators"
 import {
   ConfirmDialogComponent,

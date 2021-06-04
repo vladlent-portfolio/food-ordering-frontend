@@ -9,7 +9,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from "@angular/material/dial
 import {
   CategoryDialogComponent,
   CategoryDialogData,
-} from "../../components/dialogs/category-dialog/category-dialog.component"
+} from "../../components/dialogs/category/category-dialog.component"
 import { MatIconModule } from "@angular/material/icon"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core"

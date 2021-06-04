@@ -33,7 +33,12 @@ describe("CategoryDialogComponent", () => {
 
     TestBed.configureTestingModule({
       declarations: [CategoryDialogComponent],
-      imports: [MatDialogModule, MatInputModule, NoopAnimationsModule, ReactiveFormsModule],
+      imports: [
+        MatDialogModule,
+        MatInputModule,
+        NoopAnimationsModule,
+        ReactiveFormsModule,
+      ],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: data },
         { provide: MatDialogRef, useValue: dialogRefSpy },
@@ -83,7 +88,9 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should be re-enabled if request is unsuccessful", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 409, statusText: "Conflict" }))
+      serviceSpy.create.and.returnValue(
+        throwError({ status: 409, statusText: "Conflict" }),
+      )
       updateTitleControl("Fish")
       fixture.detectChanges()
       querySubmitBtn().click()
@@ -137,7 +144,9 @@ describe("CategoryDialogComponent", () => {
     })
 
     it("should not close the dialog on error", () => {
-      serviceSpy.create.and.returnValue(throwError({ status: 403, statusText: "Forbidden" }))
+      serviceSpy.create.and.returnValue(
+        throwError({ status: 403, statusText: "Forbidden" }),
+      )
       updateTitleControl(title)
       fixture.detectChanges()
       querySubmitBtn().click()
@@ -160,7 +169,9 @@ describe("CategoryDialogComponent", () => {
       component.submit()
       fixture.detectChanges()
       expect(queryTitleError()).not.toBeNull()
-      expect(queryTitleError().textContent).toContain("Category with name 'Pizza' already exists")
+      expect(queryTitleError().textContent).toContain(
+        "Category with name 'Pizza' already exists",
+      )
     })
   })
 

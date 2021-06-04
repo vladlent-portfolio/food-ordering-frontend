@@ -8,7 +8,7 @@ import {
 import {
   DishDialogComponent,
   DishDialogData,
-} from "../../components/dialogs/dish-dialog/dish-dialog.component"
+} from "../../components/dialogs/dish/dish-dialog.component"
 import { Category, Dish } from "../../../models/models"
 import { CategoryService } from "../../../services/category.service"
 import { DishService } from "../../../services/dish.service"

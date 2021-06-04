@@ -13,7 +13,7 @@ import { of } from "rxjs"
 import {
   DishDialogComponent,
   DishDialogData,
-} from "../../components/dialogs/dish-dialog/dish-dialog.component"
+} from "../../components/dialogs/dish/dish-dialog.component"
 import { ConfirmDialogComponent } from "../../../components/dialogs/confirm/confirm.component"
 import { CategoryService } from "../../../services/category.service"
 import { MatSelectModule } from "@angular/material/select"
