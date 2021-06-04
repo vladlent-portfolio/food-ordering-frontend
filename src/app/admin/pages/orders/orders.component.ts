@@ -59,8 +59,15 @@ export class OrdersPageComponent implements OnInit {
   }
 
   changeStatus(id: number, status: OrderStatus) {
-    this.orderService.changeStatus(id, status).subscribe(() => {
-      this.getAll()
-    })
+    this.orderService.changeStatus(id, status).subscribe(
+      () => {
+        const order = this.orders.find(o => o.id === id)
+        if (order) {
+          order.status = status
+          this.cdRef.detectChanges()
+        }
+      },
+      () => {},
+    )
   }
 }

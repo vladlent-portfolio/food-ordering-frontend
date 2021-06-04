@@ -3,7 +3,7 @@ import { OrdersPageComponent } from "./orders.component"
 import { OrderService } from "../../../services/order.service"
 import { Order, OrderStatus, OrderStatuses } from "../../../models/models"
 import testOrders from "./test-orders.json"
-import { of } from "rxjs"
+import { of, throwError } from "rxjs"
 import { Component, Input } from "@angular/core"
 import { MatTableModule } from "@angular/material/table"
 import { formatDate } from "@angular/common"
@@ -169,14 +169,35 @@ describe("OrdersComponent", () => {
       }
     })
 
-    it("should call getAll() on success", () => {
+    it("should update order status on success without calling getAll()", async () => {
+      component.ngOnInit()
       const getAll = spyOn(component, "getAll")
+      const detectChanges = spyOn(component.cdRef, "detectChanges")
 
-      for (const [i, status] of OrderStatuses.entries()) {
-        component.changeStatus(i, status)
+      for (const order of orders) {
+        for (const status of OrderStatuses) {
+          component.changeStatus(order.id, status)
+          expect(order.status).toBe(status)
+        }
       }
 
-      expect(getAll).toHaveBeenCalledTimes(OrderStatuses.length)
+      expect(detectChanges).toHaveBeenCalledTimes(orders.length * OrderStatuses.length)
+      expect(getAll).not.toHaveBeenCalled()
+    })
+
+    it("should not update order status on error", () => {
+      orderServiceSpy.changeStatus.and.returnValue(throwError({ status: 404 }))
+      const getAll = spyOn(component, "getAll")
+
+      for (const order of orders) {
+        for (const status of OrderStatuses) {
+          const prevStatus = order.status
+
+          component.changeStatus(order.id, status)
+          expect(order.status).toBe(prevStatus)
+        }
+      }
+      expect(getAll).not.toHaveBeenCalled()
     })
   })
 
