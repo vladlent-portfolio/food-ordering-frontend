@@ -58,8 +58,8 @@ export class OrdersPageComponent implements OnInit {
   }
 
   getAll() {
-    this.orderService.getAll().subscribe(orders => {
-      this.orders = orders
+    this.orderService.getAll().subscribe(resp => {
+      this.orders = resp.orders
       this.cdRef.detectChanges()
     })
   }

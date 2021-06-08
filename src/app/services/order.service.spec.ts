@@ -6,7 +6,7 @@ import {
   HttpTestingController,
 } from "@angular/common/http/testing"
 import { environment } from "../../environments/environment"
-import { OrderStatuses } from "../models/models"
+import { OrderStatuses, Pagination } from "../models/models"
 
 const getURL = (param?: number | string) => {
   const baseURL = `${environment.apiURL}/orders`
@@ -27,17 +27,60 @@ describe("OrderService", () => {
   })
 
   describe("getAll()", () => {
-    it("should get orders", () => {
-      const expected = ["burger", "pizza"] as any
-      service.getAll().subscribe(resp => expect(resp).toEqual(expected))
+    const response: any = {
+      orders: ["burger", "pizza"],
+      pagination: {
+        page: 0,
+        limit: 5,
+        total: 10,
+      },
+    }
 
-      const req = httpController.expectOne(getURL())
-      const { request } = req
+    describe("without pagination", () => {
+      it("should get orders", () => {
+        service.getAll().subscribe(resp => expect(resp).toEqual(response))
 
-      expect(request.method).toBe("GET")
-      expect(request.withCredentials).toBeTrue()
+        const req = httpController.expectOne(getURL())
+        const { request } = req
 
-      req.flush(expected)
+        expect(request.params.keys().length).toBe(0)
+        expect(request.method).toBe("GET")
+        expect(request.withCredentials).toBeTrue()
+
+        req.flush(response)
+      })
+    })
+
+    describe("with pagination", () => {
+      it("should get orders with appropriate params", () => {
+        const tests: Pagination[] = [
+          { limit: 3, page: 20 },
+          { limit: 13 },
+          { page: 228 },
+          {},
+        ]
+
+        for (const test of tests) {
+          service.getAll(test).subscribe(resp => expect(resp).toEqual(response))
+        }
+
+        const requests = httpController.match(req => req.url.includes(getURL()))
+        expect(requests.length).toBe(tests.length)
+
+        for (const [i, req] of Object.entries(requests)) {
+          const { request } = req
+          expect(request.method).toBe("GET")
+          expect(request.withCredentials).toBeTrue()
+
+          const p = tests[+i]
+
+          for (const [key, value] of Object.entries(p)) {
+            value && expect(request.params.get(key)).toBe(value.toString())
+          }
+
+          req.flush(response)
+        }
+      })
     })
   })
 

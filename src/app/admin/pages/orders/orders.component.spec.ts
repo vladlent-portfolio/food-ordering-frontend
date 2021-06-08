@@ -27,7 +27,7 @@ describe("OrdersComponent", () => {
 
     dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
     orderServiceSpy = jasmine.createSpyObj("OrderService", ["getAll", "changeStatus"])
-    orderServiceSpy.getAll.and.returnValue(of(orders))
+    orderServiceSpy.getAll.and.returnValue(of({ orders, pagination: {} as any }))
 
     TestBed.configureTestingModule({
       declarations: [OrdersPageComponent, OrderStatusFixtureComponent],

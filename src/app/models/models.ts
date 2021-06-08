@@ -54,3 +54,8 @@ export type OrderItem = {
   dish_id: number
   quantity: number
 }
+
+export type Pagination = {
+  page?: number
+  limit?: number
+}
