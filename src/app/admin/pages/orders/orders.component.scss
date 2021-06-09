@@ -6,11 +6,6 @@
 
 .orders-table {
   width: 100%;
-
-  &__row:hover {
-    background-color: rgba(lightgrey, 0.3);
-    cursor: pointer;
-  }
 }
 
 @each $status, $color in $status-colors {
