@@ -69,7 +69,15 @@ describe("OrdersComponent", () => {
     })
 
     it("should have a header", () => {
-      const { id, createdAt, updatedAt, email, amount, status } = queryTableHeadCells()
+      const {
+        id,
+        createdAt,
+        updatedAt,
+        email,
+        amount,
+        status,
+        actions,
+      } = queryTableHeadCells()
 
       expect(id.textContent).toContain("Order ID")
       expect(createdAt.textContent).toContain("Created At")
@@ -77,6 +85,7 @@ describe("OrdersComponent", () => {
       expect(email.textContent).toContain("Customer's E-mail")
       expect(amount.textContent).toContain("Amount")
       expect(status.textContent).toContain("Order's Status")
+      expect(actions.textContent).toContain("Actions")
     })
 
     it("should render a row for each order", () => {
@@ -102,76 +111,88 @@ describe("OrdersComponent", () => {
       })
     })
 
-    it("should call openDetails() with order on click", () => {
-      const openDetails = spyOn(component, "openDetails")
-      const rows = queryTableRows()
-
-      rows.forEach((row, i) => {
-        row.click()
-        expect(openDetails).toHaveBeenCalledWith(orders[i])
-      })
-    })
-
-    describe("action column", () => {
-      it("should have a menu with actions for the column", async () => {
-        const expectedOptions = [
-          {
-            text: "Accept Order",
-            class: "in-progress",
-            icon: "thumb_up",
-          },
-          {
-            text: "Reject Order",
-            class: "canceled",
-            icon: "cancel",
-          },
-          {
-            text: "Complete Order",
-            class: "done",
-            icon: "check_circle",
-          },
-        ]
-        const rows = queryTableRows()
-
-        for (const row of rows) {
-          const items = await queryActionMenuItems(row)
-          expect(items.length).toBe(expectedOptions.length)
-
-          items.forEach((item, i) => {
-            const expected = expectedOptions[i]
-            expect(item.textContent).toContain(expected.text)
-
-            const icon = item.querySelector("mat-icon")
-            expect(icon).not.toBeNull(
-              `expected '${expected.text}' menu item to have an icon`,
-            )
-            expect(icon?.classList.contains(expected.class)).toBe(
-              true,
-              `expected icon to have '${expected.class}' class`,
-            )
-            expect(icon?.textContent?.trim()).toBe(expected.icon)
-          })
+    describe("actions column", () => {
+      it("should menu and details buttons for in each row", () => {
+        for (const row of queryTableRows()) {
+          expect(queryActionsMenuTrigger(row)).not.toBeNull()
+          expect(queryDetailsBtn(row)).not.toBeNull()
         }
       })
 
-      it("should change order's status with respective action", async () => {
-        const changeStatus = spyOn(component, "changeStatus")
-        const expectedStatuses = [
-          OrderStatus.InProgress,
-          OrderStatus.Canceled,
-          OrderStatus.Done,
-        ]
-        const rows = queryTableRows()
+      describe("menu", () => {
+        it("should have a menu with actions for the column", async () => {
+          const expectedOptions = [
+            {
+              text: "Accept Order",
+              class: "in-progress",
+              icon: "thumb_up",
+            },
+            {
+              text: "Reject Order",
+              class: "canceled",
+              icon: "cancel",
+            },
+            {
+              text: "Complete Order",
+              class: "done",
+              icon: "check_circle",
+            },
+          ]
+          const rows = queryTableRows()
 
-        for (const [index, row] of rows.entries()) {
-          const order = orders[index]
-          const items = await queryActionMenuItems(row)
+          for (const row of rows) {
+            const items = await queryActionMenuItems(row)
+            expect(items.length).toBe(expectedOptions.length)
 
-          items.forEach((item, i) => {
-            item.click()
-            expect(changeStatus).toHaveBeenCalledWith(order.id, expectedStatuses[i])
+            items.forEach((item, i) => {
+              const expected = expectedOptions[i]
+              expect(item.textContent).toContain(expected.text)
+
+              const icon = item.querySelector("mat-icon")
+              expect(icon).not.toBeNull(
+                `expected '${expected.text}' menu item to have an icon`,
+              )
+              expect(icon?.classList.contains(expected.class)).toBe(
+                true,
+                `expected icon to have '${expected.class}' class`,
+              )
+              expect(icon?.textContent?.trim()).toBe(expected.icon)
+            })
+          }
+        })
+
+        it("should change order's status with respective action", async () => {
+          const changeStatus = spyOn(component, "changeStatus")
+          const expectedStatuses = [
+            OrderStatus.InProgress,
+            OrderStatus.Canceled,
+            OrderStatus.Done,
+          ]
+          const rows = queryTableRows()
+
+          for (const [index, row] of rows.entries()) {
+            const order = orders[index]
+            const items = await queryActionMenuItems(row)
+
+            items.forEach((item, i) => {
+              item.click()
+              expect(changeStatus).toHaveBeenCalledWith(order.id, expectedStatuses[i])
+            })
+          }
+        })
+      })
+
+      describe("order details button", () => {
+        it("should call openDetails() with order on click", () => {
+          const openDetails = spyOn(component, "openDetails")
+          const rows = queryTableRows()
+
+          rows.forEach((row, i) => {
+            const btn = queryDetailsBtn(row)
+            btn.click()
+            expect(openDetails).toHaveBeenCalledWith(orders[i])
           })
-        }
+        })
       })
     })
   })
@@ -394,6 +415,7 @@ describe("OrdersComponent", () => {
       email: queryCell("email"),
       amount: queryCell("amount"),
       status: queryCell("status"),
+      actions: queryCell("actions"),
     }
   }
 
@@ -411,11 +433,16 @@ describe("OrdersComponent", () => {
       email: queryCell("email"),
       amount: queryCell("amount"),
       status: queryCell("status"),
+      actions: queryCell("actions"),
     }
   }
 
   function queryActionsMenuTrigger(row: HTMLElement) {
     return row.querySelector("[data-test='orders-table-actions-trigger']") as HTMLElement
+  }
+
+  function queryDetailsBtn(row: HTMLElement) {
+    return row.querySelector("[data-test='orders-table-details-btn']") as HTMLElement
   }
 
   async function queryActionMenuItems(

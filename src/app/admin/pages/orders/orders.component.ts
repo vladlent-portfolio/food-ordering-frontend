@@ -25,7 +25,7 @@ export class OrdersPageComponent implements OnInit {
     "email",
     "amount",
     "status",
-    "action",
+    "actions",
   ]
   menuItems = [
     {

@@ -47,15 +47,29 @@
     </td>
   </ng-container>
 
-  <ng-container matColumnDef="action">
-    <th *matHeaderCellDef mat-header-cell data-test="orders">Action</th>
-    <td *matCellDef="let order" mat-cell data-test="orders-table-actions">
+  <ng-container matColumnDef="actions">
+    <th
+      *matHeaderCellDef
+      mat-header-cell
+      class="center"
+      data-test="orders-table-head-actions"
+    >
+      Actions
+    </th>
+    <td *matCellDef="let order" mat-cell class="center" data-test="orders-table-actions">
       <button
         [matMenuTriggerFor]="menu"
         mat-icon-button
         data-test="orders-table-actions-trigger"
       >
-        <mat-icon>more_horiz</mat-icon>
+        <mat-icon>menu</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        data-test="orders-table-details-btn"
+        (click)="openDetails(order)"
+      >
+        <mat-icon>info</mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
@@ -77,7 +91,6 @@
     *matRowDef="let order; columns: displayedColumns"
     class="orders-table__row"
     mat-row
-    (click)="openDetails(order)"
     data-test="orders-table-row"
   ></tr>
 </table>
