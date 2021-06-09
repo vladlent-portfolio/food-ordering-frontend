@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 import { OrdersPageComponent } from "./orders.component"
 import { OrderService } from "../../../services/order.service"
-import { Order, OrderStatus, OrderStatuses } from "../../../models/models"
+import { Order, OrderStatus, OrderStatuses, Pagination } from "../../../models/models"
 import testOrders from "../../../testing/data/test-orders.json"
 import { of, throwError } from "rxjs"
 import { Component, Input } from "@angular/core"
@@ -13,6 +13,8 @@ import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatMenuModule } from "@angular/material/menu"
 import { MatDialog } from "@angular/material/dialog"
 import { OrderDetailsDialogComponent } from "../../components/dialogs/order-details/order-details.component"
+import { MatPaginator, MatPaginatorModule, PageEvent } from "@angular/material/paginator"
+import { PaginationDTO } from "../../../models/dtos"
 
 describe("OrdersComponent", () => {
   let component: OrdersPageComponent
@@ -31,7 +33,13 @@ describe("OrdersComponent", () => {
 
     TestBed.configureTestingModule({
       declarations: [OrdersPageComponent, OrderStatusFixtureComponent],
-      imports: [MatTableModule, MatMenuModule, MatIconModule, NoopAnimationsModule],
+      imports: [
+        MatTableModule,
+        MatMenuModule,
+        MatIconModule,
+        MatPaginatorModule,
+        NoopAnimationsModule,
+      ],
       providers: [
         { provide: OrderService, useValue: orderServiceSpy },
         { provide: MatDialog, useValue: dialogSpy },
@@ -168,10 +176,123 @@ describe("OrdersComponent", () => {
     })
   })
 
+  describe("pagination", () => {
+    let paginator: MatPaginator
+
+    beforeEach(() => {
+      paginator = queryPaginator()
+    })
+
+    it("should exist", () => {
+      expect(paginator).not.toBeNull()
+    })
+
+    it("should have first and last buttons", () => {
+      expect(paginator.showFirstLastButtons).toBeTrue()
+    })
+
+    it("should change current page", () => {
+      detectChanges()
+      expect(paginator.pageIndex).toBe(component.pagination.page)
+      const pages = [1, 2, 5, 7, 69]
+      for (const page of pages) {
+        component.pagination.page = page
+        detectChanges()
+        expect(paginator.pageIndex).toBe(component.pagination.page)
+      }
+    })
+
+    it("should change current limit", () => {
+      detectChanges()
+      expect(paginator.pageSize).toBe(component.pagination.limit)
+      const limits = [10, 25, 50, 75, 100, 200]
+      for (const limit of limits) {
+        component.pagination.limit = limit
+        detectChanges()
+        expect(paginator.pageSize).toBe(limit)
+      }
+    })
+
+    it("should change current amount of rows", () => {
+      detectChanges()
+      expect(paginator.length).toBe(component.pagination.total)
+      const totals = [10, 32, 43, 123, 3456, 687967]
+      for (const total of totals) {
+        component.pagination.total = total
+        detectChanges()
+        expect(paginator.length).toBe(total)
+      }
+    })
+
+    it("should bind limitOptions", () => {
+      detectChanges()
+      expect(paginator.pageSizeOptions).toEqual(component.pagination.limitOptions)
+      const options = [
+        [1, 2, 3, 5],
+        [23, 45, 787, 12],
+        [34, 67, 8],
+        [10, 100, 1000],
+      ]
+
+      for (const option of options) {
+        component.pagination.limitOptions = option
+        detectChanges()
+        expect(paginator.pageSizeOptions).toEqual(component.pagination.limitOptions)
+      }
+    })
+
+    it("should call updatePagination()", () => {
+      const spy = spyOn(component, "updatePagination")
+      const events: PageEvent[] = [
+        { pageIndex: 3, pageSize: 12, length: 345 },
+        { pageIndex: 0, pageSize: 23, length: 123 },
+        { pageIndex: 12, pageSize: 30, length: 1337 },
+      ]
+
+      for (const event of events) {
+        paginator.page.emit(event)
+        expect(spy).toHaveBeenCalledWith(event)
+      }
+    })
+  })
+
   describe("getAll()", () => {
     it("should fetch all orders and updated component's state", () => {
       component.getAll()
       expect(component.orders).toEqual(orders)
+    })
+
+    it("should update pagination options on response", () => {
+      const dtos: PaginationDTO[] = [
+        { page: 3, limit: 12, total: 345 },
+        { page: 0, limit: 23, total: 123 },
+        { page: 12, limit: 30, total: 1337 },
+      ]
+      const { limitOptions: oldLimitOptions } = component.pagination
+
+      for (const dto of dtos) {
+        orderServiceSpy.getAll.and.returnValue(of({ orders, pagination: dto }))
+        component.getAll()
+        const { page, limit, total, limitOptions } = component.pagination
+        expect(page).toEqual(dto.page)
+        expect(limit).toEqual(dto.limit)
+        expect(total).toEqual(dto.total)
+        expect(limitOptions).toEqual(oldLimitOptions)
+      }
+    })
+
+    it("should call service's getAll() with Pagination from component", () => {
+      const paginations: Pagination[] = [
+        { page: 3, limit: 12 },
+        { page: 0, limit: 23 },
+        { page: 12, limit: 30 },
+      ]
+
+      for (const pagination of paginations) {
+        component.pagination = { ...component.pagination, ...pagination }
+        component.getAll()
+        expect(orderServiceSpy.getAll).toHaveBeenCalledWith(pagination)
+      }
     })
   })
 
@@ -230,6 +351,29 @@ describe("OrdersComponent", () => {
     })
   })
 
+  describe("updatePagination()", () => {
+    it("should update component's pagination and call getAll()", () => {
+      const getAll = spyOn(component, "getAll")
+      const events: PageEvent[] = [
+        { pageIndex: 3, pageSize: 12, length: 345 },
+        { pageIndex: 0, pageSize: 23, length: 123 },
+        { pageIndex: 12, pageSize: 30, length: 1337 },
+      ]
+
+      for (const event of events) {
+        component.updatePagination(event)
+
+        const { pageIndex, pageSize, length } = event
+        const { page, limit, total } = component.pagination
+        expect(page).toBe(pageIndex)
+        expect(limit).toBe(pageSize)
+        expect(total).toBe(length)
+      }
+
+      expect(getAll).toHaveBeenCalledTimes(events.length)
+    })
+  })
+
   function detectChanges() {
     fixture.detectChanges()
     component.cdRef.detectChanges()
@@ -281,6 +425,16 @@ describe("OrdersComponent", () => {
     return document.querySelectorAll("[data-test='orders-table-actions-item']")
   }
 
+  function queryStatusComponents(): OrderStatusFixtureComponent[] {
+    return fixture.debugElement
+      .queryAll(By.css("app-order-status"))
+      .map(de => de.componentInstance)
+  }
+
+  function queryPaginator(): MatPaginator {
+    return fixture.debugElement.query(By.directive(MatPaginator)).componentInstance
+  }
+
   async function openActionsMenu(row: HTMLElement) {
     detectChanges()
     await closeAllPopups()
@@ -299,12 +453,6 @@ describe("OrdersComponent", () => {
       await fixture.whenStable()
       detectChanges()
     }
-  }
-
-  function queryStatusComponents(): OrderStatusFixtureComponent[] {
-    return fixture.debugElement
-      .queryAll(By.css("app-order-status"))
-      .map(de => de.componentInstance)
   }
 })
 

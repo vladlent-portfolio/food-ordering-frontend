@@ -14,8 +14,15 @@ import { ImageUploadComponent } from "./components/image-upload/image-upload.com
 import { DishDialogComponent } from "./components/dialogs/dish/dish-dialog.component"
 import { MatMenuModule } from "@angular/material/menu"
 import { OrderDetailsDialogComponent } from "./components/dialogs/order-details/order-details.component"
+import { MatPaginatorModule } from "@angular/material/paginator"
 
-const MATERIAL_MODULES = [MatSidenavModule, MatListModule, MatCardModule, MatMenuModule]
+const MATERIAL_MODULES = [
+  MatSidenavModule,
+  MatListModule,
+  MatCardModule,
+  MatMenuModule,
+  MatPaginatorModule,
+]
 
 @NgModule({
   declarations: [
