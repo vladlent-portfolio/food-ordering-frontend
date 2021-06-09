@@ -41,3 +41,12 @@
     data-test="users-table-row"
   ></tr>
 </table>
+
+<mat-paginator
+  [pageIndex]="pagination.page"
+  [pageSize]="pagination.limit"
+  [length]="pagination.total"
+  [pageSizeOptions]="pagination.limitOptions"
+  (page)="updatePagination($event)"
+  showFirstLastButtons
+></mat-paginator>

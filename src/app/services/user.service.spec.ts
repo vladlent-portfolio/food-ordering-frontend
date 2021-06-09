@@ -41,7 +41,7 @@ describe("UserService", () => {
   describe("getAll()", () => {
     describe("without pagination", () => {
       it("should get array of users", () => {
-        const expected = [user]
+        const expected = { users: [user], pagination: {} } as any
         service.getAll().subscribe(resp => expect(resp).toEqual(expected))
 
         const req = controller.expectOne(baseURL)
@@ -62,7 +62,7 @@ describe("UserService", () => {
           { page: 228 },
           {},
         ]
-        const response = [user]
+        const response = { users: [user], pagination: {} } as any
 
         for (const test of tests) {
           service.getAll(test).subscribe(resp => expect(resp).toEqual(response))

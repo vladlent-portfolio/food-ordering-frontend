@@ -15,6 +15,7 @@ import { MatDialog } from "@angular/material/dialog"
 import { OrderDetailsDialogComponent } from "../../components/dialogs/order-details/order-details.component"
 import { MatPaginator, MatPaginatorModule, PageEvent } from "@angular/material/paginator"
 import { PaginationDTO } from "../../../models/dtos"
+import { ComponentWithPagination } from "../../../shared/components/component-with-pagination/component-with-pagination"
 
 describe("OrdersComponent", () => {
   let component: OrdersPageComponent
@@ -373,8 +374,12 @@ describe("OrdersComponent", () => {
   })
 
   describe("updatePagination()", () => {
-    it("should update component's pagination and call getAll()", () => {
+    it("should call super's updatePagination and getAll()", () => {
       const getAll = spyOn(component, "getAll")
+      const updatePagination = spyOn(
+        ComponentWithPagination.prototype,
+        "updatePagination",
+      )
       const events: PageEvent[] = [
         { pageIndex: 3, pageSize: 12, length: 345 },
         { pageIndex: 0, pageSize: 23, length: 123 },
@@ -383,12 +388,7 @@ describe("OrdersComponent", () => {
 
       for (const event of events) {
         component.updatePagination(event)
-
-        const { pageIndex, pageSize, length } = event
-        const { page, limit, total } = component.pagination
-        expect(page).toBe(pageIndex)
-        expect(limit).toBe(pageSize)
-        expect(total).toBe(length)
+        expect(updatePagination).toHaveBeenCalledWith(event)
       }
 
       expect(getAll).toHaveBeenCalledTimes(events.length)

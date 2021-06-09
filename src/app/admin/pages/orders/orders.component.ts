@@ -9,6 +9,7 @@ import { OrderService } from "../../../services/order.service"
 import { MatDialog } from "@angular/material/dialog"
 import { OrderDetailsDialogComponent } from "../../components/dialogs/order-details/order-details.component"
 import { PageEvent } from "@angular/material/paginator"
+import { ComponentWithPagination } from "../../../shared/components/component-with-pagination/component-with-pagination"
 
 @Component({
   selector: "app-orders",
@@ -16,7 +17,7 @@ import { PageEvent } from "@angular/material/paginator"
   styleUrls: ["./orders.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrdersPageComponent implements OnInit {
+export class OrdersPageComponent extends ComponentWithPagination implements OnInit {
   orders: Order[] = []
   displayedColumns = [
     "id",
@@ -48,18 +49,13 @@ export class OrdersPageComponent implements OnInit {
     },
   ]
 
-  pagination = {
-    page: 0,
-    limit: 10,
-    total: 0,
-    limitOptions: [10, 25, 50, 100],
-  }
-
   constructor(
     private orderService: OrderService,
     public cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    super()
+  }
 
   ngOnInit(): void {
     this.getAll()
@@ -92,13 +88,7 @@ export class OrdersPageComponent implements OnInit {
   }
 
   updatePagination(e: PageEvent) {
-    this.pagination = {
-      ...this.pagination,
-      page: e.pageIndex,
-      limit: e.pageSize,
-      total: e.length,
-    }
-
+    super.updatePagination(e)
     this.getAll()
   }
 }

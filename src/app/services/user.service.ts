@@ -7,6 +7,7 @@ import { finalize, tap } from "rxjs/operators"
 import { AppState } from "../store/reducers"
 import { Store } from "@ngrx/store"
 import { deleteUserInfo, setUserInfo } from "../store/actions"
+import { WithPagination } from "../models/dtos"
 
 @Injectable({
   providedIn: "root",
@@ -16,7 +17,7 @@ export class UserService {
 
   constructor(private http: HttpClient, private store: Store<AppState>) {}
 
-  getAll(pagination?: Pagination): Observable<User[]> {
+  getAll(pagination?: Pagination): Observable<WithPagination<{ users: User[] }>> {
     let params = new HttpParams()
 
     if (pagination) {
@@ -25,7 +26,10 @@ export class UserService {
       }
     }
 
-    return this.http.get<User[]>(this.baseURL, { withCredentials: true, params })
+    return this.http.get<WithPagination<{ users: User[] }>>(this.baseURL, {
+      withCredentials: true,
+      params,
+    })
   }
 
   me(): Observable<User> {
