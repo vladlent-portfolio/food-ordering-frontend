@@ -5,7 +5,7 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from "@angular/common/http/testing"
-import { User } from "../models/models"
+import { Pagination, User } from "../models/models"
 import { environment } from "../../environments/environment"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { AppState } from "../store/reducers"
@@ -39,17 +39,52 @@ describe("UserService", () => {
   })
 
   describe("getAll()", () => {
-    it("should get array of users", () => {
-      const expected = [user]
-      service.getAll().subscribe(resp => expect(resp).toEqual(expected))
+    describe("without pagination", () => {
+      it("should get array of users", () => {
+        const expected = [user]
+        service.getAll().subscribe(resp => expect(resp).toEqual(expected))
 
-      const req = controller.expectOne(baseURL)
-      const { request } = req
+        const req = controller.expectOne(baseURL)
+        const { request } = req
 
-      expect(request.method).toBe("GET")
-      expect(request.withCredentials).toBeTrue()
+        expect(request.method).toBe("GET")
+        expect(request.withCredentials).toBeTrue()
 
-      req.flush(expected)
+        req.flush(expected)
+      })
+    })
+
+    describe("with pagination", () => {
+      it("should fetch users with appropriate params", () => {
+        const tests: Pagination[] = [
+          { limit: 3, page: 20 },
+          { limit: 13 },
+          { page: 228 },
+          {},
+        ]
+        const response = [user]
+
+        for (const test of tests) {
+          service.getAll(test).subscribe(resp => expect(resp).toEqual(response))
+        }
+
+        const requests = controller.match(req => req.url.includes(baseURL))
+        expect(requests.length).toBe(tests.length)
+
+        for (const [i, req] of Object.entries(requests)) {
+          const { request } = req
+          expect(request.method).toBe("GET")
+          expect(request.withCredentials).toBeTrue()
+
+          const p = tests[+i]
+
+          for (const [key, value] of Object.entries(p)) {
+            value && expect(request.params.get(key)).toBe(value.toString())
+          }
+
+          req.flush(response)
+        }
+      })
     })
   })
 

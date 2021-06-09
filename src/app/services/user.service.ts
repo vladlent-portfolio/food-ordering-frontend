@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core"
 import { environment } from "../../environments/environment"
 import { Observable } from "rxjs"
-import { User } from "../models/models"
-import { HttpClient } from "@angular/common/http"
+import { Pagination, User } from "../models/models"
+import { HttpClient, HttpParams } from "@angular/common/http"
 import { finalize, tap } from "rxjs/operators"
 import { AppState } from "../store/reducers"
 import { Store } from "@ngrx/store"
@@ -16,8 +16,16 @@ export class UserService {
 
   constructor(private http: HttpClient, private store: Store<AppState>) {}
 
-  getAll(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseURL, { withCredentials: true })
+  getAll(pagination?: Pagination): Observable<User[]> {
+    let params = new HttpParams()
+
+    if (pagination) {
+      for (const [key, value] of Object.entries(pagination)) {
+        if (value) params = params.set(key, value)
+      }
+    }
+
+    return this.http.get<User[]>(this.baseURL, { withCredentials: true, params })
   }
 
   me(): Observable<User> {
