@@ -13,7 +13,7 @@ import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { MatDialog, MatDialogModule } from "@angular/material/dialog"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { loadEnd, loadStart } from "./store/actions"
+import { loadEnd, loadStart, replaceCart } from "./store/actions"
 import { User } from "./models/models"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { UserService } from "./services/user.service"
@@ -100,6 +100,18 @@ describe("AppComponent", () => {
   it("should check if user is already authorized on init", () => {
     component.ngOnInit()
     expect(userServiceSpy.me).toHaveBeenCalledTimes(1)
+  })
+
+  it("should call restoreCart on init", () => {
+    const restoreCart = spyOn(component, "restoreCart")
+    component.ngOnInit()
+    expect(restoreCart).toHaveBeenCalledTimes(1)
+  })
+
+  it("should call saveCart on init", () => {
+    const saveCart = spyOn(component, "saveCart")
+    component.ngOnInit()
+    expect(saveCart).toHaveBeenCalledTimes(1)
   })
 
   it("should show login btn  if user is not logged in", () => {
@@ -254,6 +266,37 @@ describe("AppComponent", () => {
       queryLogOutBtn().click()
       await fixture.whenStable()
       expect(router.url).toBe("/")
+    })
+  })
+
+  describe("restoreCart", () => {
+    it("should replace the cart in store if local storage isn't empty", () => {
+      const dispatch = spyOn(store, "dispatch")
+      const cart = { 1: { quantity: 2 }, 2: { quantity: 4 } } as any
+      localStorage.setItem("cart", JSON.stringify(cart))
+
+      component.restoreCart()
+      expect(dispatch).toHaveBeenCalledWith(replaceCart({ cart }))
+    })
+
+    it("should call replace cart if local storage is empty", () => {
+      const dispatch = spyOn(store, "dispatch")
+      component.restoreCart()
+      expect(dispatch).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("saveCart()", () => {
+    it("should save user cart locally before page refresh/close", () => {
+      const cart = { 1: { quantity: 2 }, 2: { quantity: 4 } }
+      store.setState({ cart })
+
+      component.saveCart()
+      window.dispatchEvent(new Event("beforeunload"))
+
+      const stored = localStorage.getItem("cart") as string
+      expect(stored).not.toBeNull()
+      expect(JSON.parse(stored)).toEqual(cart)
     })
   })
 

@@ -6,6 +6,7 @@ import {
   loadEnd,
   loadStart,
   removeDishFromCart,
+  replaceCart,
   setUserInfo,
 } from "./actions"
 import { Dish, User } from "../models/models"
@@ -63,6 +64,7 @@ export const cartReducer = createReducer(
 
     return { ...state, [dish.id]: { dish, quantity: quantity - amount } }
   }),
+  on(replaceCart, (_, { cart }) => cart),
   on(clearCart, () => ({})),
 )
 

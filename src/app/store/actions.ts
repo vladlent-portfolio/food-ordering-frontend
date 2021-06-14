@@ -1,5 +1,6 @@
 import { createAction, props } from "@ngrx/store"
 import { Dish, User } from "../models/models"
+import { Cart } from "./reducers"
 
 export const loadStart = createAction("[App] HTTP Loading Start")
 export const loadEnd = createAction("[App] HTTP Loading End")
@@ -17,4 +18,5 @@ export const removeDishFromCart = createAction(
   props<{ dish: Dish; amount: number }>(),
 )
 
+export const replaceCart = createAction("[App] Replace Cart", props<{ cart: Cart }>())
 export const clearCart = createAction("[App] Clear Cart")

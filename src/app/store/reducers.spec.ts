@@ -6,6 +6,7 @@ import {
   loadEnd,
   loadStart,
   removeDishFromCart,
+  replaceCart,
   setUserInfo,
 } from "./actions"
 import { User } from "../models/models"
@@ -163,6 +164,32 @@ describe("Cart Reducer", () => {
       }
 
       expect(cartReducer(state, clearCart())).toEqual({})
+    })
+  })
+
+  describe("on replaceCart", () => {
+    it("should replace current cart state with provided one", () => {
+      const cart1 = {
+        [dishes[0].id]: { dish: dishes[0], quantity: 5 },
+      }
+      const cart2 = {
+        [dishes[0].id]: { dish: dishes[0], quantity: 5 },
+        [dishes[1].id]: { dish: dishes[1], quantity: 2 },
+      }
+      const cart3 = {
+        [dishes[1].id]: { dish: dishes[1], quantity: 2 },
+      }
+
+      let newState = cartReducer({}, replaceCart({ cart: cart1 }))
+      expect(newState).toEqual(cart1)
+
+      newState = cartReducer(cart1, replaceCart({ cart: cart2 }))
+      expect(newState).toEqual(cart2)
+
+      newState = cartReducer(cart2, replaceCart({ cart: cart3 }))
+      expect(newState).toEqual(cart3)
+
+      expect(cartReducer(cart3, replaceCart({ cart: {} }))).toEqual({})
     })
   })
 })

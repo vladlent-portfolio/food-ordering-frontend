@@ -7,12 +7,13 @@ import {
   selectIsLoggedIn,
 } from "./store/selectors"
 import { AppState } from "./store/reducers"
-import { delay, filter, map } from "rxjs/operators"
+import { delay, filter, map, take } from "rxjs/operators"
 import { MatDialog } from "@angular/material/dialog"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { UserService } from "./services/user.service"
 import { NavigationEnd, Router } from "@angular/router"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
+import { replaceCart } from "./store/actions"
 
 @Component({
   selector: "app-root",
@@ -44,6 +45,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.checkAuth()
+    this.restoreCart()
+    this.saveCart()
   }
 
   checkAuth() {
@@ -56,6 +59,25 @@ export class AppComponent implements OnInit {
 
   openCartDialog() {
     this.dialog.open(CartDialogComponent)
+  }
+
+  restoreCart() {
+    const cart = localStorage.getItem("cart")
+
+    if (cart) {
+      this.store.dispatch(replaceCart({ cart: JSON.parse(cart) }))
+    }
+  }
+
+  saveCart() {
+    window.addEventListener("beforeunload", () => {
+      this.store
+        .select(selectCart)
+        .pipe(take(1))
+        .subscribe(cart => {
+          localStorage.setItem("cart", JSON.stringify(cart))
+        })
+    })
   }
 
   signOut() {
