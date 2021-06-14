@@ -68,6 +68,6 @@
 
 <router-outlet></router-outlet>
 
-<div *ngIf="isLoading$ | async" class="spinner-container">
+<div *ngIf="isLoading$ | async" class="spinner-container" data-test="loading-spinner">
   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 </div>

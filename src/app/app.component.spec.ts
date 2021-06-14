@@ -13,7 +13,7 @@ import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { MatDialog, MatDialogModule } from "@angular/material/dialog"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { loadEnd, loadStart, replaceCart } from "./store/actions"
+import { replaceCart } from "./store/actions"
 import { User } from "./models/models"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { UserService } from "./services/user.service"
@@ -74,26 +74,25 @@ describe("AppComponent", () => {
       created_at: new Date().toISOString(),
       is_admin: false,
     }
+    localStorage.clear()
   })
 
-  // Spent like an hour on this bullshit.
   xit("should toggle loading spinner based on app state", fakeAsync(() => {
     expect(querySpinner()).toBeNull()
 
-    store.dispatch(loadStart())
+    store.setState({ openRequests: 1, cart: {} })
     // None of the functions below seems to be working with asap or async schedulers
     // so this test case doesn't work no matter what.
+    fixture.detectChanges()
     flushMicrotasks()
     flush()
     tick()
     fixture.detectChanges()
-
     expect(querySpinner()).not.toBeNull()
 
-    store.dispatch(loadEnd())
+    store.setState({ openRequests: 0, cart: {} })
 
     fixture.detectChanges()
-
     expect(querySpinner()).toBeNull()
   }))
 
@@ -281,6 +280,7 @@ describe("AppComponent", () => {
 
     it("should call replace cart if local storage is empty", () => {
       const dispatch = spyOn(store, "dispatch")
+      localStorage.clear()
       component.restoreCart()
       expect(dispatch).not.toHaveBeenCalled()
     })
@@ -318,7 +318,7 @@ describe("AppComponent", () => {
   }
 
   function querySpinner() {
-    return nativeEl.querySelector(".spinner-container")
+    return nativeEl.querySelector("#loading-spinner")
   }
 
   function queryTitle() {

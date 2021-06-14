@@ -14,6 +14,7 @@ import { UserService } from "./services/user.service"
 import { NavigationEnd, Router } from "@angular/router"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
 import { replaceCart } from "./store/actions"
+import { asapScheduler } from "rxjs"
 
 @Component({
   selector: "app-root",
@@ -25,7 +26,7 @@ export class AppComponent implements OnInit {
   adminTitle = "Food Ordering App Admin"
 
   // 'delay' is needed to prevent ExpressionChangedAfterItHasBeenCheckedError from Angular.
-  isLoading$ = this.store.select(selectIsLoading).pipe(delay(0))
+  isLoading$ = this.store.select(selectIsLoading).pipe(delay(0, asapScheduler))
   isLoggedIn$ = this.store.select(selectIsLoggedIn)
   isAdmin$ = this.store.select(selectIsAdmin)
   isAdminRoute$ = this.router.events.pipe(

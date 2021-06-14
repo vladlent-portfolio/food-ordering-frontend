@@ -56,6 +56,7 @@ describe("ConfirmComponent", () => {
 
   it("should merge options on init", () => {
     Object.assign(initData, {
+      type: "confirm",
       title: "New title",
       content: "Important content",
       confirmBtnText: "YES!",
@@ -91,7 +92,9 @@ describe("ConfirmComponent", () => {
   }
 
   function queryCancelBtn() {
-    return nativeEl.querySelector("[data-test='confirm-dialog-cancel']") as HTMLButtonElement
+    return nativeEl.querySelector(
+      "[data-test='confirm-dialog-cancel']",
+    ) as HTMLButtonElement
   }
 
   function queryConfirmBtn() {

@@ -133,7 +133,7 @@ describe("ImageUploadComponent", () => {
       )
 
       const tests: { [Key in keyof typeof ImageUploadError]: string } = {
-        Size: `maximum filesize is ${component.maxFileSize / 1024} kib`,
+        Size: `max filesize is ${component.maxFileSize / 1024} kib`,
         Type: "unsupported filetype",
       }
 

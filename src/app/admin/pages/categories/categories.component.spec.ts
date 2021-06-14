@@ -127,30 +127,27 @@ describe("CategoriesComponent", () => {
     })
 
     describe("after closed", () => {
-      beforeEach(() => {
-        fixture.detectChanges()
-      })
-
       it("should update categories if dialog was closed with 'true'", async () => {
         const getAll = spyOn(component, "getAll")
 
         for (const opt of dialogOptions) {
           component.openDialog(opt)
           dialogRef.close(true)
-          fixture.detectChanges()
+          detectChanges()
           await fixture.whenStable()
-          expect(getAll).toHaveBeenCalledTimes(1)
-          getAll.calls.reset()
         }
+        detectChanges()
+        expect(getAll).toHaveBeenCalledTimes(dialogOptions.length)
       })
 
       it("should not update categories if dialog was close with 'false'", async () => {
+        fixture.detectChanges()
         const getAll = spyOn(component, "getAll")
 
         for (const opt of dialogOptions) {
           component.openDialog(opt)
           dialogRef.close(false)
-          fixture.detectChanges()
+          detectChanges()
           await fixture.whenStable()
         }
         expect(getAll).not.toHaveBeenCalled()
@@ -250,6 +247,11 @@ describe("CategoriesComponent", () => {
       expect(serviceSpy.updateImage).toHaveBeenCalledWith(5, image)
     })
   })
+
+  function detectChanges() {
+    fixture.detectChanges()
+    component.cdRef.detectChanges()
+  }
 
   function queryCardsComponents(): AdminCardComponent[] {
     return fixture.debugElement

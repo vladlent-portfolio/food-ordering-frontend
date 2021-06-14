@@ -30,7 +30,7 @@ export class CategoriesPageComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private dialog: MatDialog,
-    private cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +42,7 @@ export class CategoriesPageComponent implements OnInit {
   getAll(): void {
     this.categoryService.getAll().subscribe(categories => {
       this.categories = categories
-      this.cdRef.markForCheck()
+      this.cdRef.detectChanges()
     })
   }
 
