@@ -335,10 +335,10 @@ describe("OrdersComponent", () => {
       const getAll = spyOn(component, "getAll")
       const detectChanges = spyOn(component.cdRef, "detectChanges")
 
-      for (const [i, order] of orders.entries()) {
+      for (const [i, order] of component.orders.entries()) {
         for (const status of OrderStatuses) {
           component.changeStatus(order.id, status)
-          expect(orders[i].status).toBe(status)
+          expect(component.orders[i].status).toBe(status)
         }
       }
 
