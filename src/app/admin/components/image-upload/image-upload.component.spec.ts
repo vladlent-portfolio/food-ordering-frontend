@@ -165,13 +165,14 @@ describe("ImageUploadComponent", () => {
     }))
 
     it("should not clear error if timeout is not positive", fakeAsync(() => {
-      for (let i = 0; i <= -1; i--) {
-        component.errorTimeout = i
-        component.error = ImageUploadError.Size
-        fixture.detectChanges()
+      for (let i = 0; i >= -1; i--) {
+        host.errorTimeout = i
+        host.error = ImageUploadError.Size
         tick(Infinity)
-        expect(host.error).toEqual(ImageUploadError.Size)
-        component.error = undefined
+        fixture.detectChanges()
+        expect(component.error).toEqual(ImageUploadError.Size)
+        host.error = undefined
+        fixture.detectChanges()
       }
     }))
 
