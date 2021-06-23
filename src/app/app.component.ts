@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, HostListener, OnInit } from "@angular/core"
 import { Store } from "@ngrx/store"
 import {
   selectCart,
@@ -47,7 +47,16 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.checkAuth()
     this.restoreCart()
-    this.saveCart()
+  }
+
+  @HostListener("window:beforeunload")
+  saveCart() {
+    this.store
+      .select(selectCart)
+      .pipe(take(1))
+      .subscribe(cart => {
+        localStorage.setItem("cart", JSON.stringify(cart))
+      })
   }
 
   checkAuth() {
@@ -68,17 +77,6 @@ export class AppComponent implements OnInit {
     if (cart) {
       this.store.dispatch(replaceCart({ cart: JSON.parse(cart) }))
     }
-  }
-
-  saveCart() {
-    window.addEventListener("beforeunload", () => {
-      this.store
-        .select(selectCart)
-        .pipe(take(1))
-        .subscribe(cart => {
-          localStorage.setItem("cart", JSON.stringify(cart))
-        })
-    })
   }
 
   signOut() {

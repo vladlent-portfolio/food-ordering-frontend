@@ -107,12 +107,6 @@ describe("AppComponent", () => {
     expect(restoreCart).toHaveBeenCalledTimes(1)
   })
 
-  it("should call saveCart on init", () => {
-    const saveCart = spyOn(component, "saveCart")
-    component.ngOnInit()
-    expect(saveCart).toHaveBeenCalledTimes(1)
-  })
-
   it("should show login btn  if user is not logged in", () => {
     store.setState({ user: null, openRequests: 0, cart: {} })
     fixture.detectChanges()
@@ -292,7 +286,6 @@ describe("AppComponent", () => {
       store.setState({ cart })
 
       component.saveCart()
-      window.dispatchEvent(new Event("beforeunload"))
 
       const stored = localStorage.getItem("cart") as string
       expect(stored).not.toBeNull()
