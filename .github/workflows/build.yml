@@ -41,4 +41,4 @@ jobs:
           username: ${{ secrets.PROD_USERNAME }}
           password: ${{ secrets.PROD_PASSWORD }}
           source: "dist/food-ordering-frontend/*"
-          target: "/var/www/food-ordering.app/"
+          target: "/var/www/food-ordering.app"
