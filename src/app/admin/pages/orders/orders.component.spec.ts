@@ -26,7 +26,7 @@ describe("OrdersComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
 
   beforeEach(() => {
-    orders = testOrders.slice()
+    orders = testOrders
 
     dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
     orderServiceSpy = jasmine.createSpyObj("OrderService", ["getAll", "changeStatus"])
@@ -330,7 +330,7 @@ describe("OrdersComponent", () => {
       }
     })
 
-    it("should update order status on success without calling getAll()", async () => {
+    it("should update order status on success without calling getAll()", () => {
       component.ngOnInit()
       const getAll = spyOn(component, "getAll")
       const detectChanges = spyOn(component.cdRef, "detectChanges")

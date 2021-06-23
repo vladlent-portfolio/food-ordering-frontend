@@ -14,7 +14,7 @@ describe("OrderDetailsComponent", () => {
 
   beforeEach(() => {
     orders = testOrders
-    data = orders[0]
+    data = { ...orders[0] }
 
     TestBed.configureTestingModule({
       declarations: [OrderDetailsDialogComponent],

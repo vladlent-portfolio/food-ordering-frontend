@@ -97,7 +97,7 @@ describe("ImageUploadComponent", () => {
           expect(queryImg()).not.toBeNull()
           expect(queryImg()?.src).toContain("data:image/png;base64")
           expect(host.uploadedFile).toEqual(file)
-        }, 0)
+        }, 10)
       }),
     )
 
