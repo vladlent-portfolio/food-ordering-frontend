@@ -1,4 +1,4 @@
 export const environment = {
-  apiURL: "http://localhost:8080",
+  apiURL: "https://api.food-ordering.app",
   production: true,
 }

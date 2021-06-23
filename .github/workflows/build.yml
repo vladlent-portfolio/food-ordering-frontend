@@ -1,0 +1,44 @@
+name: Food Ordering App Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install node modules
+        run: npm i
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Clean upload directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_API }}
+          username: ${{ secrets.PROD_USERNAME }}
+          password: ${{ secrets.PROD_PASSWORD }}
+          script: rm -rf /var/www/food.ordering.app/*
+
+      - name: Upload
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PROD_API }}
+          username: ${{ secrets.PROD_USERNAME }}
+          password: ${{ secrets.PROD_PASSWORD }}
+          source: "dist/food-ordering-frontend/*"
+          target: "/var/www/food-ordering.app/"
