@@ -161,11 +161,13 @@ describe("AppComponent", () => {
     it("should be visible if user is logged in", () => {
       loginAsUser()
       expect(queryCart()).not.toBeNull()
+      expect(queryCart().getAttribute("aria-label")).toBe("Open Cart")
     })
 
     it("should be visible if user is admin", () => {
       loginAsAdmin()
       expect(queryCart()).not.toBeNull()
+      expect(queryCart().getAttribute("aria-label")).toBe("Open Cart")
     })
 
     it("should be hidden on dashboard", async () => {
