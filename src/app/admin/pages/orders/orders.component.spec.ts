@@ -26,7 +26,7 @@ describe("OrdersComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
 
   beforeEach(() => {
-    orders = testOrders
+    orders = testOrders.slice()
 
     dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
     orderServiceSpy = jasmine.createSpyObj("OrderService", ["getAll", "changeStatus"])
@@ -335,10 +335,10 @@ describe("OrdersComponent", () => {
       const getAll = spyOn(component, "getAll")
       const detectChanges = spyOn(component.cdRef, "detectChanges")
 
-      for (const order of orders) {
+      for (const [i, order] of orders.entries()) {
         for (const status of OrderStatuses) {
           component.changeStatus(order.id, status)
-          expect(order.status).toBe(status)
+          expect(orders[i].status).toBe(status)
         }
       }
 
@@ -471,9 +471,9 @@ describe("OrdersComponent", () => {
   }
 
   async function closeAllPopups() {
-    const backdrops = document.querySelectorAll(".cdk-overlay-backdrop") as NodeListOf<
-      HTMLElement
-    >
+    const backdrops = document.querySelectorAll(
+      ".cdk-overlay-backdrop",
+    ) as NodeListOf<HTMLElement>
 
     for (const backdrop of backdrops) {
       backdrop.click()

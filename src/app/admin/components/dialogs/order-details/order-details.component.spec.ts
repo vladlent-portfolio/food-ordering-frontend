@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA } from "@angular/material/dialog"
 import { MatTableModule } from "@angular/material/table"
 
 describe("OrderDetailsComponent", () => {
-  let component: OrderDetailsDialogComponent
+  // let component: OrderDetailsDialogComponent
   let fixture: ComponentFixture<OrderDetailsDialogComponent>
   let nativeEl: HTMLElement
   let orders: Order[]
@@ -25,10 +25,8 @@ describe("OrderDetailsComponent", () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OrderDetailsDialogComponent)
-    component = fixture.componentInstance
+    // component = fixture.componentInstance
     nativeEl = fixture.nativeElement
-
-    console.log("component >>>>", component)
   })
 
   it("should have a title with order id", () => {
