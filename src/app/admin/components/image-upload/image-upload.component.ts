@@ -24,7 +24,7 @@ export class ImageUploadComponent {
   @Input() imageSrc: string | undefined
 
   /** Maximum allowed size of the file in bytes. */
-  @Input() maxFileSize = 100 * 1024
+  @Input() maxFileSize = 300 * 1024
 
   /** An array of accepted filetypes.
    * If this value is falsy - all types will be accepted */
