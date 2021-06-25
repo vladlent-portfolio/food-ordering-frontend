@@ -11,6 +11,7 @@
   &__caption {
     font-size: 1.5rem;
     font-weight: 500;
+    margin: 0;
   }
 
   &__items {
@@ -72,7 +73,7 @@
   padding: 1.5rem;
   border-radius: 15px;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  margin: 4rem 1.5rem 1.5rem 0;
+  margin: 6rem 1.5rem 1.5rem 0;
 
   &__figure {
     margin: 0;
@@ -97,7 +98,7 @@
 
   &__footer {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     padding-top: 0.75rem;
     border-top: 1px solid lightgrey;
@@ -109,7 +110,10 @@
   }
 
   &__add {
-    padding: 0.05rem 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem;
     background-color: $color-accent;
     color: white;
     font-size: 1.3rem;
