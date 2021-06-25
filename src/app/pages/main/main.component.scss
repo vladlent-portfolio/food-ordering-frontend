@@ -72,7 +72,7 @@
   padding: 1.5rem;
   border-radius: 15px;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  margin: 0 1.5rem 1.5rem 0;
+  margin: 4rem 1.5rem 1.5rem 0;
 
   &__figure {
     margin: 0;
@@ -83,6 +83,8 @@
     width: 10rem;
     height: 10rem;
     margin-bottom: 0.75rem;
+    margin-top: -50%;
+    filter: drop-shadow(0 0 5px #999);
   }
 
   &__title {
