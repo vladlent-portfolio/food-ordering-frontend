@@ -135,6 +135,31 @@ describe("AppComponent", () => {
     expect(dialogSpy.open).toHaveBeenCalled()
   })
 
+  describe("home link", () => {
+    beforeEach(() => {
+      fixture.detectChanges()
+    })
+
+    it("should exist", async () => {
+      const when = (condition: string) => `expected to find a home link if ${condition}`
+      expect(queryHomeLink()).not.toBeNull(when("user isn't authorized"))
+      expect(queryHomeLink().getAttribute("href")).toBe("/")
+      loginAsUser()
+      expect(queryHomeLink()).not.toBeNull(when("user is authorized"))
+      expect(queryHomeLink().getAttribute("href")).toBe("/")
+      loginAsAdmin()
+      expect(queryHomeLink()).not.toBeNull(when("user is authorized as admin"))
+      expect(queryHomeLink().getAttribute("href")).toBe("/")
+      await navigateToAdmin()
+      expect(queryHomeLink()).not.toBeNull(when("user is at admin dashboard route"))
+      expect(queryHomeLink().getAttribute("href")).toBe("/")
+    })
+
+    it("should contain title element", () => {
+      expect(queryHomeLink().contains(queryTitle())).toBeTrue()
+    })
+  })
+
   describe("title", () => {
     it("should be set", () => {
       fixture.detectChanges()
@@ -314,6 +339,10 @@ describe("AppComponent", () => {
 
   function querySpinner() {
     return nativeEl.querySelector("#loading-spinner")
+  }
+
+  function queryHomeLink() {
+    return nativeEl.querySelector("[data-test='home-link']") as HTMLAnchorElement
   }
 
   function queryTitle() {
