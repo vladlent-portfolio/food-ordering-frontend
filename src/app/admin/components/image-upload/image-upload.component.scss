@@ -6,7 +6,8 @@ $iconSize: 2.5rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 12em;
+  width: 11rem;
+  height: 12rem;
 }
 
 .title {
@@ -20,7 +21,7 @@ $iconSize: 2.5rem;
   display: flex;
   margin: 0.5rem;
   width: $imgSize;
-  height: $imgSize;
+  height: auto;
   background-color: lightgrey;
   border-radius: 50%;
   border: 1px solid #555;
@@ -40,6 +41,7 @@ $iconSize: 2.5rem;
 
   &.has-image {
     background-color: transparent;
+    border: 0;
   }
 }
 
