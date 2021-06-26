@@ -21,7 +21,7 @@ $iconSize: 2.5rem;
   display: flex;
   margin: 0.5rem;
   width: $imgSize;
-  height: auto;
+  height: $imgSize;
   background-color: lightgrey;
   border-radius: 50%;
   border: 1px solid #555;
@@ -40,6 +40,7 @@ $iconSize: 2.5rem;
   }
 
   &.has-image {
+    height: auto;
     background-color: transparent;
     border: 0;
   }
