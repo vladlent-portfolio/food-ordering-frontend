@@ -1,0 +1,23 @@
+@import "~src/styles/colors";
+@import "~src/styles/mixins";
+
+:host {
+  display: block;
+}
+
+.image-container {
+  text-align: center;
+
+  img {
+    @include dish(14rem);
+  }
+}
+
+.msg {
+  font-size: 1.2rem;
+}
+
+.highlight {
+  color: $color-primary;
+  font-weight: 500;
+}

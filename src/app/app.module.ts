@@ -16,6 +16,7 @@ import { ConfirmDialogComponent } from "./components/dialogs/confirm/confirm.com
 import { MainPageComponent } from "./pages/main/main.component"
 import { MatBadgeModule } from "@angular/material/badge"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
+import { DishAddedComponent } from "./components/dialogs/dish-added/dish-added.component"
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -31,6 +32,7 @@ const MATERIAL_MODULES = [
     ConfirmDialogComponent,
     MainPageComponent,
     CartDialogComponent,
+    DishAddedComponent,
   ],
   imports: [
     BrowserModule,
