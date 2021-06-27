@@ -3,7 +3,8 @@
 
 :host {
   display: block;
-  padding: 1rem;
+  width: max(40vw, 500px);
+  padding: 2rem 1rem 1rem;
 }
 
 .image-container {
@@ -16,7 +17,8 @@
 
 .msg {
   font-size: 1.2rem;
-  margin: 1rem 0 1.5rem;
+  margin: 2rem 0 1rem;
+  text-align: center;
 }
 
 .highlight {
