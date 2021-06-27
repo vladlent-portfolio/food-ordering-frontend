@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core"
 import { AppState, CartItem } from "../../../store/reducers"
 import { Store } from "@ngrx/store"
 import { selectCart, selectIsLoggedIn } from "../../../store/selectors"
-import { filter, map, switchMap } from "rxjs/operators"
+import { filter, map, switchMap, take } from "rxjs/operators"
 import { clearCart, removeDishFromCart } from "../../../store/actions"
 import { OrderService } from "../../../services/order.service"
 import { MatDialog, MatDialogRef } from "@angular/material/dialog"
@@ -41,6 +41,7 @@ export class CartDialogComponent implements OnInit {
 
     this.isUserLoggedIn$
       .pipe(
+        take(1),
         switchMap(isLoggedIn =>
           isLoggedIn ? of(true) : this.dialog.open(LoginDialogComponent).afterClosed(),
         ),

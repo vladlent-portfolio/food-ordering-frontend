@@ -264,6 +264,14 @@ describe("CartDialogComponent", () => {
           expect(dialogRefSpy.close).toHaveBeenCalledBefore(dispatch)
           expect(dispatch).toHaveBeenCalledWith(clearCart())
         })
+
+        it("should not create additional orders when user logs in/out", () => {
+          component.checkout(items)
+          store.setState({ user: null })
+          store.setState({ user: {} })
+          store.setState({ user: null })
+          expect(orderServiceSpy.create).toHaveBeenCalledTimes(1)
+        })
       })
     })
 
