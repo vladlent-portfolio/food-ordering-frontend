@@ -7,6 +7,9 @@ import { Category, Dish } from "../../models/models"
 import { of } from "rxjs"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { addDishToCart } from "../../store/actions"
+import { MatDialog } from "@angular/material/dialog"
+import { DishAddedComponent } from "../../components/dialogs/dish-added/dish-added.component"
+import { MatIconModule } from "@angular/material/icon"
 
 describe("MainComponent", () => {
   let component: MainPageComponent
@@ -16,6 +19,7 @@ describe("MainComponent", () => {
   let categories: Category[]
   let dishServiceSpy: jasmine.SpyObj<DishService>
   let categoryServiceSpy: jasmine.SpyObj<CategoryService>
+  let dialogSpy: jasmine.SpyObj<MatDialog>
   let store: MockStore
 
   beforeEach(() => {
@@ -45,16 +49,18 @@ describe("MainComponent", () => {
     ]
     dishServiceSpy = jasmine.createSpyObj("DishService", ["getAll"])
     categoryServiceSpy = jasmine.createSpyObj("CategoryService", ["getAll"])
+    dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
 
     dishServiceSpy.getAll.and.returnValue(of(dishes))
     categoryServiceSpy.getAll.and.returnValue(of(categories))
 
     TestBed.configureTestingModule({
       declarations: [MainPageComponent],
-      imports: [MatButtonModule],
+      imports: [MatButtonModule, MatIconModule],
       providers: [
         { provide: CategoryService, useValue: categoryServiceSpy },
         { provide: DishService, useValue: dishServiceSpy },
+        { provide: MatDialog, useValue: dialogSpy },
         provideMockStore(),
       ],
     })
@@ -270,6 +276,11 @@ describe("MainComponent", () => {
         component.addToCart(dish)
         expect(action).toHaveBeenCalledWith(addDishToCart({ dish }))
       }
+    })
+
+    it("should call 'dish-added' dialog", () => {
+      component.addToCart(dishes[0])
+      expect(dialogSpy.open).toHaveBeenCalledWith(DishAddedComponent, { data: dishes[0] })
     })
   })
 

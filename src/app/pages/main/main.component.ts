@@ -10,6 +10,8 @@ import { DishService } from "../../services/dish.service"
 import { Store } from "@ngrx/store"
 import { AppState } from "../../store/reducers"
 import { addDishToCart } from "../../store/actions"
+import { MatDialog } from "@angular/material/dialog"
+import { DishAddedComponent } from "../../components/dialogs/dish-added/dish-added.component"
 
 @Component({
   selector: "app-main-page",
@@ -40,6 +42,7 @@ export class MainPageComponent implements OnInit {
     private categoryService: CategoryService,
     private dishService: DishService,
     private store: Store<AppState>,
+    private dialog: MatDialog,
     public cdRef: ChangeDetectorRef,
   ) {}
 
@@ -75,5 +78,6 @@ export class MainPageComponent implements OnInit {
 
   addToCart(dish: Dish) {
     this.store.dispatch(addDishToCart({ dish }))
+    this.dialog.open(DishAddedComponent, { data: dish })
   }
 }
