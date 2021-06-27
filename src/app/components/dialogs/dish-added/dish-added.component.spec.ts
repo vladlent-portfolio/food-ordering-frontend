@@ -2,12 +2,13 @@ import { ComponentFixture, TestBed } from "@angular/core/testing"
 
 import { DishAddedComponent } from "./dish-added.component"
 import { Dish } from "../../../models/models"
-import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog"
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog"
 
 describe("DishAddedComponent", () => {
   // let component: DishAddedComponent
   let fixture: ComponentFixture<DishAddedComponent>
   let nativeEl: HTMLElement
+  let dialogRefSpy: jasmine.SpyObj<MatDialogRef<any>>
   let dish: Dish = {
     id: 2,
     title: "Crunchy Cashew Salad",
@@ -19,10 +20,15 @@ describe("DishAddedComponent", () => {
   }
 
   beforeEach(() => {
+    dialogRefSpy = jasmine.createSpyObj("MatDialog", ["close"])
+
     TestBed.configureTestingModule({
       declarations: [DishAddedComponent],
       imports: [MatDialogModule],
-      providers: [{ provide: MAT_DIALOG_DATA, useValue: dish }],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: dish },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+      ],
     })
   })
 
@@ -47,11 +53,23 @@ describe("DishAddedComponent", () => {
     expect(msg.textContent).toContain(`${dish.title} was added to the Cart`)
   })
 
+  it("should have a close button", () => {
+    fixture.detectChanges()
+    const btn = queryCloseBtn()
+    expect(btn).not.toBeNull("expected close button to exist")
+    btn.click()
+    expect(dialogRefSpy.close).toHaveBeenCalled()
+  })
+
   function queryImage() {
     return nativeEl.querySelector("[data-test='dish-added-image']") as HTMLImageElement
   }
 
   function queryMsg() {
     return nativeEl.querySelector("[data-test='dish-added-msg']") as HTMLElement
+  }
+
+  function queryCloseBtn() {
+    return nativeEl.querySelector("[data-test='dish-added-close-btn']") as HTMLElement
   }
 })
