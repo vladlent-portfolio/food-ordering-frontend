@@ -1,4 +1,5 @@
 @import "~src/styles/colors";
+@import "~src/styles/mixins";
 
 :host {
   display: block;
@@ -81,11 +82,9 @@
   }
 
   &__img {
-    width: 10rem;
-    height: 10rem;
+    @include dish(10rem);
     margin-bottom: 0.75rem;
     margin-top: -5rem;
-    filter: drop-shadow(0 0 5px #999);
   }
 
   &__title {
