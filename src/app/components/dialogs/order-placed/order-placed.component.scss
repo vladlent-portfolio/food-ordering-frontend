@@ -1,0 +1,34 @@
+@import "~src/styles/colors";
+
+:host {
+  display: block;
+  width: 31rem;
+  padding: 1rem;
+}
+
+.msg {
+  margin: 1rem 0;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+.hint {
+  margin: 0 0 0.25rem;
+  font-style: italic;
+
+  &__list {
+    margin: 0;
+  }
+}
+
+.primary {
+  color: $color-primary;
+}
+
+.warn {
+  color: $color-warn;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+}

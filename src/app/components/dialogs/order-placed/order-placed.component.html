@@ -1,0 +1,20 @@
+<p class="msg" data-test="order-placed-msg">
+  Order <span class="primary">№{{ order.id }}</span> was successfully placed!
+</p>
+<div class="hint" data-test="order-placed-hint">
+  To see all orders:
+  <ol class="hint__list">
+    <li>Log in as <span class="warn">Admin</span>.</li>
+    <li>Navigate to <span class="primary">'Orders'</span> page.</li>
+  </ol>
+</div>
+<footer class="footer">
+  <button
+    mat-dialog-close
+    mat-raised-button
+    color="primary"
+    data-test="order-placed-close"
+  >
+    OK
+  </button>
+</footer>

@@ -17,6 +17,7 @@ import { MainPageComponent } from "./pages/main/main.component"
 import { MatBadgeModule } from "@angular/material/badge"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
 import { DishAddedComponent } from "./components/dialogs/dish-added/dish-added.component"
+import { OrderPlacedComponent } from "./components/dialogs/order-placed/order-placed.component"
 
 const MATERIAL_MODULES = [
   MatToolbarModule,
@@ -33,6 +34,7 @@ const MATERIAL_MODULES = [
     MainPageComponent,
     CartDialogComponent,
     DishAddedComponent,
+    OrderPlacedComponent,
   ],
   imports: [
     BrowserModule,

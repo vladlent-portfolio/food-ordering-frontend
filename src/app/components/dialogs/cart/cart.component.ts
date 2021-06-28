@@ -8,6 +8,7 @@ import { OrderService } from "../../../services/order.service"
 import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 import { of } from "rxjs"
 import { LoginDialogComponent } from "../login/login.component"
+import { OrderPlacedComponent } from "../order-placed/order-placed.component"
 
 @Component({
   selector: "app-cart",
@@ -52,8 +53,9 @@ export class CartDialogComponent implements OnInit {
           ),
         ),
       )
-      .subscribe(() => {
+      .subscribe(order => {
         this.dialogRef.close()
+        this.dialog.open(OrderPlacedComponent, { data: order })
         this.store.dispatch(clearCart())
       })
   }

@@ -9,10 +9,11 @@ import { clearCart, removeDishFromCart } from "../../../store/actions"
 import { OrderService } from "../../../services/order.service"
 import { of } from "rxjs"
 import { MatIconModule } from "@angular/material/icon"
-import { LoginDialogComponent } from "../login/login.component"
 import { Component } from "@angular/core"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
 import { MatTableModule } from "@angular/material/table"
+import { OrderPlacedComponent } from "../order-placed/order-placed.component"
+import { LoginDialogComponent } from "../login/login.component"
 
 describe("CartDialogComponent", () => {
   let component: CartDialogComponent
@@ -249,13 +250,17 @@ describe("CartDialogComponent", () => {
 
       it("should not open login dialog", () => {
         component.checkout(items)
-        expect(dialogOpen).not.toHaveBeenCalled()
+        expect(dialogOpen).not.toHaveBeenCalledWith(LoginDialogComponent)
       })
 
       describe("on success", () => {
-        it("should close dialog", () => {
+        it("should close dialog and show 'order-placed' dialog", () => {
+          const order = { id: 1, items } as any
+          orderServiceSpy.create.and.returnValue(of(order))
+
           component.checkout(items)
           expect(dialogRefSpy.close).toHaveBeenCalledTimes(1)
+          expect(dialogOpen).toHaveBeenCalledWith(OrderPlacedComponent, { data: order })
         })
 
         it("should clear cart", () => {
@@ -278,7 +283,6 @@ describe("CartDialogComponent", () => {
     describe("user unauthorized", () => {
       it("should open login dialog", () => {
         component.checkout(items)
-        expect(dialogOpen).toHaveBeenCalledWith(LoginDialogComponent)
         expect(orderServiceSpy.create).not.toHaveBeenCalled()
       })
 
