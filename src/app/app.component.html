@@ -69,7 +69,71 @@
   </nav>
 </mat-toolbar>
 
-<router-outlet></router-outlet>
+<main class="main">
+  <router-outlet></router-outlet>
+</main>
+
+<footer class="footer" data-test="footer">
+  <div>
+    <p class="footer__text" data-test="footer-made-by">
+      Made by Vladlen Tereshchenko
+    </p>
+    <div class="footer__link-group" data-test="footer-socials">
+      <a
+        href="https://github.com/vladlent"
+        class="footer__link footer__link--with-icon"
+        data-test="footer-author-github-link"
+      >
+        <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
+        GitHub
+      </a>
+      <a
+        href="https://linkedin.com/vladlent"
+        class="footer__link footer__link--with-icon"
+        data-test="footer-author-linkedin-link"
+      >
+        <img
+          class="footer__icon"
+          src="/assets/icons/linkedin_1.svg"
+          alt="LinkedIn icon"
+        />
+        LinkedIn
+      </a>
+    </div>
+  </div>
+
+  <div class="footer__link-group" data-test="footer-repositories">
+    <p class="footer__text" data-test="footer-repositories-title">
+      Project Repositories
+    </p>
+    <a
+      class="footer__link footer__link--with-icon"
+      href="https://github.com/vladlent-portfolio/food-ordering-frontend"
+      data-test="footer-repositories-frontend"
+    >
+      <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
+      FrontEnd
+    </a>
+    <a
+      class="footer__link footer__link--with-icon"
+      href="https://github.com/vladlent-portfolio/food-ordering-backend"
+      data-test="footer-repositories-backend"
+    >
+      <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
+      BackEnd
+    </a>
+  </div>
+
+  <div class="footer__attribution" data-test="footer-attribution">
+    Shopping cart and social media icons <br />
+    made by
+    <a class="footer__link" href="https://www.freepik.com" title="Freepik">Freepik</a>
+    from
+    <a class="footer__link" href="https://www.flaticon.com" title="Flaticon">
+      www.flaticon.com
+    </a>
+  </div>
+</footer>
 
 <div *ngIf="isLoading$ | async" class="spinner-container" data-test="loading-spinner">
   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>

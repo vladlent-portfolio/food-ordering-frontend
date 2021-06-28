@@ -1,6 +1,12 @@
 @use "sass:color";
 @import "~src/styles/colors";
 
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 mat-toolbar {
   display: flex;
   justify-content: space-between;
@@ -61,4 +67,47 @@ mat-toolbar {
   background-color: transparent;
   color: white;
   border: 1px solid white;
+}
+
+.main {
+  flex-grow: 1;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem;
+  background-color: $color-primary;
+  color: #fff;
+
+  &__text {
+    margin: 0;
+  }
+
+  &__link {
+    color: #fff;
+
+    &--with-icon {
+      display: flex;
+      margin-top: 0.35rem;
+    }
+  }
+
+  &__icon {
+    height: 1.1rem;
+    width: auto;
+    margin-right: 0.25rem;
+  }
+
+  &__link-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &__attribution {
+    text-align: right;
+    font-size: 0.75rem;
+  }
 }

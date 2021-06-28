@@ -289,6 +289,68 @@ describe("AppComponent", () => {
     })
   })
 
+  describe("footer", () => {
+    it("should have a 'made by' block", () => {
+      const el = queryMadeBy()
+      expect(el).not.toBeNull("expected footer to have a made by block")
+      expect(el.textContent).toContain(
+        "Vladlen Tereshchenko",
+        "expected made by block to contain authors name",
+      )
+    })
+
+    it("should have social links block", () => {
+      const socials = querySocials()
+      expect(socials).not.toBeNull()
+
+      const github = socials.querySelector(
+        "[data-test='footer-author-github-link']",
+      ) as HTMLAnchorElement
+      expect(github).not.toBeNull("expected footer to have a link to author's GitHub")
+      expect(github.href).toBe("https://github.com/vladlent")
+      expect(github.textContent).toContain("GitHub")
+
+      const linkedin = socials.querySelector(
+        "[data-test='footer-author-linkedin-link']",
+      ) as HTMLAnchorElement
+      expect(linkedin).not.toBeNull("expected footer to have a link to author's LinkedIn")
+      expect(linkedin.href).toBe("https://linkedin.com/vladlent")
+      expect(linkedin.textContent).toContain("LinkedIn")
+    })
+
+    it("should have 'project repositories' block", () => {
+      const repos = nativeEl.querySelector("[data-test='footer-repositories']")
+      expect(repos).not.toBeNull()
+
+      const title = repos?.querySelector("[data-test='footer-repositories-title']")
+      expect(title).not.toBeNull()
+      expect(title?.textContent).toContain("Project Repositories")
+
+      const frontLink = repos?.querySelector(
+        "[data-test='footer-repositories-frontend']",
+      ) as HTMLAnchorElement
+      expect(frontLink).not.toBeNull()
+      expect(frontLink.href).toBe(
+        "https://github.com/vladlent-portfolio/food-ordering-frontend",
+      )
+      expect(frontLink.textContent).toContain("FrontEnd")
+
+      const backLink = repos?.querySelector(
+        "[data-test='footer-repositories-backend']",
+      ) as HTMLAnchorElement
+      expect(backLink).not.toBeNull()
+      expect(backLink.href).toBe(
+        "https://github.com/vladlent-portfolio/food-ordering-backend",
+      )
+      expect(backLink.textContent).toContain("BackEnd")
+    })
+
+    it("should have attribution block", () => {
+      const attrib = nativeEl.querySelector("[data-test='footer-attribution']")
+      expect(attrib).not.toBeNull()
+    })
+  })
+
   describe("restoreCart", () => {
     it("should replace the cart in store if local storage isn't empty", () => {
       const dispatch = spyOn(store, "dispatch")
@@ -371,6 +433,14 @@ describe("AppComponent", () => {
 
   function queryAppBtn() {
     return nativeEl.querySelector("[data-test='app-btn']") as HTMLAnchorElement
+  }
+
+  function queryMadeBy() {
+    return nativeEl.querySelector("[data-test='footer-made-by']") as HTMLElement
+  }
+
+  function querySocials() {
+    return nativeEl.querySelector("[data-test='footer-socials']") as HTMLElement
   }
 })
 
