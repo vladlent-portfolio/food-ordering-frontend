@@ -308,6 +308,7 @@ describe("AppComponent", () => {
       ) as HTMLAnchorElement
       expect(github).not.toBeNull("expected footer to have a link to author's GitHub")
       expect(github.href).toBe("https://github.com/vladlent")
+      expect(github.target).toBe("_blank")
       expect(github.textContent).toContain("GitHub")
 
       const linkedin = socials.querySelector(
@@ -315,6 +316,7 @@ describe("AppComponent", () => {
       ) as HTMLAnchorElement
       expect(linkedin).not.toBeNull("expected footer to have a link to author's LinkedIn")
       expect(linkedin.href).toBe("https://linkedin.com/vladlent")
+      expect(linkedin.target).toBe("_blank")
       expect(linkedin.textContent).toContain("LinkedIn")
     })
 
@@ -333,6 +335,7 @@ describe("AppComponent", () => {
       expect(frontLink.href).toBe(
         "https://github.com/vladlent-portfolio/food-ordering-frontend",
       )
+      expect(frontLink.target).toBe("_blank")
       expect(frontLink.textContent).toContain("FrontEnd")
 
       const backLink = repos?.querySelector(
@@ -342,6 +345,7 @@ describe("AppComponent", () => {
       expect(backLink.href).toBe(
         "https://github.com/vladlent-portfolio/food-ordering-backend",
       )
+      expect(backLink.target).toBe("_blank")
       expect(backLink.textContent).toContain("BackEnd")
     })
 
