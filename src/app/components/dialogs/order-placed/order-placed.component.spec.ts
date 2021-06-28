@@ -83,6 +83,7 @@ describe("OrderPlacedComponent", () => {
 
       const hintText = queryHint().textContent?.toLowerCase()
       expect(hintText).toContain("log in as admin")
+      expect(hintText).toContain("press 'go to dashboard' in the top right corner")
       expect(hintText).toContain("navigate to 'orders' page")
     }
   })
