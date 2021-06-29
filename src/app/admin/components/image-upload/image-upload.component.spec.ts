@@ -187,6 +187,13 @@ describe("ImageUploadComponent", () => {
     }))
   })
 
+  describe("handleUpload()", () => {
+    it("should return early if called with no files", () => {
+      component.handleUpload(null)
+      expect(host.uploadedFile).toBeUndefined()
+    })
+  })
+
   function addFileToInput(file: File) {
     const input = queryFileInput()
     expect(input).not.toBeNull()

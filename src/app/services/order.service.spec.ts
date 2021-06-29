@@ -38,16 +38,25 @@ describe("OrderService", () => {
 
     describe("without pagination", () => {
       it("should get orders", () => {
-        service.getAll().subscribe(resp => expect(resp).toEqual(response))
+        const tests = [
+          undefined,
+          { limit: undefined },
+          { page: undefined },
+          { page: undefined, limit: undefined },
+        ]
 
-        const req = httpController.expectOne(getURL())
-        const { request } = req
+        for (const test of tests) {
+          service.getAll(test).subscribe(resp => expect(resp).toEqual(response))
 
-        expect(request.params.keys().length).toBe(0)
-        expect(request.method).toBe("GET")
-        expect(request.withCredentials).toBeTrue()
+          const req = httpController.expectOne(getURL())
+          const { request } = req
 
-        req.flush(response)
+          expect(request.params.keys().length).toBe(0)
+          expect(request.method).toBe("GET")
+          expect(request.withCredentials).toBeTrue()
+
+          req.flush(response)
+        }
       })
     })
 

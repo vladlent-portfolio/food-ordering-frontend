@@ -58,7 +58,7 @@ export class MainPageComponent implements OnInit {
   async getCategories(): Promise<void> {
     const categories = await this.categoryService.getAll().toPromise()
     this.categories = categories
-    this.selectedCategoryID = categories[0]?.id
+    this.selectedCategoryID = categories[0].id
     this.cdRef.detectChanges()
   }
 

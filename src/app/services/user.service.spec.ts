@@ -41,16 +41,27 @@ describe("UserService", () => {
   describe("getAll()", () => {
     describe("without pagination", () => {
       it("should get array of users", () => {
+        const tests = [
+          undefined,
+          { limit: undefined },
+          { page: undefined },
+          { page: undefined, limit: undefined },
+        ]
+
         const expected = { users: [user], pagination: {} } as any
-        service.getAll().subscribe(resp => expect(resp).toEqual(expected))
 
-        const req = controller.expectOne(baseURL)
-        const { request } = req
+        for (const test of tests) {
+          service.getAll(test).subscribe(resp => expect(resp).toEqual(expected))
 
-        expect(request.method).toBe("GET")
-        expect(request.withCredentials).toBeTrue()
+          const req = controller.expectOne(baseURL)
+          const { request } = req
 
-        req.flush(expected)
+          expect(request.params.keys().length).toBe(0)
+          expect(request.method).toBe("GET")
+          expect(request.withCredentials).toBeTrue()
+
+          req.flush(expected)
+        }
       })
     })
 

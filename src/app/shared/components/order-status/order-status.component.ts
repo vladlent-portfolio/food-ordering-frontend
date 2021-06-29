@@ -30,10 +30,6 @@ export class OrderStatusComponent {
         this.className = "canceled"
         this.statusText = "Canceled"
         break
-      default:
-        this.className = ""
-        this.statusText = ""
-        break
     }
   }
 
