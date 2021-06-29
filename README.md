@@ -1,5 +1,8 @@
 # Food Ordering App
 
+[![Food Ordering App Build](https://github.com/vladlent-portfolio/food-ordering-frontend/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/vladlent-portfolio/food-ordering-frontend/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/vladlent-portfolio/food-ordering-frontend/branch/main/graph/badge.svg?token=BICTXQ2K4M)](https://codecov.io/gh/vladlent-portfolio/food-ordering-frontend)
+
 ## Table of Contents
 
 - [Overview](#overview)
