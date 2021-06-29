@@ -22,6 +22,9 @@
         <img class="dish__img" [src]="d.image" alt="Image of {{ d.title }}" />
         <figcaption class="dish__title">{{ d.title }}</figcaption>
       </figure>
+      <p class="dish__description">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </p>
       <footer class="dish__footer">
         <span class="dish__price">{{ d.price | currency }}</span>
         <button class="dish__add" (click)="addToCart(d)" data-test="add-to-card-btn">
