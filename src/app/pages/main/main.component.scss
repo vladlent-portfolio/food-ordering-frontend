@@ -144,8 +144,8 @@
   }
 
   &__price {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 500;
   }
 
   &__add {
@@ -161,6 +161,10 @@
     outline: none;
     transition: background-color ease-out 0.1s;
     cursor: pointer;
+
+    @include media-breakpoint-down(md) {
+      padding: 0.4rem;
+    }
 
     &:focus {
       background-color: lighten($color-accent, 15%);

@@ -174,7 +174,12 @@ describe("MainComponent", () => {
 
       dishes.forEach((d, i) => {
         const card = cards[i]
-        queryAddBtn(card).click()
+        const btn = queryAddBtn(card)
+        expect(btn.getAttribute("aria-label")).toBe(
+          "Add to Cart",
+          "expected 'add to cart' btn to have valid aria-label",
+        )
+        btn.click()
         expect(addToCart).toHaveBeenCalledWith(d)
       })
     })

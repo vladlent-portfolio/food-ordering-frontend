@@ -27,7 +27,12 @@
       </p>
       <footer class="dish__footer">
         <span class="dish__price">{{ d.price | currency }}</span>
-        <button class="dish__add" (click)="addToCart(d)" data-test="add-to-card-btn">
+        <button
+          class="dish__add"
+          (click)="addToCart(d)"
+          aria-label="Add to Cart"
+          data-test="add-to-card-btn"
+        >
           <mat-icon>add</mat-icon>
         </button>
       </footer>
