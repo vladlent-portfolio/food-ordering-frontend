@@ -1,5 +1,19 @@
+@use "sass:map";
+@import "variables";
+
 @mixin dish($imgSize) {
   width: $imgSize;
   height: $imgSize;
   filter: drop-shadow(0 0 5px #999);
+}
+
+@mixin media-breakpoint-up($breakpoint-name) {
+  @media (min-width: map.get($grid-breakpoints, $breakpoint-name)) {
+    @content
+  }
+}
+@mixin media-breakpoint-down($breakpoint-name) {
+  @media (max-width: map.get($grid-breakpoints, $breakpoint-name)) {
+    @content
+  }
 }
