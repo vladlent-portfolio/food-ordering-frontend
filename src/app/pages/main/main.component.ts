@@ -2,7 +2,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  OnDestroy,
   OnInit,
+  ViewChild,
 } from "@angular/core"
 import { Category, Dish } from "../../models/models"
 import { CategoryService } from "../../services/category.service"
@@ -19,8 +22,12 @@ import { DishAddedComponent } from "../../components/dialogs/dish-added/dish-add
   styleUrls: ["./main.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainPageComponent implements OnInit {
+export class MainPageComponent implements OnInit, OnDestroy {
+  @ViewChild("categoriesEl", { static: true }) categoriesEl: ElementRef | undefined
   private _selectedCategoryID: number | undefined
+
+  goTopBtnObserver: IntersectionObserver | undefined
+  hideGoTopBtn = true
 
   categories: Category[] = []
   dishes: Dish[] = []
@@ -48,6 +55,11 @@ export class MainPageComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.getInitData()
+    this.setupObserver()
+  }
+
+  ngOnDestroy() {
+    this.goTopBtnObserver?.disconnect()
   }
 
   async getInitData() {
@@ -79,5 +91,22 @@ export class MainPageComponent implements OnInit {
   addToCart(dish: Dish) {
     this.store.dispatch(addDishToCart({ dish }))
     this.dialog.open(DishAddedComponent, { data: dish })
+  }
+
+  setupObserver() {
+    this.goTopBtnObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        this.hideGoTopBtn = entry.isIntersecting
+        this.cdRef.detectChanges()
+      }
+    }, {})
+    this.goTopBtnObserver.observe(this.categoriesEl?.nativeElement)
+
+    const footer = document.querySelector("#app-footer")
+    footer && this.goTopBtnObserver.observe(footer)
+  }
+
+  scrollTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 }
