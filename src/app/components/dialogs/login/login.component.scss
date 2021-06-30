@@ -1,3 +1,5 @@
+@import "~src/styles/mixins";
+
 :host {
   display: block;
 }
@@ -7,6 +9,10 @@
   width: 22rem;
   padding: 1rem;
   border-radius: 10px;
+
+  @include media-breakpoint-down(sm) {
+    width: min(22rem, 80vw);
+  }
 }
 
 .form {

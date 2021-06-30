@@ -1,9 +1,14 @@
 @import "~src/styles/colors";
+@import "~src/styles/mixins";
 
 :host {
   display: block;
-  min-width: 35rem;
+  width: 35rem;
   padding: 1rem;
+
+  @include media-breakpoint-down(md) {
+    width: min(35rem, 80vw);
+  }
 }
 
 .title {
@@ -35,11 +40,22 @@
 
   &__row {
     border: 1px solid lightgrey;
+
+    @include media-breakpoint-down(sm) {
+      td {
+        padding: 0;
+      }
+    }
   }
 
   &__img {
     height: 3rem;
     width: auto;
+
+    @include media-breakpoint-down(sm) {
+      height: 2.5rem;
+      padding-right: 0.5rem;
+    }
   }
 
   &__dish {

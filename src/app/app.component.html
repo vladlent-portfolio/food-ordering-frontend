@@ -49,21 +49,24 @@
 
     <button
       *ngIf="!o.isLoggedIn"
-      mat-raised-button
+      class="sign-in-btn"
+      mat-flat-button
       color="accent"
+      aria-label="Sign In"
       data-test="login-btn"
       (click)="openLoginDialog()"
     >
-      Sign In / Sign Up
+      <mat-icon>login</mat-icon>
     </button>
     <button
       *ngIf="o.isLoggedIn"
-      mat-raised-button
+      class="sign-out-btn"
+      mat-icon-button
       color="accent"
+      aria-label="Sign Out"
       data-test="logout-btn"
       (click)="signOut()"
     >
-      Sign Out
       <mat-icon>logout</mat-icon>
     </button>
   </nav>

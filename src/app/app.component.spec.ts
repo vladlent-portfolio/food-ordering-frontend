@@ -129,10 +129,24 @@ describe("AppComponent", () => {
     expect(queryLogInBtn()).toBeNull()
   })
 
-  it("should open login dialog", () => {
-    fixture.detectChanges()
-    queryLogInBtn().click()
-    expect(dialogSpy.open).toHaveBeenCalled()
+  describe("sign in button", () => {
+    beforeEach(() => {
+      fixture.detectChanges()
+    })
+
+    it("should exist", () => {
+      const btn = queryLogInBtn()
+      expect(btn).not.toBeNull()
+      expect(btn.getAttribute("aria-label")).toBe(
+        "Sign In",
+        "expected sign in button to have valid aria-label",
+      )
+    })
+
+    it("should open login dialog", () => {
+      queryLogInBtn().click()
+      expect(dialogSpy.open).toHaveBeenCalled()
+    })
   })
 
   describe("home link", () => {
@@ -272,6 +286,16 @@ describe("AppComponent", () => {
   })
 
   describe("logout", () => {
+    it("should exist", () => {
+      loginAsUser()
+      const btn = queryLogOutBtn()
+      expect(btn).not.toBeNull()
+      expect(btn.getAttribute("aria-label")).toBe(
+        "Sign Out",
+        "expected sign out button to have valid aria-label",
+      )
+    })
+
     it("should call signOut when clicked on logout btn", () => {
       userServiceSpy.signOut.and.returnValue(of())
       loginAsUser()

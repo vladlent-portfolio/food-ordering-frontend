@@ -4,7 +4,11 @@
 :host {
   display: block;
   width: 31rem;
-  padding: 2rem 1rem 1rem;
+  padding: 2rem 2rem 1rem;
+
+  @include media-breakpoint-down(sm) {
+    width: min(31rem, 80vw);
+  }
 }
 
 .image-container {
@@ -12,6 +16,10 @@
 
   img {
     @include dish(14rem);
+
+    @include media-breakpoint-down(sm) {
+      @include dish(11rem);
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 @use "sass:color";
 @import "~src/styles/colors";
+@import "~src/styles/mixins";
 
 :host {
   display: flex;
@@ -63,10 +64,33 @@ mat-toolbar {
 }
 
 .admin-btn {
+  display: none;
   margin: 0 0.5rem;
   background-color: transparent;
   color: white;
   border: 1px solid white;
+
+  @include media-breakpoint-up(md) {
+    display: initial;
+  }
+}
+
+.sign-out-btn {
+  &__text {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+}
+
+.sign-in-btn {
+  min-width: 3rem;
+
+  &__text {
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
 }
 
 .main {

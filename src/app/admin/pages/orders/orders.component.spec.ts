@@ -471,9 +471,9 @@ describe("OrdersComponent", () => {
   }
 
   async function closeAllPopups() {
-    const backdrops = document.querySelectorAll(
-      ".cdk-overlay-backdrop",
-    ) as NodeListOf<HTMLElement>
+    const backdrops = document.querySelectorAll(".cdk-overlay-backdrop") as NodeListOf<
+      HTMLElement
+    >
 
     for (const backdrop of backdrops) {
       backdrop.click()

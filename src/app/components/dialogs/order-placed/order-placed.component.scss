@@ -1,9 +1,14 @@
 @import "~src/styles/colors";
+@import "~src/styles/mixins";
 
 :host {
   display: block;
   width: 31rem;
   padding: 1rem;
+
+  @include media-breakpoint-down(md) {
+    width: min(31rem, 80vw);
+  }
 }
 
 .msg {
