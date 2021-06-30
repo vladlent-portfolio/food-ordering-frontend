@@ -94,16 +94,21 @@ export class MainPageComponent implements OnInit, OnDestroy {
   }
 
   setupObserver() {
-    this.goTopBtnObserver = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        this.hideGoTopBtn = entry.isIntersecting
-        this.cdRef.detectChanges()
-      }
-    }, {})
-    this.goTopBtnObserver.observe(this.categoriesEl?.nativeElement)
-
+    this.goTopBtnObserver = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          this.hideGoTopBtn = entry.isIntersecting
+          this.cdRef.detectChanges()
+        }
+      },
+      {
+        threshold: 0.35,
+      },
+    )
     const footer = document.querySelector("#app-footer")
     footer && this.goTopBtnObserver.observe(footer)
+
+    this.goTopBtnObserver.observe(this.categoriesEl?.nativeElement)
   }
 
   scrollTop() {
