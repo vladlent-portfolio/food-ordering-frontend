@@ -1,3 +1,5 @@
+@import "~src/styles/mixins";
+
 :host {
   display: block;
 }
@@ -8,8 +10,21 @@ header {
 }
 
 .cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  grid-gap: 1.5rem;
+
+  @include media-breakpoint-down(md) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 2rem;
+  }
+}
+
+app-admin-card {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
 }
 
 .add-btn {

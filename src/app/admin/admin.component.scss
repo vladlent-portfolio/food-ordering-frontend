@@ -1,3 +1,5 @@
+@import "~src/styles/mixins";
+
 :host {
   --toolbar-height: 4.5rem;
 
@@ -17,4 +19,8 @@ mat-drawer-container {
 
 app-admin-nav {
   width: 12rem;
+
+  @include media-breakpoint-down(xl) {
+    width: 8rem;
+  }
 }
