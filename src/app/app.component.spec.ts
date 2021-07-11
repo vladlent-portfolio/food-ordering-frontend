@@ -44,7 +44,8 @@ describe("AppComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([
-          { path: "admin", component: TestAdminComponent },
+          { path: "admin", component: TestComponent },
+          { path: "about", component: TestComponent },
         ]),
         MatProgressSpinnerModule,
         MatToolbarModule,
@@ -54,7 +55,7 @@ describe("AppComponent", () => {
         MatIconModule,
         MatBadgeModule,
       ],
-      declarations: [AppComponent, LoginDialogComponent, TestAdminComponent],
+      declarations: [AppComponent, LoginDialogComponent, TestComponent],
       providers: [
         { provide: MatDialog, useValue: dialogSpy },
         { provide: UserService, useValue: userServiceSpy },
@@ -179,16 +180,6 @@ describe("AppComponent", () => {
       fixture.detectChanges()
       expect(queryTitle().textContent?.trim()).toBe(component.title)
     })
-
-    it("should be changed to admin title if route includes '/admin'", async () => {
-      fixture.detectChanges()
-      expect(queryTitle().textContent?.trim()).toBe(component.title)
-      await navigateToAdmin()
-      expect(queryTitle().textContent?.trim()).toBe(component.adminTitle)
-      await router.navigateByUrl("/")
-      fixture.detectChanges()
-      expect(queryTitle().textContent?.trim()).toBe(component.title)
-    })
   })
 
   describe("shopping cart", () => {
@@ -244,44 +235,52 @@ describe("AppComponent", () => {
     })
   })
 
-  describe("Go to dashboard button", () => {
-    it("should not be visible if user isn't logged in or is not admin", () => {
-      fixture.detectChanges()
-      expect(queryAdminBtn()).toBeNull()
-      loginAsUser()
-      expect(queryAdminBtn()).toBeNull()
+  describe("navigation", () => {
+    it("should have active link if route matches", async () => {
+      await loginAsAdmin()
+      const links = document.querySelectorAll(".nav__link") as NodeListOf<
+        HTMLAnchorElement
+      >
+
+      for (const link of links) {
+        await router.navigateByUrl(new URL(link.href).pathname)
+        fixture.detectChanges()
+        expect(link.classList.contains("nav__link--active")).toBeTrue()
+
+        for (const l of links) {
+          if (l != link) {
+            expect(l.classList.contains("nav__link--active")).toBeFalse()
+          }
+        }
+      }
     })
 
-    it("should be visible if user is admin", () => {
-      loginAsAdmin()
-      const btn = queryAdminBtn()
-      expect(btn).not.toBeNull()
-      expect(btn.href).toContain("/admin")
+    describe("Dashboard button", () => {
+      it("should not be visible if user isn't logged in or is not admin", () => {
+        fixture.detectChanges()
+        expect(queryAdminBtn()).toBeNull()
+        loginAsUser()
+        expect(queryAdminBtn()).toBeNull()
+      })
+
+      it("should be visible if user is admin", () => {
+        loginAsAdmin()
+        const btn = queryAdminBtn()
+        expect(btn).not.toBeNull()
+        expect(btn.href).toContain("/admin")
+        expect(btn.textContent).toMatch(/dashboard/i)
+      })
     })
 
-    it("should not be visible if current route includes '/admin'", async () => {
-      loginAsAdmin()
-      await navigateToAdmin()
-      expect(queryAdminBtn()).toBeNull()
-    })
-  })
-
-  describe("Back to App button", () => {
-    it("should be visible if current route includes '/admin'", async () => {
-      loginAsAdmin()
-      await navigateToAdmin()
-      const btn = queryAppBtn()
-      expect(btn).not.toBeNull()
-      expect(btn.href).toBe(location.origin + "/")
-    })
-
-    it("should not be visible if current route doesn't include 'admin'", () => {
-      fixture.detectChanges()
-      expect(queryAppBtn()).toBeNull()
-      loginAsUser()
-      expect(queryAppBtn()).toBeNull()
-      loginAsAdmin()
-      expect(queryAppBtn()).toBeNull()
+    describe("Home button", () => {
+      it("should be visible if current route includes '/admin'", async () => {
+        loginAsAdmin()
+        await navigateToAdmin()
+        const btn = queryAppBtn()
+        expect(btn).not.toBeNull()
+        expect(btn.href).toBe(location.origin + "/")
+        expect(btn.textContent).toMatch(/home/i)
+      })
     })
   })
 
@@ -475,4 +474,4 @@ describe("AppComponent", () => {
 @Component({
   template: "",
 })
-class TestAdminComponent {}
+class TestComponent {}

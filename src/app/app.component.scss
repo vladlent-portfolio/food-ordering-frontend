@@ -8,38 +8,51 @@
   min-height: 100vh;
 }
 
-mat-toolbar {
+.toolbar {
   position: sticky;
   top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 100;
+
+  .toolbar__main {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
-.spinner-container {
-  display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: color.scale(#000, $alpha: -85%);
-  z-index: 100;
-
-  mat-progress-spinner {
-    margin: auto;
-  }
+.home-link {
+  margin-right: 1.5rem;
+  color: #fff;
+  text-decoration: none;
 }
 
 .nav {
   display: flex;
   align-items: center;
+
+  &__link {
+    background-color: transparent;
+    color: white;
+    transition: background-color ease-in 100ms;
+
+    &--active {
+      color: $color-accent;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+  }
 }
 
-.home-link {
-  color: #fff;
-  text-decoration: none;
+.controls {
+  display: flex;
+  align-items: center;
 }
 
 .cart {
@@ -63,18 +76,6 @@ mat-toolbar {
 
   &:active {
     background-color: rgba($color-accent, 0.4);
-  }
-}
-
-.admin-btn {
-  display: none;
-  margin: 0 0.5rem;
-  background-color: transparent;
-  color: white;
-  border: 1px solid white;
-
-  @include media-breakpoint-up(md) {
-    display: initial;
   }
 }
 
@@ -136,5 +137,20 @@ mat-toolbar {
   &__attribution {
     text-align: right;
     font-size: 0.75rem;
+  }
+}
+
+.spinner-container {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: color.scale(#000, $alpha: -85%);
+  z-index: 100;
+
+  mat-progress-spinner {
+    margin: auto;
   }
 }

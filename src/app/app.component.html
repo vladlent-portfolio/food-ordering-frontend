@@ -6,70 +6,84 @@
     cartQuantity: totalCartQuantity$ | async
   } as o"
   color="primary"
+  class="toolbar"
 >
   <a class="home-link" routerLink="/" data-test="home-link">
-    <h1 data-test="title">{{ o.isAdminRoute ? adminTitle : title }}</h1>
+    <h1 data-test="title">{{ title }}</h1>
   </a>
 
-  <nav class="nav">
-    <button
-      *ngIf="!o.isAdminRoute"
-      class="cart"
-      [matBadge]="o.cartQuantity"
-      [matBadgeHidden]="o.cartQuantity <= 0"
-      matBadgeColor="warn"
-      (click)="openCartDialog()"
-      aria-label="Open Cart"
-      data-test="cart"
-    >
-      <mat-icon>shopping_basket</mat-icon>
-    </button>
+  <div class="toolbar__main">
+    <nav class="nav">
+      <a
+        class="nav__link"
+        routerLink="/"
+        routerLinkActive="nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        mat-flat-button
+        data-test="app-btn"
+      >
+        Home
+      </a>
 
-    <a
-      *ngIf="o.isLoggedIn && o.isAdmin && !o.isAdminRoute"
-      class="admin-btn"
-      routerLink="/admin"
-      mat-raised-button
-      data-test="admin-btn"
-    >
-      Go to dashboard
-      <mat-icon>space_dashboard</mat-icon>
-    </a>
+      <a
+        *ngIf="o.isLoggedIn && o.isAdmin"
+        class="nav__link"
+        routerLink="/admin"
+        routerLinkActive="nav__link--active"
+        mat-flat-button
+        data-test="admin-btn"
+      >
+        Dashboard
+      </a>
 
-    <a
-      *ngIf="o.isLoggedIn && o.isAdmin && o.isAdminRoute"
-      class="admin-btn"
-      routerLink="/"
-      mat-raised-button
-      data-test="app-btn"
-    >
-      Back to App
-      <mat-icon>store</mat-icon>
-    </a>
+      <a
+        mat-flat-button
+        class="nav__link"
+        routerLink="/about"
+        routerLinkActive="nav__link--active"
+        >About</a
+      >
+    </nav>
 
-    <button
-      *ngIf="!o.isLoggedIn"
-      class="sign-in-btn"
-      mat-flat-button
-      color="accent"
-      aria-label="Sign In"
-      data-test="login-btn"
-      (click)="openLoginDialog()"
-    >
-      <mat-icon>login</mat-icon>
-    </button>
-    <button
-      *ngIf="o.isLoggedIn"
-      class="sign-out-btn"
-      mat-icon-button
-      color="accent"
-      aria-label="Sign Out"
-      data-test="logout-btn"
-      (click)="signOut()"
-    >
-      <mat-icon>logout</mat-icon>
-    </button>
-  </nav>
+    <div class="controls">
+      <button
+        *ngIf="!o.isAdminRoute"
+        class="cart"
+        [matBadge]="o.cartQuantity"
+        [matBadgeHidden]="o.cartQuantity <= 0"
+        matBadgeColor="warn"
+        (click)="openCartDialog()"
+        aria-label="Open Cart"
+        data-test="cart"
+      >
+        <mat-icon>shopping_basket</mat-icon>
+      </button>
+
+      <button
+        *ngIf="!o.isLoggedIn"
+        class="sign-in-btn"
+        mat-flat-button
+        color="accent"
+        aria-label="Sign In"
+        data-test="login-btn"
+        (click)="openLoginDialog()"
+      >
+        <mat-icon>login</mat-icon>
+      </button>
+
+      <button
+        *ngIf="o.isLoggedIn"
+        class="sign-out-btn"
+        mat-icon-button
+        color="accent"
+        aria-label="Sign Out"
+        data-test="logout-btn"
+        (click)="signOut()"
+      >
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </div>
 </mat-toolbar>
 
 <main class="main">

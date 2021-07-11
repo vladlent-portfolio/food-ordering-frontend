@@ -23,7 +23,6 @@ import { asapScheduler } from "rxjs"
 })
 export class AppComponent implements OnInit {
   title = "Food Ordering App"
-  adminTitle = "Food Ordering App Admin"
 
   // 'delay' is needed to prevent ExpressionChangedAfterItHasBeenCheckedError from Angular.
   isLoading$ = this.store.select(selectIsLoading).pipe(delay(0, asapScheduler))
