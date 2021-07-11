@@ -111,7 +111,7 @@ describe("CartDialogComponent", () => {
 
       const emptyCart = queryEmptyCart()
       expect(emptyCart).not.toBeNull()
-      expect(emptyCart.textContent).toContain("Cart is empty")
+      expect(emptyCart.textContent).toContain("cart is empty")
 
       const img = emptyCart.querySelector("img")
       expect(img).not.toBeNull("expected empty cart block to have an image")
