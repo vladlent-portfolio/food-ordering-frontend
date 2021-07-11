@@ -1,0 +1,10 @@
+@import "variables";
+@import "mixins";
+
+@each $breakpoint, $value in $grid-breakpoints {
+  .d-#{$breakpoint}-none {
+    @include media-breakpoint-down($breakpoint) {
+      display: none !important;
+    }
+  }
+}
