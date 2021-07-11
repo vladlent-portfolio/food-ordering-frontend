@@ -8,7 +8,7 @@
   color="primary"
   class="toolbar"
 >
-  <a class="home-link" routerLink="/" data-test="home-link">
+  <a class="home-link d-sm-none" routerLink="/" data-test="home-link">
     <h1 data-test="title">{{ title }}</h1>
   </a>
 
@@ -27,7 +27,7 @@
 
       <a
         *ngIf="o.isLoggedIn && o.isAdmin"
-        class="nav__link"
+        class="nav__link d-sm-none"
         routerLink="/admin"
         routerLinkActive="nav__link--active"
         mat-flat-button
