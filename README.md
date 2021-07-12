@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/vladlent-portfolio/food-ordering-frontend/branch/main/graph/badge.svg?token=BICTXQ2K4M)](https://codecov.io/gh/vladlent-portfolio/food-ordering-frontend)
 ![Website](https://img.shields.io/website?url=https%3A%2F%2Ffood-ordering.app)
 
+![App Image](https://food-ordering.app/assets/img/sm_image.png)
+
 ## Table of Contents
 
 - [Overview](#overview)
