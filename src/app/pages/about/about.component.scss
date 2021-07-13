@@ -1,6 +1,12 @@
+@import "~src/styles/mixins";
+
 :host {
   display: block;
   padding: 1.5rem;
+
+  @include media-breakpoint-down(md) {
+    padding: 1rem;
+  }
 }
 
 $tech-colors: (
@@ -20,7 +26,11 @@ $tech-colors: (
 }
 
 section {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+
+  @include media-breakpoint-down(md) {
+    margin-bottom: 1.5rem;
+  }
 }
 
 h3 {
