@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from "@angular/core"
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from "@angular/core"
 import { Store } from "@ngrx/store"
 import {
   selectCart,
@@ -22,7 +22,7 @@ import { asapScheduler } from "rxjs"
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent implements OnInit {
-  title = "Food Ordering App"
+  @ViewChild("pageTop", { static: true }) pageTopEl: ElementRef | undefined
 
   // 'delay' is needed to prevent ExpressionChangedAfterItHasBeenCheckedError from Angular.
   isLoading$ = this.store.select(selectIsLoading).pipe(delay(0, asapScheduler))
@@ -36,6 +36,11 @@ export class AppComponent implements OnInit {
     .select(selectCart)
     .pipe(map(cart => Object.values(cart).reduce((acc, d) => acc + d.quantity, 0)))
 
+  title = "Food Ordering App"
+
+  goTopBtnObserver: IntersectionObserver | undefined
+  hideGoTopBtn = true
+
   constructor(
     private store: Store<AppState>,
     private userService: UserService,
@@ -46,6 +51,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.checkAuth()
     this.restoreCart()
+    this.setupObserver()
   }
 
   @HostListener("window:beforeunload")
@@ -86,5 +92,22 @@ export class AppComponent implements OnInit {
         }
       },
     })
+  }
+
+  setupObserver() {
+    this.goTopBtnObserver = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          this.hideGoTopBtn = entry.isIntersecting
+        }
+      },
+      { threshold: 0.35 },
+    )
+
+    this.goTopBtnObserver.observe(this.pageTopEl?.nativeElement)
+  }
+
+  scrollTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 }

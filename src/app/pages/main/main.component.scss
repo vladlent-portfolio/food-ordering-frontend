@@ -4,6 +4,10 @@
 :host {
   display: block;
   padding: 1.5rem;
+
+  @include media-breakpoint-down(md) {
+    padding: 1rem;
+  }
 }
 
 .categories {
@@ -175,11 +179,4 @@
       background-color: darken($color-accent, 10%);
     }
   }
-}
-
-.up-btn {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  z-index: 100;
 }

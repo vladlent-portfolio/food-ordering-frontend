@@ -1,3 +1,4 @@
+<div #pageTop class="page-top" aria-hidden="true" data-test="page-top"></div>
 <mat-toolbar
   *ngLet="{
     isLoggedIn: isLoggedIn$ | async,
@@ -162,6 +163,18 @@
     </a>
   </div>
 </footer>
+
+<button
+  *ngIf="!hideGoTopBtn"
+  mat-mini-fab
+  class="up-btn"
+  color="accent"
+  (click)="scrollTop()"
+  aria-label="Scroll to top"
+  data-test="up-btn"
+>
+  <mat-icon>arrow_upward</mat-icon>
+</button>
 
 <div *ngIf="isLoading$ | async" class="spinner-container" data-test="loading-spinner">
   <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>

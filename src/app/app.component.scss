@@ -8,6 +8,14 @@
   min-height: 100vh;
 }
 
+.page-top {
+  position: absolute;
+  width: 100%;
+  height: 20vh;
+  background-color: transparent;
+  z-index: -1;
+}
+
 .toolbar {
   position: sticky;
   top: 0;
@@ -138,6 +146,13 @@
     text-align: right;
     font-size: 0.75rem;
   }
+}
+
+.up-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 100;
 }
 
 .spinner-container {

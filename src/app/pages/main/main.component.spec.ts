@@ -79,51 +79,6 @@ describe("MainComponent", () => {
       await component.ngOnInit()
       expect(getInitData).toHaveBeenCalledTimes(1)
     })
-
-    it("should call setupObserver()", async () => {
-      const setupObserver = spyOn(component, "setupObserver")
-      await component.ngOnInit()
-      expect(setupObserver).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe("ngOnDestroy", () => {
-    beforeEach(async () => {
-      await component.ngOnInit()
-    })
-
-    it("should call disconnect on goTopBtnObserver", () => {
-      const disconnect = spyOn(component.goTopBtnObserver!, "disconnect")
-      component.ngOnDestroy()
-      expect(disconnect).toHaveBeenCalledTimes(1)
-    })
-  })
-
-  describe("scroll to top button", () => {
-    let btn: HTMLElement
-
-    beforeEach(() => {
-      component.hideGoTopBtn = false
-      fixture.detectChanges()
-      btn = queryUpBtn()
-    })
-
-    it("should exist", () => {
-      expect(btn).not.toBeNull()
-      expect(btn.getAttribute("aria-label")).toBe("Scroll to top")
-    })
-
-    it("should call 'scrollTop'", () => {
-      const scrollTop = spyOn(component, "scrollTop")
-      btn.click()
-      expect(scrollTop).toHaveBeenCalledTimes(1)
-    })
-
-    it("should be hidden if categories are visible", () => {
-      component.hideGoTopBtn = true
-      detectChanges()
-      expect(queryUpBtn()).toBeNull()
-    })
   })
 
   describe("categories", () => {
@@ -336,34 +291,6 @@ describe("MainComponent", () => {
     })
   })
 
-  describe("setupObserver()", () => {
-    it("should assign observer to goTopBtnObserver", () => {
-      component.setupObserver()
-      const observer = component.goTopBtnObserver
-      expect(observer).toBeInstanceOf(IntersectionObserver)
-    })
-
-    it("should set hideGoTopBtn to false", (done: DoneFn) => {
-      component.setupObserver()
-      expect(component.hideGoTopBtn).toBeTrue()
-      document.body.style.height = "1000px"
-      window.scrollTo({ top: 500 })
-      setTimeout(() => {
-        expect(component.hideGoTopBtn).toBeFalse()
-        done()
-      }, 100)
-    })
-  })
-
-  describe("scrollTop()", () => {
-    it("should scroll window to top", () => {
-      const scrollTo = spyOn(window, "scrollTo")
-      component.scrollTop()
-      // @ts-ignore
-      expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" })
-    })
-  })
-
   function detectChanges() {
     fixture.detectChanges()
     component.cdRef.detectChanges()
@@ -379,10 +306,6 @@ describe("MainComponent", () => {
 
   function queryAddBtn(dishCard: HTMLElement) {
     return dishCard.querySelector("[data-test='add-to-card-btn']") as HTMLElement
-  }
-
-  function queryUpBtn() {
-    return nativeEl.querySelector("[data-test='up-btn']") as HTMLElement
   }
 
   function forEachCategoryCard(fn: (card: HTMLElement, index: number) => void) {

@@ -1,4 +1,4 @@
-<section #categoriesEl class="categories" data-test="categories">
+<section class="categories" data-test="categories">
   <h2 data-test="categories-caption">Categories</h2>
   <div class="categories__items">
     <button
@@ -39,15 +39,3 @@
     </div>
   </div>
 </section>
-
-<button
-  *ngIf="!hideGoTopBtn"
-  mat-mini-fab
-  class="up-btn"
-  color="accent"
-  (click)="scrollTop()"
-  aria-label="Scroll to top"
-  data-test="up-btn"
->
-  <mat-icon>arrow_upward</mat-icon>
-</button>

@@ -108,6 +108,12 @@ describe("AppComponent", () => {
     expect(restoreCart).toHaveBeenCalledTimes(1)
   })
 
+  it("should call setupObserver on init", () => {
+    const setupObserver = spyOn(component, "setupObserver")
+    component.ngOnInit()
+    expect(setupObserver).toHaveBeenCalledTimes(1)
+  })
+
   it("should show login btn  if user is not logged in", () => {
     store.setState({ user: null, openRequests: 0, cart: {} })
     fixture.detectChanges()
@@ -378,6 +384,33 @@ describe("AppComponent", () => {
     })
   })
 
+  describe("scroll to top button", () => {
+    let btn: HTMLElement
+
+    beforeEach(() => {
+      component.hideGoTopBtn = false
+      fixture.detectChanges()
+      btn = queryUpBtn()
+    })
+
+    it("should exist", () => {
+      expect(btn).not.toBeNull()
+      expect(btn.getAttribute("aria-label")).toBe("Scroll to top")
+    })
+
+    it("should call 'scrollTop'", () => {
+      const scrollTop = spyOn(component, "scrollTop")
+      btn.click()
+      expect(scrollTop).toHaveBeenCalledTimes(1)
+    })
+
+    it("should be hidden if hideTopBtn set to true", () => {
+      component.hideGoTopBtn = true
+      fixture.detectChanges()
+      expect(queryUpBtn()).toBeNull()
+    })
+  })
+
   describe("restoreCart", () => {
     it("should replace the cart in store if local storage isn't empty", () => {
       const dispatch = spyOn(store, "dispatch")
@@ -406,6 +439,34 @@ describe("AppComponent", () => {
       const stored = localStorage.getItem("cart") as string
       expect(stored).not.toBeNull()
       expect(JSON.parse(stored)).toEqual(cart)
+    })
+  })
+
+  describe("setupObserver()", () => {
+    it("should assign observer to goTopBtnObserver", () => {
+      component.setupObserver()
+      const observer = component.goTopBtnObserver
+      expect(observer).toBeInstanceOf(IntersectionObserver)
+    })
+
+    it("should set hideGoTopBtn to false", (done: DoneFn) => {
+      component.setupObserver()
+      expect(component.hideGoTopBtn).toBeTrue()
+      document.body.style.height = "1000px"
+      window.scrollTo({ top: 500 })
+      setTimeout(() => {
+        expect(component.hideGoTopBtn).toBeFalse()
+        done()
+      }, 100)
+    })
+  })
+
+  describe("scrollTop()", () => {
+    it("should scroll window to top", () => {
+      const scrollTo = spyOn(window, "scrollTo")
+      component.scrollTop()
+      // @ts-ignore
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" })
     })
   })
 
@@ -468,6 +529,10 @@ describe("AppComponent", () => {
 
   function querySocials() {
     return nativeEl.querySelector("[data-test='footer-socials']") as HTMLElement
+  }
+
+  function queryUpBtn() {
+    return nativeEl.querySelector("[data-test='up-btn']") as HTMLElement
   }
 })
 
