@@ -13,7 +13,7 @@
 
 ## Overview
 
-This sample app lets users order dishes from provided menu. The app consists from two modules:
+This sample app lets users create orders for dishes from a provided menu. The app is divided in two modules:
 
 - **Main Page** - where clients can add dishes to the shopping cart and place orders.
 - **Admin Dashboard** - where users with admin rights can manage food categories, dishes, users and orders.
@@ -26,3 +26,4 @@ Backend repository available [here](https://github.com/vladlent-portfolio/food-o
 - Angular 12
 - Angular Material 12
 - NgRx 12
+- Karma & Jasmine
