@@ -1,3 +1,4 @@
+@import "colors";
 @import "variables";
 @import "mixins";
 
@@ -6,5 +7,15 @@
     @include media-breakpoint-down($breakpoint) {
       display: none !important;
     }
+  }
+}
+
+@each $name, $color in $colors {
+  .color-#{$name} {
+    color: $color;
+  }
+
+  .bg-#{$name} {
+    background-color: $color;
   }
 }
