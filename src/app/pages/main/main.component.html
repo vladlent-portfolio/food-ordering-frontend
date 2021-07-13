@@ -1,5 +1,5 @@
 <section #categoriesEl class="categories" data-test="categories">
-  <h2 class="categories__caption" data-test="categories-caption">Categories</h2>
+  <h2 data-test="categories-caption">Categories</h2>
   <div class="categories__items">
     <button
       *ngFor="let c of categories"
@@ -15,7 +15,7 @@
 </section>
 
 <section *ngIf="selectedCategoryID" class="dishes" data-test="dishes">
-  <h3 class="dishes__caption" data-test="dishes-caption">Dishes</h3>
+  <h2 data-test="dishes-caption">Dishes</h2>
   <div class="dishes__items">
     <div class="dish" *ngFor="let d of filteredDishes" data-test="dish-card">
       <figure class="dish__figure">
