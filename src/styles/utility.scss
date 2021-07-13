@@ -19,3 +19,9 @@
     background-color: $color;
   }
 }
+
+@each $fw in (400, 500,600) {
+  .fw-#{$fw} {
+    font-weight: $fw;
+  }
+}
