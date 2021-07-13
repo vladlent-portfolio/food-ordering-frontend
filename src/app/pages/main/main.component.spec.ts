@@ -152,6 +152,7 @@ describe("MainComponent", () => {
           const img = card.querySelector("img")
           expect(img?.src).toContain(d.image)
           expect(img?.alt).toContain(d.title)
+          expect(img?.loading).toBe("lazy")
 
           expect(queryAddBtn(card)).not.toBeNull()
         })

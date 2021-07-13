@@ -19,7 +19,12 @@
   <div class="dishes__items">
     <div class="dish" *ngFor="let d of filteredDishes" data-test="dish-card">
       <figure class="dish__figure">
-        <img class="dish__img" [src]="d.image" alt="Image of {{ d.title }}" />
+        <img
+          class="dish__img"
+          [src]="d.image"
+          alt="Image of {{ d.title }}"
+          loading="lazy"
+        />
         <figcaption class="dish__title">{{ d.title }}</figcaption>
       </figure>
       <p class="dish__description">
