@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+}
+
+$tech-colors: (
+  go: #00acd7,
+  gin: #3176d9,
+  gorm: #3f424a,
+  pg: #336791,
+  karma: #42beae,
+  jasmine: #8a4182,
+  swagger: #62a03f,
+);
+
+@each $name, $color in $tech-colors {
+  .color-#{$name} {
+    color: $color;
+  }
+}
+
+section {
+  margin-bottom: 3rem;
+}
+
+h3 {
+  margin-bottom: 0.5rem;
+}
+
+p,
+ul {
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 0.5rem;
+
+  mat-icon {
+    margin-right: 0.25rem;
+  }
+}
+
+ul {
+  margin-top: 0;
+}
+
+.coverage-badge {
+  margin-left: 0.5rem;
+}
+
+.hint {
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-style: italic;
+}

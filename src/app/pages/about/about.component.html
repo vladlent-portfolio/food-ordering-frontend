@@ -1,0 +1,69 @@
+<section class="about">
+  <h2>About</h2>
+  <p>
+    This sample app lets users create orders for dishes from a provided menu. Links to
+    source codes can be found in the
+    <a routerLink="/about" fragment="app-footer">footer.</a>
+  </p>
+  <p>
+    To manage Orders, Categories and Dishes:
+  </p>
+  <ul>
+    <li>
+      Sign in as <span class="color-primary">'Admin'</span> by clicking on
+      <mat-icon>login</mat-icon> button in the top right corner.
+    </li>
+    <li>Navigate to <span class="color-primary">'Dashboard'</span> from the top nav.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Technologies</h2>
+  <div>
+    <h3>Front-End</h3>
+    <ul>
+      <li>
+        The app is built as a single-page application using
+        <span class="color-warn">Angular 12 </span>and
+        <span class="color-warn">Angular Material 12</span>.
+      </li>
+      <li>
+        Global state of the app is managed by <span class="color-primary">NgRx 12</span>.
+      </li>
+      <li>
+        Unit testing is done via
+        <span class="color-karma">Karma</span> and
+        <span class="color-jasmine">Jasmine</span>
+
+        <a
+          class="coverage-badge"
+          href="https://codecov.io/gh/vladlent-portfolio/food-ordering-frontend"
+        >
+          <img
+            src="https://codecov.io/gh/vladlent-portfolio/food-ordering-frontend/branch/main/graph/badge.svg?token=BICTXQ2K4M"
+          />
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h3>Back-End</h3>
+    <ul>
+      <li class="fw-500">Written in <span class="color-go">Go</span> 🔥🔥🔥.</li>
+      <li class="fw-500">
+        <span class="color-swagger">Swagger</span>
+        schema and interaction is available
+        <a href="https://api.food-ordering.app/swagger/index.html" target="_blank">
+          here.
+        </a>
+        <p class="hint">
+          Read the description to see how to access guarded routes.
+        </p>
+      </li>
+      <li>Built on top of <span class="color-gin">Gin</span>.</li>
+      <li>Data persistence with <span class="color-pg">PostgreSQL</span>.</li>
+      <li>Object-relational mapping with <span class="color-gorm">GORM</span>.</li>
+      <li>Dependency injection via <span class="color-go">Wire</span>.</li>
+    </ul>
+  </div>
+</section>
