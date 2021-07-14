@@ -7,6 +7,7 @@ import {
   EventEmitter,
   TemplateRef,
 } from "@angular/core"
+import { ImageUploadComponent } from "../image-upload/image-upload.component"
 
 @Component({
   selector: "app-admin-card",
@@ -18,6 +19,7 @@ export class AdminCardComponent implements OnInit {
   @Input() title: string | undefined
   @Input() subtitle: string | undefined
   @Input() imageSrc: string | undefined
+  @Input() acceptedImageTypes: ImageUploadComponent["acceptedTypes"] = null
   @Input() removable = false
   @Input() subtitleTemplate: TemplateRef<any> | undefined
 

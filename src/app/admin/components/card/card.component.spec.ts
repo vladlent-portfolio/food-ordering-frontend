@@ -44,9 +44,25 @@ describe("CardComponent", () => {
     }
   })
 
-  it("should show image upload component", () => {
+  it("should show image-upload component", () => {
     fixture.detectChanges()
     expect(nativeEl.querySelector("app-image-upload")).not.toBeNull()
+  })
+
+  it("should pass acceptedImageTypes to image-upload component", () => {
+    const tests: any[] = [
+      ["image/png"],
+      ["image/png", "image/webp"],
+      null,
+      ["image/png", "image/webp", "image/jpg"],
+    ]
+    const imageUpload = queryUploadComponent()
+
+    for (const test of tests) {
+      component.acceptedImageTypes = test
+      fixture.detectChanges()
+      expect(imageUpload.acceptedTypes).toEqual(test)
+    }
   })
 
   it("should toggle Remove btn disable state based on removable prop", () => {
@@ -131,6 +147,7 @@ describe("CardComponent", () => {
 @Component({
   template: `<app-admin-card
     [imageSrc]="imageSrc"
+    [acceptedImageTypes]="acceptedImageTypes"
     [title]="title"
     [subtitle]="subtitle"
     [removable]="removable"
@@ -151,6 +168,7 @@ class TestHostComponent {
 
   subtitleTemplate: TemplateRef<any> | undefined
   imageSrc: AdminCardComponent["imageSrc"]
+  acceptedImageTypes: AdminCardComponent["acceptedImageTypes"] = null
   title: AdminCardComponent["title"]
   subtitle: AdminCardComponent["subtitle"]
   removable = false

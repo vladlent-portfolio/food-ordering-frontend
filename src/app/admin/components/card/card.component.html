@@ -1,6 +1,7 @@
 <mat-card class="card">
   <app-image-upload
     class="card__upload"
+    [acceptedTypes]="acceptedImageTypes"
     [imageSrc]="imageSrc"
     (upload)="upload.emit($event)"
   ></app-image-upload>
