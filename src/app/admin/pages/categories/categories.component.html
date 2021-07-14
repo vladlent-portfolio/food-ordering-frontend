@@ -16,6 +16,7 @@
     [title]="c.title"
     [removable]="c.removable"
     [imageSrc]="c.image"
+    [acceptedImageTypes]="acceptedImageTypes"
     (edit)="edit(c)"
     (remove)="remove(c)"
     (upload)="updateImage(c.id, $event)"

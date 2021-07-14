@@ -28,6 +28,8 @@ import { combineLatest, Subject } from "rxjs"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DishesPageComponent implements OnInit {
+  acceptedImageTypes = ["image/png", "image/jpeg", "image/webp"]
+
   dishes$ = new Subject<Dish[]>()
   categories: Category[] = []
   categoriesFilter = new FormControl({ value: 0, disabled: !this.categories.length })
@@ -42,7 +44,7 @@ export class DishesPageComponent implements OnInit {
     private categoryService: CategoryService,
     private dishService: DishService,
     private dialog: MatDialog,
-    private cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {

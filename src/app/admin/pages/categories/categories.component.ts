@@ -25,6 +25,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesPageComponent implements OnInit {
+  acceptedImageTypes = ["image/png", "image/jpeg", "image/webp"]
   categories: Category[] = []
 
   constructor(

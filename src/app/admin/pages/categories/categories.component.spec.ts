@@ -68,6 +68,28 @@ describe("CategoriesComponent", () => {
     expect(spy).toHaveBeenCalled()
   })
 
+  it("should pass acceptedImageTypes to admin-card component", () => {
+    const tests: any[] = [
+      ["image/png"],
+      ["image/png", "image/webp"],
+      null,
+      ["image/png", "image/webp", "image/jpg"],
+    ]
+
+    component.ngOnInit()
+    detectChanges()
+    const cards = queryCardsComponents()
+
+    for (const test of tests) {
+      component.acceptedImageTypes = test
+      detectChanges()
+
+      for (const card of cards) {
+        expect(card.acceptedImageTypes).toEqual(test)
+      }
+    }
+  })
+
   it("should open category dialog in edit mode", () => {
     const openDialog = spyOn(component, "openDialog")
     fixture.detectChanges()

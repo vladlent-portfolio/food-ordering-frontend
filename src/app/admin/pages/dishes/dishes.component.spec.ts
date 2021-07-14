@@ -110,6 +110,28 @@ describe("DishesComponent", () => {
     expect(component.categories).toEqual(categories)
   })
 
+  it("should pass acceptedImageTypes to admin-card component", () => {
+    const tests: any[] = [
+      ["image/png"],
+      ["image/png", "image/webp"],
+      null,
+      ["image/png", "image/webp", "image/jpg"],
+    ]
+
+    component.ngOnInit()
+    detectChanges()
+    const cards = queryCardsComponents()
+
+    for (const test of tests) {
+      component.acceptedImageTypes = test
+      detectChanges()
+
+      for (const card of cards) {
+        expect(card.acceptedImageTypes).toEqual(test)
+      }
+    }
+  })
+
   describe("dishes cards", () => {
     beforeEach(() => {
       fixture.detectChanges()
@@ -396,6 +418,11 @@ describe("DishesComponent", () => {
       expect(dishServiceSpy.updateImage).toHaveBeenCalledWith(5, image)
     })
   })
+
+  function detectChanges() {
+    fixture.detectChanges()
+    component.cdRef.detectChanges()
+  }
 
   function queryCardsComponents(): AdminCardComponent[] {
     return fixture.debugElement
