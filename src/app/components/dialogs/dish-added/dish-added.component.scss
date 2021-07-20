@@ -15,10 +15,10 @@
   text-align: center;
 
   img {
-    @include dish(14rem);
+    @include dish(auto, 14rem);
 
     @include media-breakpoint-down(sm) {
-      @include dish(11rem);
+      height: 11rem;
     }
   }
 }
