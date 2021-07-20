@@ -6,7 +6,13 @@
   <form *ngIf="formGroup" class="form" [formGroup]="formGroup" (ngSubmit)="submit()">
     <mat-form-field class="form__field">
       <mat-label>Title</mat-label>
-      <input formControlName="title" type="text" matInput placeholder="Margherita" />
+      <input
+        formControlName="title"
+        (ngModelChange)="removeTitleError()"
+        type="text"
+        matInput
+        placeholder="Margherita"
+      />
       <mat-error *ngIf="titleError" data-test="title-error">{{ titleError }}</mat-error>
     </mat-form-field>
 

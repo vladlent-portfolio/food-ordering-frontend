@@ -310,6 +310,17 @@ describe("DishDialogComponent", () => {
     })
   })
 
+  describe("removeTitleError()", () => {
+    it("should unset titleError when titleControl changes", async () => {
+      fixture.detectChanges()
+      updateTitleControl("some value")
+      component.titleError = "Error"
+      updateTitleControl("new value")
+      expect(component.titleError).toBeUndefined()
+      expect(component.titleControl.valid).toBeTrue()
+    })
+  })
+
   function updateTitleControl(value: string) {
     updateControl("title", value)
   }

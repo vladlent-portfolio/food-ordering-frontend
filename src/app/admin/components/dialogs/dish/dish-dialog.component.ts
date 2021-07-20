@@ -48,6 +48,11 @@ export class DishDialogComponent implements OnInit {
     this.setTitle()
   }
 
+  removeTitleError() {
+    this.titleError = undefined
+    this.titleControl.updateValueAndValidity()
+  }
+
   private createFormGroup(): FormGroup {
     let title = null
     let price = null
