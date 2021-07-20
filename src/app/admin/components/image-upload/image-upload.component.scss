@@ -1,4 +1,3 @@
-$imgSize: 7rem;
 $iconSize: 2.5rem;
 
 :host {
@@ -18,11 +17,21 @@ $iconSize: 2.5rem;
 
 .img-container {
   display: flex;
-  width: $imgSize;
-  height: $imgSize;
+  height: 7rem;
+  width: 7rem;
   background-color: lightgrey;
-  border-radius: 50%;
   border: 1px solid #555;
+  border-radius: 50%;
+
+  &.has-image {
+    width: auto;
+    background-color: transparent;
+    border: 0;
+
+    img {
+      border-radius: 0;
+    }
+  }
 
   mat-icon {
     margin: auto;
@@ -32,15 +41,9 @@ $iconSize: 2.5rem;
   }
 
   img {
-    width: 100%;
-    height: auto;
+    height: 100%;
+    width: auto;
     border-radius: 50%;
-  }
-
-  &.has-image {
-    height: auto;
-    background-color: transparent;
-    border: 0;
   }
 }
 
