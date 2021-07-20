@@ -119,7 +119,7 @@
   }
 
   &__img {
-    @include dish(10rem);
+    @include dish(auto, 10rem);
     margin-bottom: 0.75rem;
     margin-top: -5rem;
   }

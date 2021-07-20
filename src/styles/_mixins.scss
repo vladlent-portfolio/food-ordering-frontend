@@ -1,9 +1,9 @@
 @use "sass:map";
 @import "variables";
 
-@mixin dish($imgSize) {
-  width: $imgSize;
-  height: $imgSize;
+@mixin dish($imgWidth, $imgHeight: $imgWidth) {
+  width: $imgWidth;
+  height: $imgHeight;
   filter: drop-shadow(0 0 5px #999);
 }
 
