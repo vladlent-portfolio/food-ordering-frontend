@@ -31,8 +31,6 @@
 
       <ng-container matColumnDef="items">
         <td *matCellDef="let item" class="cart-table__quantity" mat-cell>
-          <span class="cart-table__dish">{{ item.quantity }}</span>
-          <span class="highlight">&nbsp; x &nbsp;</span>
           <span class="cart-table__dish">{{ item.dish.title }}</span>
         </td>
       </ng-container>
