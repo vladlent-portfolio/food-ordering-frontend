@@ -7,7 +7,7 @@
   padding: 1rem;
 
   @include media-breakpoint-down(md) {
-    width: min(35rem, 80vw);
+    width: min(35rem, 100%);
   }
 }
 
@@ -60,6 +60,13 @@
 
   &__dish {
     font-weight: 500;
+  }
+
+  &__quantity {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 20vw;
   }
 
   &__price {
