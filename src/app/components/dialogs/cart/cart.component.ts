@@ -16,7 +16,7 @@ import { OrderPlacedComponent } from "../order-placed/order-placed.component"
   styleUrls: ["./cart.component.scss"],
 })
 export class CartDialogComponent implements OnInit {
-  columns = ["img", "items", "price", "btn"]
+  columns = ["img", "items", "quantity", "price", "btn"]
   cartItems$ = this.store.select(selectCart).pipe(map(cart => Object.values(cart)))
   isUserLoggedIn$ = this.store.select(selectIsLoggedIn)
 
