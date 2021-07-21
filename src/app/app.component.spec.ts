@@ -24,6 +24,7 @@ import { Component } from "@angular/core"
 import { of } from "rxjs"
 import { MatBadgeModule } from "@angular/material/badge"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
+import { LayoutModule } from "@angular/cdk/layout"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
@@ -54,6 +55,7 @@ describe("AppComponent", () => {
         NoopAnimationsModule,
         MatIconModule,
         MatBadgeModule,
+        LayoutModule,
       ],
       declarations: [AppComponent, LoginDialogComponent, TestComponent],
       providers: [
@@ -197,13 +199,13 @@ describe("AppComponent", () => {
     it("should be visible if user is logged in", () => {
       loginAsUser()
       expect(queryCart()).not.toBeNull()
-      expect(queryCart().getAttribute("aria-label")).toBe("Open Cart")
+      expect(queryCart().getAttribute("aria-label")).toBe("Open shopping cart")
     })
 
     it("should be visible if user is admin", () => {
       loginAsAdmin()
       expect(queryCart()).not.toBeNull()
-      expect(queryCart().getAttribute("aria-label")).toBe("Open Cart")
+      expect(queryCart().getAttribute("aria-label")).toBe("Open shopping cart")
     })
 
     it("should be hidden on dashboard", async () => {
@@ -212,10 +214,23 @@ describe("AppComponent", () => {
       expect(queryCart()).toBeNull()
     })
 
-    it("should open cart dialog on click", () => {
-      fixture.detectChanges()
-      queryCart().click()
-      expect(dialogSpy.open).toHaveBeenCalledOnceWith(CartDialogComponent)
+    describe("open cart", () => {
+      it("should open cart dialog on click", () => {
+        fixture.detectChanges()
+        queryCart().click()
+        expect(dialogSpy.open).toHaveBeenCalledOnceWith(CartDialogComponent, {
+          minWidth: undefined,
+        })
+      })
+
+      it("should open cart with updated minWidth on small screen", () => {
+        spyOnProperty(component, "isSmallScreen").and.returnValue(true)
+        fixture.detectChanges()
+        queryCart().click()
+        expect(dialogSpy.open).toHaveBeenCalledOnceWith(CartDialogComponent, {
+          minWidth: "95vw",
+        })
+      })
     })
 
     describe("total quantity badge", () => {

@@ -15,6 +15,7 @@ import { NavigationEnd, Router } from "@angular/router"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
 import { replaceCart } from "./store/actions"
 import { asapScheduler } from "rxjs"
+import { BreakpointObserver } from "@angular/cdk/layout"
 
 @Component({
   selector: "app-root",
@@ -41,11 +42,16 @@ export class AppComponent implements OnInit {
   goTopBtnObserver: IntersectionObserver | undefined
   hideGoTopBtn = true
 
+  get isSmallScreen() {
+    return this.breakpointObserver.isMatched("(max-width: 576px)")
+  }
+
   constructor(
     private store: Store<AppState>,
     private userService: UserService,
     private dialog: MatDialog,
     private router: Router,
+    private breakpointObserver: BreakpointObserver,
   ) {}
 
   ngOnInit() {
@@ -73,7 +79,9 @@ export class AppComponent implements OnInit {
   }
 
   openCartDialog() {
-    this.dialog.open(CartDialogComponent)
+    this.dialog.open(CartDialogComponent, {
+      minWidth: this.isSmallScreen ? "95vw" : undefined,
+    })
   }
 
   restoreCart() {

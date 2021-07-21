@@ -9,6 +9,7 @@ import { MatIconModule } from "@angular/material/icon"
 import { MatSelectModule } from "@angular/material/select"
 import { OrderStatusComponent } from "./components/order-status/order-status.component"
 import { MatTableModule } from "@angular/material/table"
+import { LayoutModule } from "@angular/cdk/layout"
 
 const MODULES = [
   NgLetModule,
@@ -19,6 +20,7 @@ const MODULES = [
   MatIconModule,
   MatSelectModule,
   MatTableModule,
+  LayoutModule,
 ]
 
 const DECLARATIONS = [OrderStatusComponent]
