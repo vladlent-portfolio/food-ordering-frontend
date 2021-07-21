@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core"
+import { Component, OnInit, TrackByFunction } from "@angular/core"
 import { AppState, CartItem } from "../../../store/reducers"
 import { Store } from "@ngrx/store"
 import { selectCart, selectIsLoggedIn } from "../../../store/selectors"
@@ -33,8 +33,8 @@ export class CartDialogComponent implements OnInit {
     return !items || items.length === 0
   }
 
-  removeItemFromCart(item: CartItem) {
-    this.store.dispatch(setDishQuantity({ id: item.dish.id, quantity: 0 }))
+  setDishQuantity(item: CartItem, quantity: number) {
+    this.store.dispatch(setDishQuantity({ id: item.dish.id, quantity }))
   }
 
   checkout(items: CartItem[]) {
@@ -63,4 +63,6 @@ export class CartDialogComponent implements OnInit {
   getTotal(items: CartItem[]): number {
     return items.reduce((acc, { dish, quantity }) => acc + dish.price * quantity, 0)
   }
+
+  trackBy: TrackByFunction<CartItem> = (_, item) => item.dish.id
 }

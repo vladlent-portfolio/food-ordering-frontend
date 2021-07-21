@@ -134,8 +134,10 @@ describe("CartDialogComponent", () => {
 
     describe("orders table", () => {
       let items: CartItem[]
+      let dispatch: jasmine.Spy
 
       beforeEach(() => {
+        dispatch = spyOn(store, "dispatch")
         items = Object.values(cart)
         store.setState({ cart })
         fixture.detectChanges()
@@ -157,6 +159,14 @@ describe("CartDialogComponent", () => {
           expect(row.textContent).toContain("$" + (dish.price * quantity).toFixed(2))
           expect(row.textContent).toContain(quantity)
 
+          expect(querySubtractBtn(row)).not.toBeNull(
+            `expected row #${i + 1} to have 'Subtract quantity' button`,
+          )
+
+          expect(queryIncreaseBtn(row)).not.toBeNull(
+            `expected row #${i + 1} to have 'Increase quantity' button`,
+          )
+
           expect(queryRemoveItemBtn(row)).not.toBeNull(
             `expected row #${i + 1} to have 'Remove item from cart' button`,
           )
@@ -176,10 +186,44 @@ describe("CartDialogComponent", () => {
         expect(tfoot?.textContent).toContain("$" + total.toFixed(2))
       })
 
+      describe("Subtract dish quantity button", () => {
+        it("should dispatch setDishQuantity with quantity - 1", () => {
+          queryTableRows().forEach((row, i) => {
+            const item = items[i]
+            const btn = querySubtractBtn(row)
+            btn.click()
+            expect(dispatch).toHaveBeenCalledWith(
+              setDishQuantity({ id: item.dish.id, quantity: --item.quantity }),
+            )
+            store.setState(cart)
+            btn.click()
+            expect(dispatch).toHaveBeenCalledWith(
+              setDishQuantity({ id: item.dish.id, quantity: item.quantity - 1 }),
+            )
+          })
+        })
+      })
+
+      describe("Increase dish quantity button", () => {
+        it("should dispatch setDishQuantity with quantity + 1", () => {
+          queryTableRows().forEach((row, i) => {
+            const item = items[i]
+            const btn = queryIncreaseBtn(row)
+            btn.click()
+            expect(dispatch).toHaveBeenCalledWith(
+              setDishQuantity({ id: item.dish.id, quantity: ++item.quantity }),
+            )
+            store.setState(cart)
+            btn.click()
+            expect(dispatch).toHaveBeenCalledWith(
+              setDishQuantity({ id: item.dish.id, quantity: item.quantity + 1 }),
+            )
+          })
+        })
+      })
+
       describe("'Remove item from cart' button", () => {
         it("should remove item from orders on click", () => {
-          const dispatch = spyOn(store, "dispatch")
-
           queryTableRows().forEach((row, i) => {
             const item = items[i]
             queryRemoveItemBtn(row).click()
@@ -323,6 +367,14 @@ describe("CartDialogComponent", () => {
 
   function queryRemoveItemBtn(row: HTMLElement) {
     return row.querySelector("[data-test='cart-dialog-remove-item-btn']") as HTMLElement
+  }
+
+  function querySubtractBtn(row: HTMLElement) {
+    return row.querySelector("[data-test='subtract-quantity-btn']") as HTMLElement
+  }
+
+  function queryIncreaseBtn(row: HTMLElement) {
+    return row.querySelector("[data-test='increase-quantity-btn']") as HTMLElement
   }
 
   function queryEmptyCart() {

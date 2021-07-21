@@ -14,6 +14,7 @@
       *ngIf="!isCartEmpty(items)"
       mat-table
       [dataSource]="items"
+      [trackBy]="trackBy"
       class="cart-table"
       data-test="cart-dialog-orders"
     >
@@ -41,7 +42,9 @@
           <button
             mat-icon-button
             color="warn"
+            (click)="setDishQuantity(item, item.quantity - 1)"
             [attr.aria-label]="'Remove one ' + item.dish.title + ' from the cart'"
+            data-test="subtract-quantity-btn"
           >
             <mat-icon>remove</mat-icon>
           </button>
@@ -54,7 +57,9 @@
           <button
             mat-icon-button
             color="primary"
+            (click)="setDishQuantity(item, item.quantity + 1)"
             [attr.aria-label]="'Add one more ' + item.dish.title + ' to the cart'"
+            data-test="increase-quantity-btn"
           >
             <mat-icon>add</mat-icon>
           </button>
@@ -75,7 +80,7 @@
           <button
             mat-icon-button
             color="warn"
-            (click)="removeItemFromCart(item)"
+            (click)="setDishQuantity(item, 0)"
             data-test="cart-dialog-remove-item-btn"
           >
             <mat-icon>delete</mat-icon>
