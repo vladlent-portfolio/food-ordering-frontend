@@ -8,15 +8,12 @@ export const loadEnd = createAction("[App] HTTP Loading End")
 export const setUserInfo = createAction("[User] Set User Info", props<{ user: User }>())
 export const deleteUserInfo = createAction("[User] Clear User Info")
 
-export const addDishToCart = createAction(
-  "[App] Add Dish to Cart",
-  props<{ dish: Dish }>(),
+export const addDishToCart = createAction("[Cart] Add Dish", props<{ dish: Dish }>())
+
+export const setDishQuantity = createAction(
+  "[Cart] Set Dish Quantity",
+  props<{ id: number; quantity: number }>(),
 )
 
-export const removeDishFromCart = createAction(
-  "[App] Remove Dish From Cart",
-  props<{ dish: Dish; amount: number }>(),
-)
-
-export const replaceCart = createAction("[App] Replace Cart", props<{ cart: Cart }>())
-export const clearCart = createAction("[App] Clear Cart")
+export const replaceCart = createAction("[Cart] Replace", props<{ cart: Cart }>())
+export const clearCart = createAction("[Cart] Clear")

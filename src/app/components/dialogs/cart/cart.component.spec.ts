@@ -5,7 +5,7 @@ import { Cart, CartItem } from "../../../store/reducers"
 import { MatButtonModule } from "@angular/material/button"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { NgLetModule } from "@ngrx-utils/store"
-import { clearCart, removeDishFromCart } from "../../../store/actions"
+import { clearCart, setDishQuantity } from "../../../store/actions"
 import { OrderService } from "../../../services/order.service"
 import { of } from "rxjs"
 import { MatIconModule } from "@angular/material/icon"
@@ -184,7 +184,7 @@ describe("CartDialogComponent", () => {
             const item = items[i]
             queryRemoveItemBtn(row).click()
             expect(dispatch).toHaveBeenCalledWith(
-              removeDishFromCart({ dish: item.dish, amount: item.quantity }),
+              setDishQuantity({ id: item.dish.id, quantity: 0 }),
             )
           })
         })

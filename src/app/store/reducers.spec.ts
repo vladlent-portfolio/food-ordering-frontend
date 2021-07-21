@@ -5,7 +5,7 @@ import {
   deleteUserInfo,
   loadEnd,
   loadStart,
-  removeDishFromCart,
+  setDishQuantity,
   replaceCart,
   setUserInfo,
 } from "./actions"
@@ -108,50 +108,45 @@ describe("Cart Reducer", () => {
     })
   })
 
-  describe("on removeDishFromCart", () => {
-    it("should remove specified amount of a certain dish from cart", () => {
+  describe("on setDishQuantity", () => {
+    it("should set dish quantity", () => {
       let state: any = {
         [dishes[0].id]: { dish: dishes[0], quantity: 5 },
         [dishes[1].id]: { dish: dishes[1], quantity: 2 },
       }
 
       const expected = {
-        [dishes[0].id]: { dish: dishes[0], quantity: 2 },
-        [dishes[1].id]: { dish: dishes[1], quantity: 1 },
+        [dishes[0].id]: { dish: dishes[0], quantity: 13 },
+        [dishes[1].id]: { dish: dishes[1], quantity: 37 },
       }
 
-      state = cartReducer(state, removeDishFromCart({ dish: dishes[0], amount: 3 }))
-      state = cartReducer(state, removeDishFromCart({ dish: dishes[1], amount: 1 }))
+      state = cartReducer(state, setDishQuantity({ id: dishes[0].id, quantity: 13 }))
+      state = cartReducer(state, setDishQuantity({ id: dishes[1].id, quantity: 37 }))
 
       expect(state).toEqual(expected)
     })
 
-    it("should remove dish completely if amount >= quantity", () => {
+    it("should remove item completely if quantity <= 0", () => {
       let state: any = {
         [dishes[0].id]: { dish: dishes[0], quantity: 5 },
         [dishes[1].id]: { dish: dishes[1], quantity: 2 },
       }
 
-      state = cartReducer(
-        state,
-        removeDishFromCart({ dish: dishes[1], amount: Infinity }),
-      )
+      state = cartReducer(state, setDishQuantity({ id: dishes[1].id, quantity: 0 }))
       expect(state).toEqual({ [dishes[0].id]: { dish: dishes[0], quantity: 5 } })
 
       expect(
-        cartReducer(state, removeDishFromCart({ dish: dishes[0], amount: 5 })),
+        cartReducer(state, setDishQuantity({ id: dishes[0].id, quantity: -Infinity })),
       ).toEqual({})
     })
 
-    it("should return the same state if provided dish isn't in state", () => {
+    it("should return the same state if provided id isn't in state", () => {
       const state: any = {
         [dishes[0].id]: { dish: dishes[0], quantity: 5 },
       }
 
-      const newState = cartReducer(
-        state,
-        removeDishFromCart({ dish: dishes[1], amount: 5 }),
-      )
+      const newState = cartReducer(state, setDishQuantity({ id: 123, quantity: 123 }))
+
       expect(newState).toBe(state)
     })
   })

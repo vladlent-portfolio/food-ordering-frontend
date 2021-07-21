@@ -5,7 +5,7 @@ import {
   deleteUserInfo,
   loadEnd,
   loadStart,
-  removeDishFromCart,
+  setDishQuantity,
   replaceCart,
   setUserInfo,
 } from "./actions"
@@ -50,19 +50,18 @@ export const cartReducer = createReducer(
     ...state,
     [dish.id]: { dish, quantity: dish.id in state ? state[dish.id].quantity + 1 : 1 },
   })),
-  on(removeDishFromCart, (state, { dish, amount }) => {
-    if (!state[dish.id]) {
+  on(setDishQuantity, (state, { id, quantity }) => {
+    if (!state[id]) {
       return state
     }
 
-    const { quantity } = state[dish.id]
-
-    if (amount >= quantity) {
-      const { [dish.id]: _, ...newState } = state
+    if (quantity <= 0) {
+      // Removes cart item with provided  id
+      const { [id]: _, ...newState } = state
       return newState
     }
 
-    return { ...state, [dish.id]: { dish, quantity: quantity - amount } }
+    return { ...state, [id]: { ...state[id], quantity: quantity } }
   }),
   on(replaceCart, (_, { cart }) => cart),
   on(clearCart, () => ({})),

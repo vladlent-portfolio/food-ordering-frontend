@@ -3,7 +3,7 @@ import { AppState, CartItem } from "../../../store/reducers"
 import { Store } from "@ngrx/store"
 import { selectCart, selectIsLoggedIn } from "../../../store/selectors"
 import { filter, map, switchMap, take } from "rxjs/operators"
-import { clearCart, removeDishFromCart } from "../../../store/actions"
+import { clearCart, setDishQuantity } from "../../../store/actions"
 import { OrderService } from "../../../services/order.service"
 import { MatDialog, MatDialogRef } from "@angular/material/dialog"
 import { of } from "rxjs"
@@ -34,7 +34,7 @@ export class CartDialogComponent implements OnInit {
   }
 
   removeItemFromCart(item: CartItem) {
-    this.store.dispatch(removeDishFromCart({ dish: item.dish, amount: item.quantity }))
+    this.store.dispatch(setDishQuantity({ id: item.dish.id, quantity: 0 }))
   }
 
   checkout(items: CartItem[]) {
