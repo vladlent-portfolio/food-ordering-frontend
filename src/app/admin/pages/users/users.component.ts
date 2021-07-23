@@ -11,11 +11,11 @@ import { PageEvent } from "@angular/material/paginator"
 
 @Component({
   selector: "app-customers",
-  templateUrl: "./customers.component.html",
-  styleUrls: ["./customers.component.scss"],
+  templateUrl: "./users.component.html",
+  styleUrls: ["./users.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomersPageComponent extends ComponentWithPagination implements OnInit {
+export class UsersPageComponent extends ComponentWithPagination implements OnInit {
   displayedColumns = ["id", "email", "created_at", "is_admin"]
   users: User[] = []
 

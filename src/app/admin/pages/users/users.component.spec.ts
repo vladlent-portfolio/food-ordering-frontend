@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing"
 
-import { CustomersPageComponent } from "./customers.component"
+import { UsersPageComponent } from "./users.component"
 import { MatTableModule } from "@angular/material/table"
 import { UserService } from "../../../services/user.service"
 import { Pagination, User } from "../../../models/models"
@@ -25,8 +25,8 @@ function userFactory(): (email: string, is_admin: boolean) => User {
 
 const createUser = userFactory()
 describe("CustomersComponent", () => {
-  let component: CustomersPageComponent
-  let fixture: ComponentFixture<CustomersPageComponent>
+  let component: UsersPageComponent
+  let fixture: ComponentFixture<UsersPageComponent>
   let nativeEl: HTMLElement
   let userServiceSpy: jasmine.SpyObj<UserService>
   let users: User[]
@@ -45,13 +45,13 @@ describe("CustomersComponent", () => {
 
     TestBed.configureTestingModule({
       imports: [MatTableModule, MatIconModule, MatPaginatorModule, NoopAnimationsModule],
-      declarations: [CustomersPageComponent],
+      declarations: [UsersPageComponent],
       providers: [{ provide: UserService, useValue: userServiceSpy }],
     })
   })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CustomersPageComponent)
+    fixture = TestBed.createComponent(UsersPageComponent)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
   })
