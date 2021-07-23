@@ -1,9 +1,17 @@
-<mat-drawer-container>
-  <mat-drawer mode="side" opened>
-    <app-admin-nav></app-admin-nav>
-  </mat-drawer>
+<ng-container *ngLet="isSmallScreen$ | async as isSmallScreen">
+  <mat-drawer-container>
+    <mat-drawer mode="side" [opened]="!isSmallScreen">
+      <app-admin-nav data-test="desktop-admin-nav"></app-admin-nav>
+    </mat-drawer>
 
-  <mat-drawer-content>
-    <router-outlet></router-outlet>
-  </mat-drawer-content>
-</mat-drawer-container>
+    <mat-drawer-content>
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
+
+  <app-admin-nav
+    *ngIf="isSmallScreen"
+    [mobile]="isSmallScreen"
+    data-test="mobile-admin-nav"
+  ></app-admin-nav>
+</ng-container>

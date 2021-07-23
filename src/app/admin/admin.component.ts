@@ -1,4 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
+import { Store } from "@ngrx/store"
+import { AppState } from "../store/reducers"
+import { selectIsSmallScreen } from "../store/selectors"
 
 @Component({
   selector: "app-admin",
@@ -7,7 +10,9 @@ import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminPageComponent implements OnInit {
-  constructor() {}
+  isSmallScreen$ = this.store.select(selectIsSmallScreen)
+
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {}
 }
