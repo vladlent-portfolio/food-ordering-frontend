@@ -1,4 +1,4 @@
-import { cartReducer, requestsReducer, userReducer } from "./reducers"
+import { cartReducer, requestsReducer, screenSizeReducer, userReducer } from "./reducers"
 import {
   addDishToCart,
   clearCart,
@@ -8,6 +8,7 @@ import {
   setDishQuantity,
   replaceCart,
   setUserInfo,
+  setIsSmallScreen,
 } from "./actions"
 import { User } from "../models/models"
 
@@ -22,6 +23,16 @@ describe("Requests Reducer", () => {
     expect(requestsReducer(-5, loadEnd)).toBe(-6)
     expect(requestsReducer(1, loadEnd)).toBe(0)
     expect(requestsReducer(23, loadEnd)).toBe(22)
+  })
+})
+
+describe("Screen Size Reducer", () => {
+  it("should update screen size", () => {
+    for (const bool of [true, false]) {
+      expect(
+        screenSizeReducer(undefined, setIsSmallScreen({ isSmallScreen: bool })),
+      ).toBe(bool)
+    }
   })
 })
 

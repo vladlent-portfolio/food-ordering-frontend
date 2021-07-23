@@ -5,6 +5,11 @@ import { Cart } from "./reducers"
 export const loadStart = createAction("[App] HTTP Loading Start")
 export const loadEnd = createAction("[App] HTTP Loading End")
 
+export const setIsSmallScreen = createAction(
+  "[App] Set Screen Size",
+  props<{ isSmallScreen: boolean }>(),
+)
+
 export const setUserInfo = createAction("[User] Set User Info", props<{ user: User }>())
 export const deleteUserInfo = createAction("[User] Clear User Info")
 

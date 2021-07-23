@@ -13,7 +13,7 @@ import { MatToolbarModule } from "@angular/material/toolbar"
 import { LoginDialogComponent } from "./components/dialogs/login/login.component"
 import { MatDialog, MatDialogModule } from "@angular/material/dialog"
 import { NoopAnimationsModule } from "@angular/platform-browser/animations"
-import { replaceCart } from "./store/actions"
+import { replaceCart, setIsSmallScreen } from "./store/actions"
 import { User } from "./models/models"
 import { MockStore, provideMockStore } from "@ngrx/store/testing"
 import { UserService } from "./services/user.service"
@@ -24,7 +24,7 @@ import { Component } from "@angular/core"
 import { of } from "rxjs"
 import { MatBadgeModule } from "@angular/material/badge"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
-import { LayoutModule } from "@angular/cdk/layout"
+import { BreakpointObserver } from "@angular/cdk/layout"
 
 describe("AppComponent", () => {
   let dialogSpy: jasmine.SpyObj<MatDialog>
@@ -35,12 +35,15 @@ describe("AppComponent", () => {
   let user: User
   let router: Router
   let store: MockStore
+  let bpSpy: jasmine.SpyObj<BreakpointObserver>
 
   beforeEach(() => {
     dialogSpy = jasmine.createSpyObj("MatDialog", ["open"])
     userServiceSpy = jasmine.createSpyObj("UserService", ["me", "signOut"])
+    bpSpy = jasmine.createSpyObj("BreakpointObserver", ["observe"])
 
     userServiceSpy.me.and.returnValue(of(user))
+    bpSpy.observe.and.returnValue(of({ matches: false, breakpoints: {} }))
 
     TestBed.configureTestingModule({
       imports: [
@@ -55,12 +58,12 @@ describe("AppComponent", () => {
         NoopAnimationsModule,
         MatIconModule,
         MatBadgeModule,
-        LayoutModule,
       ],
       declarations: [AppComponent, LoginDialogComponent, TestComponent],
       providers: [
         { provide: MatDialog, useValue: dialogSpy },
         { provide: UserService, useValue: userServiceSpy },
+        { provide: BreakpointObserver, useValue: bpSpy },
         provideMockStore({ initialState: { cart: {} } }),
       ],
     })
@@ -114,6 +117,12 @@ describe("AppComponent", () => {
     const setupObserver = spyOn(component, "setupObserver")
     component.ngOnInit()
     expect(setupObserver).toHaveBeenCalledTimes(1)
+  })
+
+  it("should call observeScreenSize on init", () => {
+    const observeScreenSize = spyOn(component, "observeScreenSize")
+    component.ngOnInit()
+    expect(observeScreenSize).toHaveBeenCalledTimes(1)
   })
 
   it("should show login btn  if user is not logged in", () => {
@@ -224,7 +233,7 @@ describe("AppComponent", () => {
       })
 
       it("should open cart with updated minWidth on small screen", () => {
-        spyOnProperty(component, "isSmallScreen").and.returnValue(true)
+        store.setState({ cart: {}, isSmallScreen: true })
         fixture.detectChanges()
         queryCart().click()
         expect(dialogSpy.open).toHaveBeenCalledOnceWith(CartDialogComponent, {
@@ -426,7 +435,22 @@ describe("AppComponent", () => {
     })
   })
 
-  describe("restoreCart", () => {
+  describe("observeScreenSize()", () => {
+    it("should dispatch action when screen size changes", () => {
+      const dispatch = spyOn(store, "dispatch")
+
+      bpSpy.observe.and.returnValues(
+        of({ matches: true, breakpoints: {} }, { matches: false, breakpoints: {} }),
+      )
+
+      fixture.detectChanges()
+
+      expect(dispatch).toHaveBeenCalledWith(setIsSmallScreen({ isSmallScreen: true }))
+      expect(dispatch).toHaveBeenCalledWith(setIsSmallScreen({ isSmallScreen: false }))
+    })
+  })
+
+  describe("restoreCart()", () => {
     it("should replace the cart in store if local storage isn't empty", () => {
       const dispatch = spyOn(store, "dispatch")
       const cart = { 1: { quantity: 2 }, 2: { quantity: 4 } } as any

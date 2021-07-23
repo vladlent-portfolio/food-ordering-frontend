@@ -9,5 +9,7 @@ export const selectIsLoading = createSelector(
   openRequests => openRequests != 0,
 )
 
+export const selectIsSmallScreen = (state: AppState) => state.isSmallScreen
+
 export const selectIsLoggedIn = createSelector(selectUser, user => !!user)
 export const selectIsAdmin = createSelector(selectUser, user => !!user?.is_admin)

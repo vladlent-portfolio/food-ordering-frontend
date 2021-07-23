@@ -8,6 +8,7 @@ import {
   setDishQuantity,
   replaceCart,
   setUserInfo,
+  setIsSmallScreen,
 } from "./actions"
 import { Dish, User } from "../models/models"
 
@@ -21,12 +22,14 @@ export type Cart = {
 
 export interface AppState {
   openRequests: number
+  isSmallScreen: boolean
   user: User | null
   cart: Cart
 }
 
 export const initialState: AppState = {
   openRequests: 0,
+  isSmallScreen: false,
   user: null,
   cart: {},
 }
@@ -36,6 +39,11 @@ export const requestsReducer = createReducer(
   initialState.openRequests,
   on(loadStart, req => req + 1),
   on(loadEnd, req => req - 1),
+)
+
+export const screenSizeReducer = createReducer(
+  initialState.isSmallScreen,
+  on(setIsSmallScreen, (_, { isSmallScreen }) => isSmallScreen),
 )
 
 export const userReducer = createReducer(
@@ -69,6 +77,7 @@ export const cartReducer = createReducer(
 
 export const AppState: ActionReducerMap<AppState> = {
   openRequests: requestsReducer,
+  isSmallScreen: screenSizeReducer,
   user: userReducer,
   cart: cartReducer,
 }

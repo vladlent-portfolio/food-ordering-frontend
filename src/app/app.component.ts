@@ -5,6 +5,7 @@ import {
   selectIsAdmin,
   selectIsLoading,
   selectIsLoggedIn,
+  selectIsSmallScreen,
 } from "./store/selectors"
 import { AppState } from "./store/reducers"
 import { delay, filter, map, take } from "rxjs/operators"
@@ -13,7 +14,7 @@ import { LoginDialogComponent } from "./components/dialogs/login/login.component
 import { UserService } from "./services/user.service"
 import { NavigationEnd, Router } from "@angular/router"
 import { CartDialogComponent } from "./components/dialogs/cart/cart.component"
-import { replaceCart } from "./store/actions"
+import { replaceCart, setIsSmallScreen } from "./store/actions"
 import { asapScheduler } from "rxjs"
 import { BreakpointObserver } from "@angular/cdk/layout"
 
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
 
   // 'delay' is needed to prevent ExpressionChangedAfterItHasBeenCheckedError from Angular.
   isLoading$ = this.store.select(selectIsLoading).pipe(delay(0, asapScheduler))
+  isSmallScreen$ = this.store.select(selectIsSmallScreen)
   isLoggedIn$ = this.store.select(selectIsLoggedIn)
   isAdmin$ = this.store.select(selectIsAdmin)
   isAdminRoute$ = this.router.events.pipe(
@@ -42,10 +44,6 @@ export class AppComponent implements OnInit {
   goTopBtnObserver: IntersectionObserver | undefined
   hideGoTopBtn = true
 
-  get isSmallScreen() {
-    return this.breakpointObserver.isMatched("(max-width: 576px)")
-  }
-
   constructor(
     private store: Store<AppState>,
     private userService: UserService,
@@ -58,6 +56,7 @@ export class AppComponent implements OnInit {
     this.checkAuth()
     this.restoreCart()
     this.setupObserver()
+    this.observeScreenSize()
   }
 
   @HostListener("window:beforeunload")
@@ -70,6 +69,12 @@ export class AppComponent implements OnInit {
       })
   }
 
+  observeScreenSize() {
+    this.breakpointObserver.observe("(max-width: 576px)").subscribe(state => {
+      this.store.dispatch(setIsSmallScreen({ isSmallScreen: state.matches }))
+    })
+  }
+
   checkAuth() {
     this.userService.me().subscribe()
   }
@@ -79,8 +84,10 @@ export class AppComponent implements OnInit {
   }
 
   openCartDialog() {
-    this.dialog.open(CartDialogComponent, {
-      minWidth: this.isSmallScreen ? "95vw" : undefined,
+    this.isSmallScreen$.pipe(take(1)).subscribe(isSmall => {
+      this.dialog.open(CartDialogComponent, {
+        minWidth: isSmall ? "95vw" : undefined,
+      })
     })
   }
 
