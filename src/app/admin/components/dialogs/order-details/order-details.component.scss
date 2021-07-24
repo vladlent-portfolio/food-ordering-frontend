@@ -33,9 +33,13 @@
   &__img {
     height: 3rem;
     width: auto;
+
+    @include media-breakpoint-down(sm) {
+      padding-right: 0.5rem;
+    }
   }
 
-  &__price {
+  &__dish {
     font-weight: 500;
   }
 
