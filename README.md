@@ -33,6 +33,7 @@ Backend repository available [here](https://github.com/vladlent-portfolio/food-o
 
 - Responsive design.
 - 99% test coverage.
+- GitHub Actions for CI/CD.
 - Lazy-loaded modules.
 - No hardcoded data. Everything comes through AJAX.
 - Image upload with instant preview.
