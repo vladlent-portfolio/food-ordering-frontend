@@ -6,7 +6,7 @@
 
 .orders-table {
   width: 100%;
-  min-width: 54rem;
+  min-width: 50rem;
 }
 
 @each $status, $color in $status-colors {

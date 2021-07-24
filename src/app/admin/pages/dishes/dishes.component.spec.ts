@@ -18,6 +18,7 @@ import { ConfirmDialogComponent } from "../../../components/dialogs/confirm/conf
 import { CategoryService } from "../../../services/category.service"
 import { MatSelectModule } from "@angular/material/select"
 import { MatOption } from "@angular/material/core"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 
 const image = new File([new Blob(["image"])], "file.jpeg", { type: "image/jpeg" })
 describe("DishesComponent", () => {
@@ -31,6 +32,7 @@ describe("DishesComponent", () => {
   let dialog: MatDialog
   let dialogRef: MatDialogRef<TestDialogComponent>
   let dialogOpen: jasmine.Spy<MatDialog["open"]>
+  let store: MockStore<any>
 
   beforeEach(() => {
     categories = [
@@ -73,6 +75,7 @@ describe("DishesComponent", () => {
       providers: [
         { provide: DishService, useValue: dishServiceSpy },
         { provide: CategoryService, useValue: categoryServiceSpy },
+        provideMockStore(),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
@@ -84,6 +87,7 @@ describe("DishesComponent", () => {
     nativeEl = fixture.nativeElement
 
     dialog = TestBed.inject(MatDialog)
+    store = TestBed.inject(MockStore)
     dialogRef = dialog.open(TestDialogComponent)
     dialogOpen = spyOn(dialog, "open").and.returnValue(dialogRef)
   })
@@ -286,6 +290,18 @@ describe("DishesComponent", () => {
         component.openDialog(opt)
         expect(dialogOpen).toHaveBeenCalledWith(DishDialogComponent, {
           data: opt,
+        })
+      }
+    })
+
+    it("should change dialog width on mobile", () => {
+      store.setState({ isSmallScreen: true })
+      for (const opt of dialogOptions) {
+        component.openDialog(opt)
+        expect(dialogOpen).toHaveBeenCalledWith(DishDialogComponent, {
+          data: opt,
+          minWidth: "95vw",
+          maxWidth: "95vw",
         })
       }
     })

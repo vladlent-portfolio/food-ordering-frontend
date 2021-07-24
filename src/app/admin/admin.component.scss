@@ -1,4 +1,5 @@
 @import "~src/styles/mixins";
+@import "~src/styles/variables";
 
 :host {
   --toolbar-height: 4.5rem;
@@ -10,6 +11,10 @@ mat-drawer-container {
   display: flex;
   min-height: calc(100vh - var(--toolbar-height));
   background-color: transparent;
+
+  @include media-breakpoint-down(sm) {
+    min-height: auto;
+  }
 
   mat-drawer-content {
     width: 100%;
@@ -25,6 +30,7 @@ app-admin-nav {
   }
 
   @include media-breakpoint-down(sm) {
+    height: $admin-mobile-nav-height;
     position: fixed;
     bottom: 0;
     left: 0;

@@ -12,14 +12,17 @@ import {
 import { Category, Dish } from "../../../models/models"
 import { CategoryService } from "../../../services/category.service"
 import { DishService } from "../../../services/dish.service"
-import { MatDialog } from "@angular/material/dialog"
-import { filter, map, switchMap } from "rxjs/operators"
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog"
+import { filter, map, switchMap, take } from "rxjs/operators"
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from "../../../components/dialogs/confirm/confirm.component"
 import { FormControl } from "@angular/forms"
 import { combineLatest, Subject } from "rxjs"
+import { Store } from "@ngrx/store"
+import { AppState } from "../../../store/reducers"
+import { selectIsSmallScreen } from "../../../store/selectors"
 
 @Component({
   selector: "app-dishes",
@@ -44,6 +47,7 @@ export class DishesPageComponent implements OnInit {
     private categoryService: CategoryService,
     private dishService: DishService,
     private dialog: MatDialog,
+    private store: Store<AppState>,
     public cdRef: ChangeDetectorRef,
   ) {}
 
@@ -70,10 +74,16 @@ export class DishesPageComponent implements OnInit {
   }
 
   openDialog(data: DishDialogData) {
-    this.dialog
-      .open(DishDialogComponent, { data })
-      .afterClosed()
-      .pipe(filter(Boolean))
+    this.store
+      .select(selectIsSmallScreen)
+      .pipe(
+        take(1),
+        map(isSmall => (isSmall ? { maxWidth: "95vw", minWidth: "95vw" } : {})),
+        switchMap((config: MatDialogConfig) =>
+          this.dialog.open(DishDialogComponent, { data, ...config }).afterClosed(),
+        ),
+        filter(Boolean),
+      )
       .subscribe(() => {
         this.getDishes()
       })

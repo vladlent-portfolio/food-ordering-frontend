@@ -17,6 +17,11 @@ header {
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 2rem;
   }
+
+  @include media-breakpoint-down(sm) {
+    grid-template-columns: 1fr;
+    grid-gap: 1.5rem;
+  }
 }
 
 app-admin-card {

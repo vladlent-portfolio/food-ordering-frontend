@@ -1,6 +1,7 @@
 @use "sass:color";
 @import "~src/styles/colors";
 @import "~src/styles/mixins";
+@import "~src/styles/variables";
 
 .app-container {
   display: flex;
@@ -10,7 +11,12 @@
   @include media-breakpoint-down(sm) {
     // Additional padding for bottom mobile navigation
     &--admin-page {
-      padding-bottom: 3rem;
+      padding-bottom: $admin-mobile-nav-height;
+
+      .up-btn {
+        // So it doesn't cover the nav
+        bottom: 4rem;
+      }
     }
   }
 }
@@ -30,6 +36,10 @@
   justify-content: space-between;
   align-items: center;
   z-index: 100;
+
+  @include media-breakpoint-down(sm) {
+    padding: 0;
+  }
 
   .toolbar__main {
     width: 100%;

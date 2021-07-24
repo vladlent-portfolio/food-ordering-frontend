@@ -1,7 +1,7 @@
 <table mat-table [dataSource]="users" data-test="users-table">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef data-test="users-table-header-cell">
-      Customer ID
+      ID
     </th>
     <td mat-cell *matCellDef="let user" data-test="users-table-id">{{ user.id }}</td>
   </ng-container>
