@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core"
+import { Component, OnInit, ChangeDetectionStrategy, Input } from "@angular/core"
 import { pages } from "../../admin-routing.module"
 
 // Main purpose of this component is to resolve circular dependency between
@@ -10,6 +10,7 @@ import { pages } from "../../admin-routing.module"
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminNavComponent implements OnInit {
+  @Input() mobile = false
   links = pages
 
   constructor() {}

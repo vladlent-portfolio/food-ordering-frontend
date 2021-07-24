@@ -13,15 +13,27 @@ export const PAGES_COMPONENTS = [
   OrdersPageComponent,
 ]
 
-export const pages: (Route & { data: { title: string } })[] = [
+export const pages: (Route & { data: { title: string; icon: string } })[] = [
   {
     path: "categories",
     component: CategoriesPageComponent,
-    data: { title: "Categories" },
+    data: { title: "Categories", icon: "category" },
   },
-  { path: "dishes", component: DishesPageComponent, data: { title: "Dishes" } },
-  { path: "users", component: UsersPageComponent, data: { title: "Users" } },
-  { path: "orders", component: OrdersPageComponent, data: { title: "Orders" } },
+  {
+    path: "dishes",
+    component: DishesPageComponent,
+    data: { title: "Dishes", icon: "restaurant_menu" },
+  },
+  {
+    path: "users",
+    component: UsersPageComponent,
+    data: { title: "Users", icon: "person" },
+  },
+  {
+    path: "orders",
+    component: OrdersPageComponent,
+    data: { title: "Orders", icon: "shopping_cart" },
+  },
 ]
 
 export const routes: Routes = [

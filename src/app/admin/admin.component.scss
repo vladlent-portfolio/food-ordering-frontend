@@ -23,4 +23,13 @@ app-admin-nav {
   @include media-breakpoint-down(xl) {
     width: 8rem;
   }
+
+  @include media-breakpoint-down(sm) {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 100;
+  }
 }

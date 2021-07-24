@@ -1,4 +1,4 @@
-<mat-nav-list>
+<mat-nav-list *ngIf="!mobile" data-test="desktop-nav-list">
   <a
     *ngFor="let link of links"
     [routerLink]="link.path"
@@ -8,3 +8,15 @@
     {{ link.data.title }}
   </a>
 </mat-nav-list>
+
+<nav *ngIf="mobile" class="mobile-nav" data-test="mobile-nav-list">
+  <a
+    *ngFor="let link of links"
+    [routerLink]="link.path"
+    routerLinkActive="mobile-nav__link--selected"
+    class="mobile-nav__link"
+  >
+    <mat-icon>{{ link.data.icon }}</mat-icon>
+    {{ link.data.title }}
+  </a>
+</nav>

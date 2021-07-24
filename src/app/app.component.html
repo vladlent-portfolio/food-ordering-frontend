@@ -1,181 +1,189 @@
-<div #pageTop class="page-top" aria-hidden="true" data-test="page-top"></div>
-<mat-toolbar
-  *ngLet="{
-    isLoggedIn: isLoggedIn$ | async,
-    isAdmin: isAdmin$ | async,
-    isAdminRoute: isAdminRoute$ | async,
-    cartQuantity: totalCartQuantity$ | async
-  } as o"
-  color="primary"
-  class="toolbar"
->
-  <a class="home-link d-sm-none" routerLink="/" data-test="home-link">
-    <h1 data-test="title">{{ title }}</h1>
-  </a>
+<div class="app-container" [class.app-container--admin-page]="isAdminRoute$ | async">
+  <div #pageTop class="page-top" aria-hidden="true" data-test="page-top"></div>
+  <!--  We have to put *ngLet directive below #pageTop to be able to query it in ngOnInit -->
+  <mat-toolbar
+    color="primary"
+    class="toolbar"
+    *ngLet="{
+      isLoggedIn: isLoggedIn$ | async,
+      isAdmin: isAdmin$ | async,
+      isAdminRoute: isAdminRoute$ | async,
+      cartQuantity: totalCartQuantity$ | async,
+      isSmallScreen: isSmallScreen$ | async
+    } as o"
+  >
+    <a class="home-link d-sm-none" routerLink="/" data-test="home-link">
+      <h1 data-test="title">{{ title }}</h1>
+    </a>
 
-  <div class="toolbar__main">
-    <nav class="nav">
-      <a
-        class="nav__link"
-        routerLink="/"
-        routerLinkActive="nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        mat-flat-button
-        data-test="app-btn"
-      >
-        Home
-      </a>
+    <div class="toolbar__main">
+      <nav class="nav">
+        <a
+          class="nav__link"
+          routerLink="/"
+          routerLinkActive="nav__link--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          mat-flat-button
+          data-test="app-btn"
+        >
+          Home
+        </a>
 
-      <a
-        *ngIf="o.isLoggedIn && o.isAdmin"
-        class="nav__link d-sm-none"
-        routerLink="/admin"
-        routerLinkActive="nav__link--active"
-        mat-flat-button
-        data-test="admin-btn"
-      >
-        Dashboard
-      </a>
+        <a
+          *ngIf="o.isLoggedIn && o.isAdmin"
+          class="nav__link"
+          routerLink="/admin"
+          routerLinkActive="nav__link--active"
+          mat-flat-button
+          data-test="admin-btn"
+        >
+          Dashboard
+        </a>
 
-      <a
-        mat-flat-button
-        class="nav__link"
-        routerLink="/about"
-        routerLinkActive="nav__link--active"
-        >About</a
-      >
-    </nav>
+        <a
+          mat-flat-button
+          class="nav__link"
+          routerLink="/about"
+          routerLinkActive="nav__link--active"
+          >About</a
+        >
+      </nav>
 
-    <div class="controls">
-      <button
-        *ngIf="!o.isAdminRoute"
-        class="cart"
-        [matBadge]="o.cartQuantity"
-        [matBadgeHidden]="o.cartQuantity <= 0"
-        matBadgeColor="warn"
-        (click)="openCartDialog()"
-        aria-label="Open shopping cart"
-        data-test="cart"
-      >
-        <mat-icon>shopping_basket</mat-icon>
-      </button>
+      <div class="controls">
+        <button
+          *ngIf="!o.isAdminRoute"
+          class="cart"
+          [matBadge]="o.cartQuantity"
+          [matBadgeHidden]="o.cartQuantity <= 0"
+          matBadgeColor="warn"
+          (click)="openCartDialog()"
+          aria-label="Open shopping cart"
+          data-test="cart"
+        >
+          <mat-icon>shopping_basket</mat-icon>
+        </button>
 
-      <button
-        *ngIf="!o.isLoggedIn"
-        class="sign-in-btn"
-        mat-flat-button
-        color="accent"
-        aria-label="Sign In"
-        data-test="login-btn"
-        (click)="openLoginDialog()"
-      >
-        <mat-icon>login</mat-icon>
-      </button>
+        <button
+          *ngIf="!o.isLoggedIn"
+          class="sign-in-btn"
+          mat-flat-button
+          color="accent"
+          aria-label="Sign In"
+          data-test="login-btn"
+          (click)="openLoginDialog()"
+        >
+          <mat-icon>login</mat-icon>
+        </button>
 
-      <button
-        *ngIf="o.isLoggedIn"
-        class="sign-out-btn"
-        mat-icon-button
-        color="accent"
-        aria-label="Sign Out"
-        data-test="logout-btn"
-        (click)="signOut()"
-      >
-        <mat-icon>logout</mat-icon>
-      </button>
+        <button
+          *ngIf="o.isLoggedIn"
+          class="sign-out-btn"
+          mat-icon-button
+          color="accent"
+          aria-label="Sign Out"
+          data-test="logout-btn"
+          (click)="signOut()"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
     </div>
-  </div>
-</mat-toolbar>
+  </mat-toolbar>
 
-<main class="main">
-  <router-outlet></router-outlet>
-</main>
+  <main class="main">
+    <router-outlet></router-outlet>
+  </main>
 
-<footer id="app-footer" class="footer" data-test="footer">
-  <div>
-    <p class="footer__text" data-test="footer-made-by">
-      Made by Vladlen Tereshchenko
-    </p>
-    <div class="footer__link-group" data-test="footer-socials">
+  <footer id="app-footer" class="footer" data-test="footer">
+    <div>
+      <p class="footer__text" data-test="footer-made-by">
+        Made by Vladlen Tereshchenko
+      </p>
+      <div class="footer__link-group" data-test="footer-socials">
+        <a
+          href="https://github.com/vladlent"
+          target="_blank"
+          class="footer__link footer__link--with-icon"
+          data-test="footer-author-github-link"
+        >
+          <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
+          GitHub
+        </a>
+        <a
+          href="https://linkedin.com/vladlent"
+          target="_blank"
+          class="footer__link footer__link--with-icon"
+          data-test="footer-author-linkedin-link"
+        >
+          <img
+            class="footer__icon"
+            src="/assets/icons/linkedin_1.svg"
+            alt="LinkedIn icon"
+          />
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <div class="footer__link-group" data-test="footer-repositories">
+      <p class="footer__text" data-test="footer-repositories-title">
+        Project Repositories
+      </p>
       <a
-        href="https://github.com/vladlent"
-        target="_blank"
         class="footer__link footer__link--with-icon"
-        data-test="footer-author-github-link"
+        href="https://github.com/vladlent-portfolio/food-ordering-frontend"
+        target="_blank"
+        data-test="footer-repositories-frontend"
       >
         <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
-        GitHub
+        FrontEnd
       </a>
       <a
-        href="https://linkedin.com/vladlent"
-        target="_blank"
         class="footer__link footer__link--with-icon"
-        data-test="footer-author-linkedin-link"
+        href="https://github.com/vladlent-portfolio/food-ordering-backend"
+        target="_blank"
+        data-test="footer-repositories-backend"
       >
-        <img
-          class="footer__icon"
-          src="/assets/icons/linkedin_1.svg"
-          alt="LinkedIn icon"
-        />
-        LinkedIn
+        <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
+        BackEnd
       </a>
     </div>
+
+    <div class="footer__attribution" data-test="footer-attribution">
+      Shopping cart and social media icons <br />
+      made by
+      <a
+        class="footer__link"
+        href="https://www.freepik.com"
+        target="_blank"
+        title="Freepik"
+        >Freepik</a
+      >
+      from
+      <a
+        class="footer__link"
+        href="https://www.flaticon.com"
+        target="_blank"
+        title="Flaticon"
+      >
+        www.flaticon.com
+      </a>
+    </div>
+  </footer>
+
+  <button
+    *ngIf="!hideGoTopBtn"
+    mat-mini-fab
+    class="up-btn"
+    color="accent"
+    (click)="scrollTop()"
+    aria-label="Scroll to top"
+    data-test="up-btn"
+  >
+    <mat-icon>arrow_upward</mat-icon>
+  </button>
+
+  <div *ngIf="isLoading$ | async" class="spinner-container" data-test="loading-spinner">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
-
-  <div class="footer__link-group" data-test="footer-repositories">
-    <p class="footer__text" data-test="footer-repositories-title">
-      Project Repositories
-    </p>
-    <a
-      class="footer__link footer__link--with-icon"
-      href="https://github.com/vladlent-portfolio/food-ordering-frontend"
-      target="_blank"
-      data-test="footer-repositories-frontend"
-    >
-      <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
-      FrontEnd
-    </a>
-    <a
-      class="footer__link footer__link--with-icon"
-      href="https://github.com/vladlent-portfolio/food-ordering-backend"
-      target="_blank"
-      data-test="footer-repositories-backend"
-    >
-      <img class="footer__icon" src="/assets/icons/github.svg" alt="GitHub icon" />
-      BackEnd
-    </a>
-  </div>
-
-  <div class="footer__attribution" data-test="footer-attribution">
-    Shopping cart and social media icons <br />
-    made by
-    <a class="footer__link" href="https://www.freepik.com" target="_blank" title="Freepik"
-      >Freepik</a
-    >
-    from
-    <a
-      class="footer__link"
-      href="https://www.flaticon.com"
-      target="_blank"
-      title="Flaticon"
-    >
-      www.flaticon.com
-    </a>
-  </div>
-</footer>
-
-<button
-  *ngIf="!hideGoTopBtn"
-  mat-mini-fab
-  class="up-btn"
-  color="accent"
-  (click)="scrollTop()"
-  aria-label="Scroll to top"
-  data-test="up-btn"
->
-  <mat-icon>arrow_upward</mat-icon>
-</button>
-
-<div *ngIf="isLoading$ | async" class="spinner-container" data-test="loading-spinner">
-  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 </div>

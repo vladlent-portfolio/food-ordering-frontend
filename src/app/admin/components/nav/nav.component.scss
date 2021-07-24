@@ -1,8 +1,29 @@
+@import "~src/styles/colors";
+
 :host {
   display: block;
 }
 
 .admin-nav-selected {
   background: rgba(103, 58, 183, 0.15);
-  color: #673ab7;
+  color: $color-primary;
+}
+
+.mobile-nav {
+  display: flex;
+  justify-content: space-around;
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem 0.5rem 0;
+    text-decoration: none;
+    color: grey;
+
+    &--selected {
+      color: $color-primary;
+    }
+  }
 }
