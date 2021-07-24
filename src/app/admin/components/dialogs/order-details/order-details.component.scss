@@ -1,7 +1,14 @@
+@import "~src/styles/mixins";
+
 :host {
   display: block;
   min-width: 30rem;
   padding: 1rem;
+
+  @include media-breakpoint-down(sm) {
+    min-width: auto;
+    width: 100%;
+  }
 }
 
 .title {
@@ -17,12 +24,22 @@
 .table {
   width: 100%;
 
+  @include media-breakpoint-down(sm) {
+    td {
+      padding: 0;
+    }
+  }
+
   &__img {
     height: 3rem;
     width: auto;
   }
 
-  &__dish {
+  &__price {
+    font-weight: 500;
+  }
+
+  &__price {
     font-weight: 500;
   }
 

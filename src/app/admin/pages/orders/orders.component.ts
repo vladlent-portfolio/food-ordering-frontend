@@ -6,10 +6,14 @@ import {
 } from "@angular/core"
 import { Order, OrderStatus } from "../../../models/models"
 import { OrderService } from "../../../services/order.service"
-import { MatDialog } from "@angular/material/dialog"
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog"
 import { OrderDetailsDialogComponent } from "../../components/dialogs/order-details/order-details.component"
 import { PageEvent } from "@angular/material/paginator"
 import { ComponentWithPagination } from "../../../shared/components/component-with-pagination/component-with-pagination"
+import { Store } from "@ngrx/store"
+import { AppState } from "../../../store/reducers"
+import { selectIsSmallScreen } from "../../../store/selectors"
+import { map, take } from "rxjs/operators"
 
 @Component({
   selector: "app-orders",
@@ -51,8 +55,9 @@ export class OrdersPageComponent extends ComponentWithPagination implements OnIn
 
   constructor(
     private orderService: OrderService,
-    public cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
+    private store: Store<AppState>,
+    public cdRef: ChangeDetectorRef,
   ) {
     super()
   }
@@ -84,7 +89,15 @@ export class OrdersPageComponent extends ComponentWithPagination implements OnIn
   }
 
   openDetails(order: Order) {
-    this.dialog.open(OrderDetailsDialogComponent, { data: order })
+    this.store
+      .select(selectIsSmallScreen)
+      .pipe(
+        take(1),
+        map(isSmall => (isSmall ? { maxWidth: "95vw", minWidth: "95vw" } : {})),
+      )
+      .subscribe((config: MatDialogConfig) => {
+        this.dialog.open(OrderDetailsDialogComponent, { data: order, ...config })
+      })
   }
 
   updatePagination(e: PageEvent) {

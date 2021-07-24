@@ -16,6 +16,7 @@ import { OrderDetailsDialogComponent } from "../../components/dialogs/order-deta
 import { MatPaginator, MatPaginatorModule, PageEvent } from "@angular/material/paginator"
 import { PaginationDTO } from "../../../models/dtos"
 import { ComponentWithPagination } from "../../../shared/components/component-with-pagination/component-with-pagination"
+import { MockStore, provideMockStore } from "@ngrx/store/testing"
 
 describe("OrdersComponent", () => {
   let component: OrdersPageComponent
@@ -24,6 +25,7 @@ describe("OrdersComponent", () => {
   let orderServiceSpy: jasmine.SpyObj<OrderService>
   let orders: Order[]
   let dialogSpy: jasmine.SpyObj<MatDialog>
+  let store: MockStore<any>
 
   beforeEach(() => {
     orders = testOrders
@@ -44,12 +46,14 @@ describe("OrdersComponent", () => {
       providers: [
         { provide: OrderService, useValue: orderServiceSpy },
         { provide: MatDialog, useValue: dialogSpy },
+        provideMockStore(),
       ],
     })
   })
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OrdersPageComponent)
+    store = TestBed.inject(MockStore)
     component = fixture.componentInstance
     nativeEl = fixture.nativeElement
   })
@@ -368,6 +372,18 @@ describe("OrdersComponent", () => {
         component.openDetails(order)
         expect(dialogSpy.open).toHaveBeenCalledWith(OrderDetailsDialogComponent, {
           data: order,
+        })
+      }
+    })
+
+    it("should change dialog's width on mobile", () => {
+      store.setState({ isSmallScreen: true })
+      for (const order of orders) {
+        component.openDetails(order)
+        expect(dialogSpy.open).toHaveBeenCalledWith(OrderDetailsDialogComponent, {
+          data: order,
+          maxWidth: "95vw",
+          minWidth: "95vw",
         })
       }
     })
