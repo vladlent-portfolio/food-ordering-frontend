@@ -17,7 +17,9 @@ import { OrderPlacedComponent } from "../order-placed/order-placed.component"
 })
 export class CartDialogComponent implements OnInit {
   columns = ["img", "items", "quantity", "price", "btn"]
-  cartItems$ = this.store.select(selectCart).pipe(map(cart => Object.values(cart)))
+  cartItems$ = this.store
+    .select(selectCart)
+    .pipe(map(cart => (cart ? Object.values(cart) : [])))
   isUserLoggedIn$ = this.store.select(selectIsLoggedIn)
 
   constructor(
