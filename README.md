@@ -10,6 +10,7 @@
 
 - [Overview](#overview)
 - [Technologies](#technologies)
+- [Features](#features)
 
 ## Overview
 
@@ -27,3 +28,13 @@ Backend repository available [here](https://github.com/vladlent-portfolio/food-o
 - Angular Material 12
 - NgRx 12
 - Karma & Jasmine
+
+## Features
+
+- Responsive design.
+- 99% test coverage.
+- Lazy-loaded modules.
+- No hardcoded data. Everything comes through AJAX.
+- Image upload with instant preview.
+- Preserving shopping cart state through localStorage.
+- Guarded routes.
