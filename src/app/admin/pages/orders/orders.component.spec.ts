@@ -80,7 +80,7 @@ describe("OrdersComponent", () => {
         actions,
       } = queryTableHeadCells()
 
-      expect(id.textContent).toContain("Order ID")
+      expect(id.textContent).toContain("ID")
       expect(createdAt.textContent).toContain("Created At")
       expect(updatedAt.textContent).toContain("Last Update")
       expect(email.textContent).toContain("Customer's E-mail")
