@@ -134,6 +134,11 @@
   background-color: $color-primary;
   color: #fff;
 
+  &__repositories {
+    align-self: flex-start;
+    padding: 0 1rem;
+  }
+
   &__text {
     margin: 0;
   }

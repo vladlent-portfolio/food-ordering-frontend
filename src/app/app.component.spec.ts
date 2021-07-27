@@ -356,21 +356,34 @@ describe("AppComponent", () => {
       const socials = querySocials()
       expect(socials).not.toBeNull()
 
-      const github = socials.querySelector(
-        "[data-test='footer-author-github-link']",
-      ) as HTMLAnchorElement
-      expect(github).not.toBeNull("expected footer to have a link to author's GitHub")
-      expect(github.href).toBe("https://github.com/vladlent")
-      expect(github.target).toBe("_blank")
-      expect(github.textContent).toContain("GitHub")
+      const links = [
+        {
+          selector: "[data-test='footer-author-github-link']",
+          failMsg: "expected footer to have a link to author's GitHub",
+          href: "https://github.com/vladlent",
+          label: "GitHub",
+        },
+        {
+          selector: "[data-test='footer-author-linkedin-link']",
+          failMsg: "expected footer to have a link to author's LinkedIn",
+          href: "https://linkedin.com/in/vladlent",
+          label: "LinkedIn",
+        },
+        {
+          selector: "[data-test='footer-author-hackerrank-link']",
+          failMsg: "expected footer to have a link to author's HackerRank",
+          href: "https://hackerrank.com/vladlent",
+          label: "HackerRank",
+        },
+      ]
 
-      const linkedin = socials.querySelector(
-        "[data-test='footer-author-linkedin-link']",
-      ) as HTMLAnchorElement
-      expect(linkedin).not.toBeNull("expected footer to have a link to author's LinkedIn")
-      expect(linkedin.href).toBe("https://linkedin.com/vladlent")
-      expect(linkedin.target).toBe("_blank")
-      expect(linkedin.textContent).toContain("LinkedIn")
+      for (const link of links) {
+        const github = socials.querySelector(link.selector) as HTMLAnchorElement
+        expect(github).not.toBeNull(link.failMsg)
+        expect(github.href).toBe(link.href)
+        expect(github.target).toBe("_blank")
+        expect(github.textContent).toContain(link.label)
+      }
     })
 
     it("should have 'project repositories' block", () => {
