@@ -358,6 +358,12 @@ describe("AppComponent", () => {
 
       const links = [
         {
+          selector: '[data-test="footer-author-email-link"]',
+          failMsg: "expected footer to have a link to author's Email",
+          href: "mailto:vladlent.dev@gmail.com",
+          label: "Gmail",
+        },
+        {
           selector: "[data-test='footer-author-github-link']",
           failMsg: "expected footer to have a link to author's GitHub",
           href: "https://github.com/vladlent",
