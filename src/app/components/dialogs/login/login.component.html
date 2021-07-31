@@ -12,7 +12,7 @@
         <div class="form__suggest">
           <button
             type="button"
-            mat-flat-button
+            mat-raised-button
             color="accent"
             data-test="sign-in-as-user-btn"
             [disabled]="isLoading"
@@ -22,7 +22,7 @@
           </button>
           <button
             type="button"
-            mat-flat-button
+            mat-raised-button
             color="warn"
             [disabled]="isLoading"
             (click)="signInAs(admin.email, admin.password)"
@@ -64,6 +64,7 @@
   <mat-form-field data-test="email-form-field">
     <mat-label>E-mail</mat-label>
     <input id="email" formControlName="email" type="text" autocomplete="email" matInput />
+    <mat-hint><strong>Don't use your real e-mail.</strong></mat-hint>
     <mat-error *ngIf="formGroup.get('email')?.invalid">Invalid e-mail</mat-error>
   </mat-form-field>
 
