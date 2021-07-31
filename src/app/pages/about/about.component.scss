@@ -52,6 +52,15 @@ ul {
   margin-top: 0;
 }
 
+.list-with-stars {
+  list-style: none;
+  padding-left: 1rem;
+
+  li::before {
+    content: "⭐ ";
+  }
+}
+
 .coverage-badge {
   margin-left: 0.5rem;
 }

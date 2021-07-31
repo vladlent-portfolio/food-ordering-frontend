@@ -1,19 +1,55 @@
 <section class="about">
   <h2>About</h2>
   <p>
-    This sample app lets users create orders for dishes from a provided menu. Links to
-    source codes can be found in the
+    This sample app features both sides of typical food ordering application: client's
+    side and admins dashboard. Links to FrontEnd and BackEnd source codes can be found in
+    the
     <a routerLink="/about" fragment="app-footer">footer.</a>
   </p>
+
   <p>
-    To manage Orders, Categories and Dishes:
+    From the client's side users can:
   </p>
   <ul>
+    <li>Authorize.</li>
+    <li>Add dishes to the shopping cart.</li>
+    <li>Create orders for dishes in the cart.</li>
+  </ul>
+
+  <p>
+    In the admins dashboard users have ability to:
+  </p>
+  <ul>
+    <li>Create, edit or delete categories and dishes.</li>
+    <li>See the list of users and their roles.</li>
+    <li>See the list of orders and their contents. Change orders statuses.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Accessing Admins Dashboard</h2>
+  <p>
+    To access the dashboard, follow these simple steps:
+  </p>
+  <ul>
+    <li>Click on <mat-icon>login</mat-icon> button in the top right corner.</li>
     <li>
-      Sign in as <span class="color-primary">'Admin'</span> by clicking on
-      <mat-icon>login</mat-icon> button in the top right corner.
+      In the popped up dialog, click on
+      <span class="color-warn">Sign in as Admin</span> button.
     </li>
     <li>Navigate to <span class="color-primary">'Dashboard'</span> from the top nav.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Features</h2>
+  <ul class="list-with-stars">
+    <li>Responsive design.</li>
+    <li>Lazy-loaded modules.</li>
+    <li>No hardcoded data. Everything comes through AJAX.</li>
+    <li>Image upload with instant preview.</li>
+    <li>Locally preserving shopping cart state.</li>
+    <li>Guarded routes.</li>
   </ul>
 </section>
 
