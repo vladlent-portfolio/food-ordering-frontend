@@ -8,26 +8,20 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Technologies](#technologies)
+- [About](#about)
 - [Features](#features)
+- [Technologies](#technologies)
 
-## Overview
+## About
 
-This sample app lets users create orders for dishes from a provided menu. The app is divided in two modules:
+This sample app features both sides of typical food ordering application: client's side and admins dashboard.
+The app is divided in two modules:
 
 - **Main Page** - where clients can add dishes to the shopping cart and place orders.
-- **Admin Dashboard** - where users with admin rights can manage food categories, dishes, users and orders.
+- **Admins Dashboard** - where users with admin rights can manage food categories, dishes, users and orders.
 
 Fully working demo available at https://food-ordering.app  
 Backend repository available [here](https://github.com/vladlent-portfolio/food-ordering-backend).
-
-## Technologies
-
-- Angular 12
-- Angular Material 12
-- NgRx 12
-- Karma & Jasmine
 
 ## Features
 
@@ -39,3 +33,10 @@ Backend repository available [here](https://github.com/vladlent-portfolio/food-o
 - Image upload with instant preview.
 - Preserving shopping cart state through localStorage.
 - Guarded routes.
+
+## Technologies
+
+- Angular 12
+- Angular Material 12
+- NgRx 12
+- Karma & Jasmine
