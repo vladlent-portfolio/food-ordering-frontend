@@ -2,14 +2,12 @@
 @import "~src/styles/variables";
 
 :host {
-  --toolbar-height: 4.5rem;
-
   display: block;
 }
 
 mat-drawer-container {
   display: flex;
-  min-height: calc(100vh - var(--toolbar-height));
+  min-height: 75vh;
   background-color: transparent;
 
   @include media-breakpoint-down(sm) {
