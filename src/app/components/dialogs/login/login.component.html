@@ -10,26 +10,29 @@
         <ng-container *ngTemplateOutlet="formFields"></ng-container>
 
         <div class="form__suggest">
-          <button
-            type="button"
-            mat-raised-button
-            color="accent"
-            data-test="sign-in-as-user-btn"
-            [disabled]="isLoading"
-            (click)="signInAs(user.email, user.password)"
-          >
-            Sign In as User
-          </button>
-          <button
-            type="button"
-            mat-raised-button
-            color="warn"
-            [disabled]="isLoading"
-            (click)="signInAs(admin.email, admin.password)"
-            data-test="sign-in-as-admin-btn"
-          >
-            Sign In as Admin
-          </button>
+          <p class="hint">You can just use one of pre-registered users:</p>
+          <div class="d-flex justify-between">
+            <button
+              type="button"
+              mat-raised-button
+              color="accent"
+              data-test="sign-in-as-user-btn"
+              [disabled]="isLoading"
+              (click)="signInAs(user.email, user.password)"
+            >
+              Sign In as User
+            </button>
+            <button
+              type="button"
+              mat-raised-button
+              color="warn"
+              [disabled]="isLoading"
+              (click)="signInAs(admin.email, admin.password)"
+              data-test="sign-in-as-admin-btn"
+            >
+              Sign In as Admin
+            </button>
+          </div>
         </div>
         <button
           mat-raised-button
